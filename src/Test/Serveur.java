@@ -5,7 +5,7 @@
  */
 package Test;
 
-import network.NetworkBasicServer;
+import Network.NetworkBasicServer;
 
 /**
  *
@@ -79,18 +79,18 @@ public class Serveur extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(CheckBoxMessage)
-                            .addComponent(BtnLire)
-                            .addComponent(LBReponse))
-                        .addGap(7, 7, 7)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(BtnDemarrerServeur)
                             .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(BtnLire)
+                                    .addComponent(LBReponse))
+                                .addGap(53, 53, 53)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(TFReponse, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(LblMessage, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(BtnDemarrerServeur)
+                            .addComponent(CheckBoxMessage)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(164, 164, 164)
                         .addComponent(BtnEnvoyer)))
@@ -101,9 +101,9 @@ public class Serveur extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(BtnDemarrerServeur)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
-                .addComponent(CheckBoxMessage)
                 .addGap(18, 18, 18)
+                .addComponent(CheckBoxMessage)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtnLire)
                     .addComponent(jLabel1)
@@ -121,19 +121,14 @@ public class Serveur extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnDemarrerServeurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDemarrerServeurActionPerformed
-        // TODO add your handling code here:
         nbs = new NetworkBasicServer(PORT_ECOUTE, this.CheckBoxMessage);
     }//GEN-LAST:event_BtnDemarrerServeurActionPerformed
 
     private void BtnLireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLireActionPerformed
-        // TODO add your handling code here:
-
         this.LblMessage.setText(nbs.getMessage());
-
     }//GEN-LAST:event_BtnLireActionPerformed
 
     private void BtnEnvoyerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEnvoyerActionPerformed
-        // TODO add your handling code here:
         String msg = this.TFReponse.getText();
         nbs.sendMessage(msg);
     }//GEN-LAST:event_BtnEnvoyerActionPerformed

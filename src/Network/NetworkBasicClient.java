@@ -1,4 +1,4 @@
-package network;
+package Network;
 
 public class NetworkBasicClient {
 
@@ -23,7 +23,7 @@ public class NetworkBasicClient {
     
     public void setEndSending() {
         this.thread.sendStringWithoutWaiting("**EOC**");
-        System.out.println("Client d: ");
+        System.out.println("Client déconnecté: ");
     }
     
     public String getAddress() {

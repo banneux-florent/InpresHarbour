@@ -1,4 +1,4 @@
-package network;
+package Network;
 
 import javax.swing.JCheckBox;
 
@@ -24,7 +24,7 @@ public class NetworkBasicServer {
     }
     
     public void sendMessage(String message) {
-        System.out.println("« " + message + " » envoyé au serveur (port " + port + ")");
+        System.out.println("? " + message + " ? envoy� au serveur (port " + port + ")");
         this.thread.sendMessage(message);
     }
     

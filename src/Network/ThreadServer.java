@@ -1,4 +1,4 @@
-package network;
+package Network;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -44,7 +44,7 @@ class ThreadServeur extends Thread {
         try {
             this.serverSocket = new ServerSocket(this.port);
         } catch (IOException e) {
-            System.err.println("Erreur de port d'Ã©coute ! ? [" + e + "]");
+            System.err.println("Erreur de port d'écoute ! ? [" + e + "]");
             System.exit(1);
         }
         System.out.println("Serveur en attente sur le port " + this.port);
@@ -59,7 +59,7 @@ class ThreadServeur extends Thread {
         try {
             this.bufferRead = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
             this.bufferWrite = new BufferedWriter(new OutputStreamWriter(this.clientSocket.getOutputStream()));
-            System.out.println("Flux crÃ©Ã©");
+            System.out.println("Flux créé");
             if (this.clientSocket == null || this.bufferWrite == null || this.bufferRead == null)
                 System.exit(1); 
         } catch (IOException e) {
@@ -68,17 +68,17 @@ class ThreadServeur extends Thread {
         String s = null;
         do {
             try {
-                System.out.println("attente d'une ligne ...");
+                System.out.println("Attente d'une ligne ...");
                 s = this.bufferRead.readLine();
-                System.out.println("ligne reÃ§ue = " + s);
+                System.out.println("Ligne reçue = " + s);
                 if (this.checkBoxCalled != null)
                     this.checkBoxCalled.setSelected(true); 
                 this.callsCounter++;
                 boolean b = putMessage(s);
                 if (b) {
-                    System.out.println("ligne enregistrÃ©e = " + s);
+                    System.out.println("Ligne enregistrée = " + s);
                 } else {
-                    System.out.println("Ã‰chec enregistrement de : " + s);
+                    System.out.println("Échec enregistrement de : " + s);
                 } 
             } catch (IOException ex) {
                 Logger.getLogger(NetworkBasicServer.class.getName()).log(Level.SEVERE, (String)null, ex);
@@ -125,7 +125,7 @@ class ThreadServeur extends Thread {
         } catch (IOException ex) {
             Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, ex);
         }
-        System.out.println("Serveur arrÃªtÃ© !");
+        System.out.println("Serveur arr?té !");
         this.inService = false;
         interrupt();
     }

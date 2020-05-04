@@ -7,6 +7,7 @@ package Capitainerie;
 
 import Classes.*;
 import Exceptions.CapitainerieException;
+import Network.NetworkBasicServer;
 import Utilisateurs.Connexion;
 import java.text.DateFormat;
 import java.time.LocalDate;
@@ -32,6 +33,8 @@ public class Capitainerie extends javax.swing.JFrame {
     private LinkedList<Bateau> bateauEntresDansLaRade = new LinkedList<Bateau>();
     private LinkedList<Ponton> pontons = new LinkedList<Ponton>();
     private LinkedList<Quai> quais = new LinkedList<Quai>();
+    private NetworkBasicServer networkBS;
+    private final int PORT = 50000;
 
     /**
      * Creates new form Capitainerie
@@ -484,6 +487,7 @@ public class Capitainerie extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnDemarrerServeurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDemarrerServeurActionPerformed
+        
     }//GEN-LAST:event_BtnDemarrerServeurActionPerformed
 
     private void BtnEnvoyerConfirmationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEnvoyerConfirmationActionPerformed
