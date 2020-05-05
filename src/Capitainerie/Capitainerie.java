@@ -9,6 +9,7 @@ import Classes.*;
 import Exceptions.CapitainerieException;
 import Network.NetworkBasicServer;
 import Utilisateurs.Connexion;
+import java.awt.Color;
 import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +42,13 @@ public class Capitainerie extends javax.swing.JFrame {
      */
     public Capitainerie() {
         initComponents();
+        
+        try {
+            this.networkBS = new NetworkBasicServer(PORT, this.LOnOff, this.BtnDemarrerServeur);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        
         Date now = new Date();
         setDateHeure(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.FRANCE).format(now));
 
@@ -64,7 +72,7 @@ public class Capitainerie extends javax.swing.JFrame {
                 equipageTemporaire.getMarins().add(tempMarin2);
 
                 BateauPlaisance tempBateauPlaisance = new BateauPlaisance("Bateau" + i, "Exeter", 200, 5, BateauPlaisance.TypePermis.PlaisanceExtentionHauturiere, "BE");
-                System.out.println(tempBateauPlaisance);
+                // System.out.println(tempBateauPlaisance);
                 tempBateauPlaisance.setEquipage(equipageTemporaire);
                 bateauAttenteEntrer.add(tempBateauPlaisance);
                 bateauEntresDansLaRade.add(tempBateauPlaisance);
@@ -72,7 +80,7 @@ public class Capitainerie extends javax.swing.JFrame {
                 pontons.get(0).addMTSE(tempBateauPlaisance);
 
                 BateauPeche tempBateauPeche = new BateauPeche("Bateaupeche" + i, "Liege", 100, 10, BateauPeche.TypeDePeche.Thonier, "FR");
-                System.out.println(tempBateauPeche);
+                // System.out.println(tempBateauPeche);
                 tempBateauPeche.setEquipage(equipageTemporaire);
                 bateauAttenteEntrer.add(tempBateauPeche);
                 bateauEntresDansLaRade.add(tempBateauPeche);
@@ -116,7 +124,7 @@ public class Capitainerie extends javax.swing.JFrame {
         LDateHeure = new javax.swing.JLabel();
         BtnDemarrerServeur = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        LOnOff = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         LBBateauAttenteEntrer = new javax.swing.JList<>();
@@ -176,9 +184,9 @@ public class Capitainerie extends javax.swing.JFrame {
 
         jLabel2.setText("État du serveur:");
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel3.setText("OFF");
+        LOnOff.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        LOnOff.setForeground(new java.awt.Color(255, 0, 0));
+        LOnOff.setText("OFF");
 
         jLabel4.setText("Bateau(x) en attente pour entrer :");
 
@@ -408,7 +416,7 @@ public class Capitainerie extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3))
+                                .addComponent(LOnOff))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -445,7 +453,7 @@ public class Capitainerie extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtnDemarrerServeur)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel3)
+                    .addComponent(LOnOff)
                     .addComponent(LDateHeure))
                 .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -487,13 +495,23 @@ public class Capitainerie extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnDemarrerServeurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDemarrerServeurActionPerformed
-        
+        if (this.networkBS.isDisconnected()) {
+            try {
+                this.networkBS.connect();
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        } else {
+            this.networkBS.disconnect();
+        }
     }//GEN-LAST:event_BtnDemarrerServeurActionPerformed
 
     private void BtnEnvoyerConfirmationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEnvoyerConfirmationActionPerformed
+
     }//GEN-LAST:event_BtnEnvoyerConfirmationActionPerformed
 
     private void BtnEnvoyerEmplacementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEnvoyerEmplacementActionPerformed
+
     }//GEN-LAST:event_BtnEnvoyerEmplacementActionPerformed
 
     private void MILoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MILoginActionPerformed
@@ -608,6 +626,7 @@ public class Capitainerie extends javax.swing.JFrame {
     private javax.swing.JList<String> LBBateauEntresDansLaRade;
     private javax.swing.JList<String> LBBateauxAmarres;
     private javax.swing.JLabel LDateHeure;
+    private javax.swing.JLabel LOnOff;
     private javax.swing.JCheckBoxMenuItem MIAffichageDateHeureCourante;
     private javax.swing.JMenuItem MIAide;
     private javax.swing.JMenuItem MIAuteurs;
@@ -626,7 +645,6 @@ public class Capitainerie extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

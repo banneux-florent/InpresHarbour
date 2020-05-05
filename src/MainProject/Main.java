@@ -6,6 +6,7 @@
  */
 package MainProject;
 
+import Phare.Phare;
 import Utilisateurs.Connexion;
 
 /**

@@ -1,5 +1,6 @@
 package Network;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -11,93 +12,158 @@ import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JCheckBox;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 
 class ThreadServeur extends Thread {
 
+    // Properties
+    
     private int port;
-    private JCheckBox checkBoxCalled;
-    private int callsCounter;
     private Socket clientSocket = null;
     private ServerSocket serverSocket;
     private BufferedReader bufferRead = null;
     private BufferedWriter bufferWrite = null;
-    private LinkedList messagesList;
+    private LinkedList messagesList = new LinkedList();
     private boolean inService = false;
+    private JLabel lOnOff = null;
+    private JButton BtnDemarrerServeur = null;
 
-    public ThreadServeur(int port, JCheckBox checkbox) {
-        this.port = port;
-        this.checkBoxCalled = checkbox;
-        this.callsCounter = 0;
-        this.messagesList = new LinkedList();
-        this.inService = true;
+    // Constructors
+    
+    public ThreadServeur(int port, JLabel lOnOff, JButton BtnDemarrerServeur) throws Exception {
+        this.setPort(port);
+        this.lOnOff = lOnOff;
+        this.BtnDemarrerServeur = BtnDemarrerServeur;
     }
-
-    public ThreadServeur(int port) {
-        this.port = port;
-        this.checkBoxCalled = null;
-        this.callsCounter = 0;
-        this.messagesList = new LinkedList();
-    }
+    
+    // Methods
 
     public void run() {
+        this.inService = true;
+        
+        // Server's socket creation
         try {
             this.serverSocket = new ServerSocket(this.port);
         } catch (IOException e) {
-            System.err.println("Erreur de port d'écoute ! ? [" + e + "]");
-            System.exit(1);
+            System.err.println("[ThreadServer | Error] Cloudn't create server socket. \"" + e + "\"");
+            this.close();
+            return;
         }
-        System.out.println("Serveur en attente sur le port " + this.port);
-        try {
-            this.clientSocket = this.serverSocket.accept();
-        } catch (SocketException e) {
-            System.err.println("Accept interrompu ! ? [" + e + "]");
-        } catch (IOException e) {
-            System.err.println("Erreur d'accept ! ? [" + e + "]");
-            System.exit(1);
+        if (this.serverSocket == null) {
+            System.err.println("[ThreadServer | Error] Server socket couln't be created.");
+            this.close();
+            return;
+        } else {
+            System.out.println("[ThreadServer | Info] Server launched on port " + this.port);
+            this.lOnOff.setText("ON");
+            this.lOnOff.setForeground(Color.GREEN);
+            this.BtnDemarrerServeur.setText("Arr?ter le serveur");
         }
-        try {
-            this.bufferRead = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
-            this.bufferWrite = new BufferedWriter(new OutputStreamWriter(this.clientSocket.getOutputStream()));
-            System.out.println("Flux créé");
-            if (this.clientSocket == null || this.bufferWrite == null || this.bufferRead == null)
-                System.exit(1); 
-        } catch (IOException e) {
-            System.err.println("Erreur ! Pas de connexion ? [" + e + "]");
-        }
-        String s = null;
-        do {
+        
+        while (this.inService) {
+            System.out.println("[ThreadServer | Info] Server waiting for client on port " + this.port);
+            
+            // Waiting for client to connect
             try {
-                System.out.println("Attente d'une ligne ...");
-                s = this.bufferRead.readLine();
-                System.out.println("Ligne reçue = " + s);
-                if (this.checkBoxCalled != null)
-                    this.checkBoxCalled.setSelected(true); 
-                this.callsCounter++;
-                boolean b = putMessage(s);
-                if (b) {
-                    System.out.println("Ligne enregistrée = " + s);
-                } else {
-                    System.out.println("Échec enregistrement de : " + s);
-                } 
-            } catch (IOException ex) {
-                Logger.getLogger(NetworkBasicServer.class.getName()).log(Level.SEVERE, (String)null, ex);
-            } 
-        } while (this.inService);
+                this.clientSocket = this.serverSocket.accept();
+            } catch (SocketException e) {
+                System.err.println("[ThreadServer | Error] Client socket acceptation interrupted.");
+                this.close();
+                return;
+            } catch (IOException e) {
+                System.err.println("[ThreadServer | Error] Client socket couln't be accepted.");
+                this.close();
+                return;
+            } catch (Exception e) {
+                System.err.println("[ThreadServer | Error] Error during client socket acceptation.");
+                this.close();
+                return;
+            }
+            if (this.clientSocket == null) {
+                System.err.println("[ThreadServer | Error] Client socket couln't be accepted.");
+                this.close();
+                return;
+            } else {
+                System.out.println("[ThreadServer | Info] The server accepted a connection.");
+            }
+
+            // Creating read/write buffers
+            try {
+                this.bufferRead = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
+                this.bufferWrite = new BufferedWriter(new OutputStreamWriter(this.clientSocket.getOutputStream()));
+            } catch (IOException e) {
+                System.err.println("[ThreadServer | Error] \"" + e + "\" (Connection missing ?)");
+                this.close();
+                return;
+            }
+            if (this.bufferWrite == null || this.bufferRead == null) {
+                System.err.println("[ThreadServer | Error] Read or write buffer couldn't be created.");
+                this.close();
+                return;
+            } else {
+                System.out.println("[ThreadServer | Info] Stream created.");
+            }
+
+            // Server running loop
+            String message = null;
+            while (this.inService) {
+                try {
+                    System.out.println("[ThreadServer | Info] Waiting for an input...");
+                    message = this.bufferRead.readLine();
+                    System.out.println("[ThreadServer | Info] [<<<] " + message);    
+                    if (message.equals("client_stop_confirmation")) { // Client want to stop
+                        this.sendMessage("client_stop_ok"); // Sending confirmation to client for stopping
+                        System.out.println("[ThreadServer | Info] Client want to stop.");
+                        break;
+                    } else if (message.equals("client_stop_noconfirmation")) { // Client want to stop without confirmation
+                        System.out.println("[ThreadServer | Info] Client is going to stop without confirmation.");
+                        break;
+                    } else {
+                        if (!addMessage(message)) {
+                            System.err.println("[ThreadServer | Error] Couldn't save the input.");
+                        }
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(NetworkBasicServer.class.getName()).log(Level.SEVERE, (String)null, ex);
+                }
+            }
+        }
+        System.out.println("[ThreadServer | Info] Server stopped.");
     }
 
-    public synchronized boolean putMessage(String s) {
-        return this.messagesList.add(s);
+    public void close() {
+        this.inService = false;
+        this.lOnOff.setText("OFF");
+        this.lOnOff.setForeground(Color.RED);
+        this.BtnDemarrerServeur.setText("Démarrer le serveur");
+        this.sendMessage("server_stopping");
+        try {
+            if (this.bufferRead != null)
+                this.bufferRead.close();
+            if (this.bufferWrite != null)
+                this.bufferWrite.close();
+            if (this.clientSocket != null)
+                this.clientSocket.close();
+            if (this.serverSocket != null)
+                this.serverSocket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, ex);
+        } catch (Exception e) {
+            System.err.println("[ThreadServer | Error] " + e);
+        }
+        System.out.println("[ThreadServer | Info] Stopping server...");
+    }
+
+    public synchronized boolean addMessage(String str) {
+        return this.messagesList.add(str);
     }
 
     public synchronized String getMessage() {
         if (!this.messagesList.isEmpty()) {
-            String s = (String) this.messagesList.getFirst();
-            this.messagesList.removeFirst();
-            this.callsCounter--;
-            if (this.checkBoxCalled != null && this.callsCounter == 0)
-                this.checkBoxCalled.setSelected(false); 
-            return s;
+            String str = (String) this.messagesList.getFirst();
+            this.messagesList.removeFirst();            
+            return str;
         }
         return "";
     }
@@ -106,35 +172,28 @@ class ThreadServeur extends Thread {
         return (String[])this.messagesList.toArray();
     }
 
-    public void sendMessage(String m) {
-        try {
-            this.bufferWrite.write(m);
-            this.bufferWrite.newLine();
-            this.bufferWrite.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, ex);
+    public void sendMessage(String message) {
+        if (this.bufferWrite != null) {
+            try {
+                this.bufferWrite.write(message);
+                this.bufferWrite.newLine();
+                this.bufferWrite.flush();
+                System.out.println("[ThreadServer | Info] [>>>] " + message);
+            } catch (IOException ex) {
+                Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, ex);
+            }
         }
     }
-
-    public void stopThread() {
-        try {
-            this.bufferRead.close();
-            this.bufferWrite.close();
-            this.clientSocket.close();
-            this.serverSocket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, ex);
-        }
-        System.out.println("Serveur arr?té !");
-        this.inService = false;
-        interrupt();
-    }
-
+    
+    // Getters and setters
+    
     public int getPort() {
         return this.port;
     }
 
-    public void setPort(int port) {
+    public void setPort(int port) throws Exception {
+        if (port < 0)
+            throw new Exception("[ThreadServer | Error] Port must be a positive integer.");
         this.port = port;
     }
 
@@ -152,6 +211,10 @@ class ThreadServeur extends Thread {
 
     public void setServerSocket(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
+    }
+    
+    public boolean getInService() {
+        return this.inService;
     }
 
 }

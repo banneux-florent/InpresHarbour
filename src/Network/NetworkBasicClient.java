@@ -1,44 +1,77 @@
 package Network;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
+
 public class NetworkBasicClient {
 
-    private String address;
-    private int port;
-    private ThreadClient thread;
+    // Properties
     
-    public NetworkBasicClient(String address, int port) {
-        setAddress(address);
-        setPort(port);
-        this.thread = new ThreadClient(address, port);
+    private String serverName;
+    private int port = -1;
+    private JLabel LOnOff = null;
+    private JButton BtnSeConnecterAuServeur = null;
+    private ThreadClient thread = null;
+    
+    // Constructors
+    
+    public NetworkBasicClient(String serverName, int port, JLabel LOnOff, JButton BtnSeConnecterAuServeur) throws Exception {
+        this.setServerName(serverName);
+        this.setPort(port);
+        this.LOnOff = LOnOff;
+        this.BtnSeConnecterAuServeur = BtnSeConnecterAuServeur;
+    }
+    
+    // Functions
+    
+    public void connect() throws Exception {
+        if (this.isDisconnected())
+            this.thread = new ThreadClient(this.serverName, this.port, this.LOnOff, this.BtnSeConnecterAuServeur);
         this.thread.start();
     }
     
-    public String sendString(String s) {
-        return this.thread.sendString(s);
+    public boolean isConnected() {
+        if (this.thread == null)
+            return false;
+        return this.thread.getInService();
     }
     
-    public void sendStringWithoutWaiting(String s) {
-        this.thread.sendStringWithoutWaiting(s);
+    public void disconnect() {
+        if (this.thread != null) {
+            this.thread.close(true);
+            this.thread = null;
+        }
     }
     
-    public void setEndSending() {
-        this.thread.sendStringWithoutWaiting("**EOC**");
-        System.out.println("Client déconnecté: ");
+    public boolean isDisconnected() {
+        if (this.thread == null)
+            return true;
+        return !this.thread.getInService();
     }
     
-    public String getAddress() {
-        return this.address;
+    public void sendString(String str) {
+        this.thread.sendMessage(str);
     }
     
-    public final void setAddress(String address) {
-        this.address = address;
+    // Getters and setters
+    
+    public String getServerName() {
+        return this.serverName;
+    }
+    
+    public final void setServerName(String serverName) throws Exception {
+        if (serverName.isEmpty())
+            throw new Exception("[NetworkBasicClient | Error] Server name can't be empty.");
+        this.serverName = serverName;
     }
     
     public int getPort() {
         return this.port;
     }
     
-    public final void setPort(int port) {
+    public final void setPort(int port) throws Exception {
+        if (port < 0)
+            throw new Exception("[NetworkBasicClient | Error] Port must be a positive integer.");
         this.port = port;
     }
 

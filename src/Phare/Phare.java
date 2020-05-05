@@ -5,17 +5,28 @@
  */
 package Phare;
 
+import Network.NetworkBasicClient;
+import java.awt.Color;
+
 /**
  *
  * @author flore
  */
 public class Phare extends javax.swing.JFrame {
 
+    private NetworkBasicClient networkBC = null;
+    private final int PORT = 50000;
+    
     /**
      * Creates new form Phare
      */
     public Phare() {
         initComponents();
+        try {
+            this.networkBC = new NetworkBasicClient("localhost", PORT, this.LOnOff, this.BtnSeConnecterAuServeur);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
@@ -30,9 +41,9 @@ public class Phare extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
-        BtnDemarrerServeur = new javax.swing.JButton();
+        BtnSeConnecterAuServeur = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        LOnOff = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList3 = new javax.swing.JList<>();
@@ -79,19 +90,19 @@ public class Phare extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        BtnDemarrerServeur.setText("Se connecter au serveur");
-        BtnDemarrerServeur.setActionCommand("Se connecter serveur");
-        BtnDemarrerServeur.addActionListener(new java.awt.event.ActionListener() {
+        BtnSeConnecterAuServeur.setText("Se connecter au serveur");
+        BtnSeConnecterAuServeur.setActionCommand("Se connecter serveur");
+        BtnSeConnecterAuServeur.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnDemarrerServeurActionPerformed(evt);
+                BtnSeConnecterAuServeurActionPerformed(evt);
             }
         });
 
         jLabel2.setText("État de la connexion:");
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel3.setText("OFF");
+        LOnOff.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        LOnOff.setForeground(new java.awt.Color(255, 0, 0));
+        LOnOff.setText("OFF");
 
         jLabel7.setText("Bateau(x) non-identifié(s) :");
 
@@ -130,11 +141,11 @@ public class Phare extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(BtnDemarrerServeur, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(BtnSeConnecterAuServeur, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3))
+                                .addComponent(LOnOff))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jButton1)
@@ -167,9 +178,9 @@ public class Phare extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BtnDemarrerServeur)
+                    .addComponent(BtnSeConnecterAuServeur)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel3))
+                    .addComponent(LOnOff))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel16)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -206,9 +217,17 @@ public class Phare extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void BtnDemarrerServeurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDemarrerServeurActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BtnDemarrerServeurActionPerformed
+    private void BtnSeConnecterAuServeurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeConnecterAuServeurActionPerformed
+        if (this.networkBC.isDisconnected()) {
+            try {
+                this.networkBC.connect();
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        } else {
+            this.networkBC.disconnect();
+        }
+    }//GEN-LAST:event_BtnSeConnecterAuServeurActionPerformed
 
     /**
      * @param args the command line arguments
@@ -246,7 +265,8 @@ public class Phare extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BtnDemarrerServeur;
+    private javax.swing.JButton BtnSeConnecterAuServeur;
+    private javax.swing.JLabel LOnOff;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -256,7 +276,6 @@ public class Phare extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JList<String> jList3;
