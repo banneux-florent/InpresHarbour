@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Capitainerie;
 
 import Classes.*;
@@ -14,7 +9,7 @@ import javax.swing.DefaultListModel;
 
 /**
  *
- * @author WADI
+ * @author Florent & Wadi
  */
 public class Personnel_RechercherUnMarin extends javax.swing.JFrame {
 

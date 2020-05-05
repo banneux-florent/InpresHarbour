@@ -3,6 +3,10 @@ package Network;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+/**
+ *
+ * @author Florent
+ */
 public class NetworkBasicClient {
 
     // Properties
@@ -49,8 +53,8 @@ public class NetworkBasicClient {
         return !this.thread.getInService();
     }
     
-    public void sendString(String str) {
-        this.thread.sendMessage(str);
+    public void sendMessage(String message) {
+        this.thread.sendMessage(message);
     }
     
     // Getters and setters

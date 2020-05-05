@@ -14,6 +14,13 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+// To get trace of exception error
+// Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, (String)null, exception);
+
+/**
+ *
+ * @author Florent
+ */
 class ThreadClient extends Thread {
     
     // Properties
@@ -25,22 +32,22 @@ class ThreadClient extends Thread {
     private BufferedWriter bufferWrite = null;
     private LinkedList messagesList = new LinkedList();
     private boolean inService = false;
-    private JLabel lOnOff = null;
+    private JLabel LOnOff = null;
     private JButton BtnSeConnecterAuServeur = null;
     
     // Constructors
     
-    public ThreadClient(String serverName, int port, JLabel lOnOff, JButton BtnSeConnecterAuServeur) throws Exception {
+    public ThreadClient(String serverName, int port, JLabel LOnOff, JButton BtnSeConnecterAuServeur) throws Exception {
         this.setServerName(serverName);
         this.setPort(port);
-        this.lOnOff = lOnOff;
+        this.LOnOff = LOnOff;
         this.BtnSeConnecterAuServeur = BtnSeConnecterAuServeur;
     }
     
     // Methods
     
     public void run() {
-        System.out.println("[ThreadClient | Info] Client connecting...");
+        System.out.println("[ThreadClient | Info] Connecting client...");
         this.inService = true;
         
         // Client's socket creation
@@ -48,21 +55,21 @@ class ThreadClient extends Thread {
             this.clientSocket = new Socket(this.serverName, this.port);
         } catch (UnknownHostException e) {
             System.err.println("[ThreadClient | Error] Host unknown.");
-            this.close(true);
+            if (this.inService) this.close(true);
             return;
         } catch (IOException e) {
-            System.err.println("[ThreadClient | Error] \"" + e + "\" (Connection missing ?)");
-            this.close(true);
+            System.err.println("[ThreadClient | Error] \"" + e + "\". Connection missing ?");
+            if (this.inService) this.close(true);
             return;
         }
         if (this.clientSocket == null) {
             System.err.println("[ThreadClient | Error] Client socket couln't be created.");
-            this.close(true);
+            if (this.inService) this.close(true);
             return;
         } else {
             System.out.println("[ThreadClient | Info] Client connected: " + this.clientSocket.getInetAddress().toString());
-            this.lOnOff.setText("ON");
-            this.lOnOff.setForeground(Color.GREEN);
+            this.LOnOff.setText("ON");
+            this.LOnOff.setForeground(Color.GREEN);
             this.BtnSeConnecterAuServeur.setText("Se déconnecter du serveur");
         }
         
@@ -71,13 +78,13 @@ class ThreadClient extends Thread {
             this.bufferRead = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
             this.bufferWrite = new BufferedWriter(new OutputStreamWriter(this.clientSocket.getOutputStream()));
         } catch (IOException e) {
-            System.err.println("[ThreadClient | Error] \"" + e + "\" (Connection missing ?)");
-            this.close(true);
+            System.err.println("[ThreadClient | Error] \"" + e + "\". Connection missing ?");
+            if (this.inService) this.close(true);
             return;
         }
         if (this.bufferRead == null || this.bufferWrite == null) {
             System.err.println("[ThreadClient | Error] Read or write buffer couldn't be created.");
-            this.close(true);
+            if (this.inService) this.close(true);
             return;
         } else {
             System.out.println("[ThreadClient | Info] Stream created.");
@@ -101,8 +108,8 @@ class ThreadClient extends Thread {
                         System.err.println("[ThreadClient | Error] Couldn't save the input.");
                     }
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(NetworkBasicClient.class.getName()).log(Level.SEVERE, (String)null, ex);
+            } catch (Exception e) {
+                System.err.println("[ThreadClient | Error] \"" + e + "\".");
             }
         } while (this.inService);
         System.out.println("[ThreadClient | Info] Client stopped.");
@@ -110,8 +117,8 @@ class ThreadClient extends Thread {
     
     public void close(boolean confirmation) {
         this.inService = false;
-        this.lOnOff.setText("OFF");
-        this.lOnOff.setForeground(Color.RED);
+        this.LOnOff.setText("OFF");
+        this.LOnOff.setForeground(Color.RED);
         this.BtnSeConnecterAuServeur.setText("Se connecter au serveur");
         try {
             if (confirmation)
@@ -124,12 +131,23 @@ class ThreadClient extends Thread {
                 this.bufferWrite.close();
             if (this.clientSocket != null)
                 this.clientSocket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(NetworkBasicClient.class.getName()).log(Level.SEVERE, (String)null, ex);
         } catch (Exception e) {
             System.err.println("[ThreadClient | Error] " + e);
         }
         System.out.println("[ThreadClient | Info] Stopping client...");
+    }
+    
+    public void sendMessage(String message) {
+        if (this.bufferWrite != null) {
+            try {
+                this.bufferWrite.write(message);
+                this.bufferWrite.newLine();
+                this.bufferWrite.flush();
+                System.out.println("[ThreadClient | Info] [>>>] " + message);
+            } catch (IOException ex) {
+                Logger.getLogger(NetworkBasicClient.class.getName()).log(Level.SEVERE, (String)null, ex);
+            }
+        }
     }
 
     public synchronized boolean addMessage(String str) {
@@ -147,19 +165,6 @@ class ThreadClient extends Thread {
 
     public synchronized String[] getAllMessages() {
         return (String[])this.messagesList.toArray();
-    }
-    
-    public void sendMessage(String message) {
-        if (this.bufferWrite != null) {
-            try {
-                this.bufferWrite.write(message);
-                this.bufferWrite.newLine();
-                this.bufferWrite.flush();
-                System.out.println("[ThreadClient | Info] [>>>] " + message);
-            } catch (IOException ex) {
-                Logger.getLogger(NetworkBasicClient.class.getName()).log(Level.SEVERE, (String)null, ex);
-            }
-        }
     }
     
     /*

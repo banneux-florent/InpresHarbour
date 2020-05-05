@@ -15,6 +15,13 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+// To get trace of exception error
+// Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, exception);
+
+/**
+ *
+ * @author Florent
+ */
 class ThreadServeur extends Thread {
 
     // Properties
@@ -26,38 +33,39 @@ class ThreadServeur extends Thread {
     private BufferedWriter bufferWrite = null;
     private LinkedList messagesList = new LinkedList();
     private boolean inService = false;
-    private JLabel lOnOff = null;
+    private JLabel LOnOff = null;
     private JButton BtnDemarrerServeur = null;
 
     // Constructors
     
-    public ThreadServeur(int port, JLabel lOnOff, JButton BtnDemarrerServeur) throws Exception {
+    public ThreadServeur(int port, JLabel LOnOff, JButton BtnDemarrerServeur) throws Exception {
         this.setPort(port);
-        this.lOnOff = lOnOff;
+        this.LOnOff = LOnOff;
         this.BtnDemarrerServeur = BtnDemarrerServeur;
     }
     
     // Methods
 
     public void run() {
+        System.out.println("[ThreadServer | Info] Connecting server...");
         this.inService = true;
         
         // Server's socket creation
         try {
             this.serverSocket = new ServerSocket(this.port);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("[ThreadServer | Error] Cloudn't create server socket. \"" + e + "\"");
-            this.close();
+            if (this.inService) this.close();
             return;
         }
         if (this.serverSocket == null) {
             System.err.println("[ThreadServer | Error] Server socket couln't be created.");
-            this.close();
+            if (this.inService) this.close();
             return;
         } else {
             System.out.println("[ThreadServer | Info] Server launched on port " + this.port);
-            this.lOnOff.setText("ON");
-            this.lOnOff.setForeground(Color.GREEN);
+            this.LOnOff.setText("ON");
+            this.LOnOff.setForeground(Color.GREEN);
             this.BtnDemarrerServeur.setText("Arr?ter le serveur");
         }
         
@@ -69,20 +77,20 @@ class ThreadServeur extends Thread {
                 this.clientSocket = this.serverSocket.accept();
             } catch (SocketException e) {
                 System.err.println("[ThreadServer | Error] Client socket acceptation interrupted.");
-                this.close();
+                if (this.inService) this.close();
                 return;
             } catch (IOException e) {
                 System.err.println("[ThreadServer | Error] Client socket couln't be accepted.");
-                this.close();
+                if (this.inService) this.close();
                 return;
             } catch (Exception e) {
-                System.err.println("[ThreadServer | Error] Error during client socket acceptation.");
-                this.close();
+                System.err.println("[ThreadServer | Error] Error during client socket acceptation. \"" + e + "\"");
+                if (this.inService) this.close();
                 return;
             }
             if (this.clientSocket == null) {
                 System.err.println("[ThreadServer | Error] Client socket couln't be accepted.");
-                this.close();
+                if (this.inService) this.close();
                 return;
             } else {
                 System.out.println("[ThreadServer | Info] The server accepted a connection.");
@@ -93,13 +101,13 @@ class ThreadServeur extends Thread {
                 this.bufferRead = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
                 this.bufferWrite = new BufferedWriter(new OutputStreamWriter(this.clientSocket.getOutputStream()));
             } catch (IOException e) {
-                System.err.println("[ThreadServer | Error] \"" + e + "\" (Connection missing ?)");
-                this.close();
+                System.err.println("[ThreadServer | Error] \"" + e + "\". Connection missing ?");
+                if (this.inService) this.close();
                 return;
             }
             if (this.bufferWrite == null || this.bufferRead == null) {
                 System.err.println("[ThreadServer | Error] Read or write buffer couldn't be created.");
-                this.close();
+                if (this.inService) this.close();
                 return;
             } else {
                 System.out.println("[ThreadServer | Info] Stream created.");
@@ -113,8 +121,8 @@ class ThreadServeur extends Thread {
                     message = this.bufferRead.readLine();
                     System.out.println("[ThreadServer | Info] [<<<] " + message);    
                     if (message.equals("client_stop_confirmation")) { // Client want to stop
+                        System.out.println("[ThreadServer | Info] Client want to stop. Sending confirmation.");
                         this.sendMessage("client_stop_ok"); // Sending confirmation to client for stopping
-                        System.out.println("[ThreadServer | Info] Client want to stop.");
                         break;
                     } else if (message.equals("client_stop_noconfirmation")) { // Client want to stop without confirmation
                         System.out.println("[ThreadServer | Info] Client is going to stop without confirmation.");
@@ -124,8 +132,8 @@ class ThreadServeur extends Thread {
                             System.err.println("[ThreadServer | Error] Couldn't save the input.");
                         }
                     }
-                } catch (IOException ex) {
-                    Logger.getLogger(NetworkBasicServer.class.getName()).log(Level.SEVERE, (String)null, ex);
+                } catch (Exception e) {
+                    System.err.println("[ThreadClient | Error] \"" + e + "\".");
                 }
             }
         }
@@ -134,8 +142,8 @@ class ThreadServeur extends Thread {
 
     public void close() {
         this.inService = false;
-        this.lOnOff.setText("OFF");
-        this.lOnOff.setForeground(Color.RED);
+        this.LOnOff.setText("OFF");
+        this.LOnOff.setForeground(Color.RED);
         this.BtnDemarrerServeur.setText("Démarrer le serveur");
         this.sendMessage("server_stopping");
         try {
@@ -147,12 +155,23 @@ class ThreadServeur extends Thread {
                 this.clientSocket.close();
             if (this.serverSocket != null)
                 this.serverSocket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, ex);
         } catch (Exception e) {
             System.err.println("[ThreadServer | Error] " + e);
         }
         System.out.println("[ThreadServer | Info] Stopping server...");
+    }
+
+    public void sendMessage(String message) {
+        if (this.bufferWrite != null) {
+            try {
+                this.bufferWrite.write(message);
+                this.bufferWrite.newLine();
+                this.bufferWrite.flush();
+                System.out.println("[ThreadServer | Info] [>>>] " + message);
+            } catch (IOException ex) {
+                Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, ex);
+            }
+        }
     }
 
     public synchronized boolean addMessage(String str) {
@@ -170,19 +189,6 @@ class ThreadServeur extends Thread {
 
     public synchronized String[] getAllMessages() {
         return (String[])this.messagesList.toArray();
-    }
-
-    public void sendMessage(String message) {
-        if (this.bufferWrite != null) {
-            try {
-                this.bufferWrite.write(message);
-                this.bufferWrite.newLine();
-                this.bufferWrite.flush();
-                System.out.println("[ThreadServer | Info] [>>>] " + message);
-            } catch (IOException ex) {
-                Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, ex);
-            }
-        }
     }
     
     // Getters and setters

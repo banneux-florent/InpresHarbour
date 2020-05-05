@@ -3,6 +3,10 @@ package Network;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+/**
+ *
+ * @author Florent
+ */
 public class NetworkBasicServer {
 
     // Properties
@@ -52,7 +56,6 @@ public class NetworkBasicServer {
     }
     
     public void sendMessage(String message) {
-        System.out.println("[NetworkBasicServer | Info] ? " + message + " ? sent to server on port " + port + ".");
         this.thread.sendMessage(message);
     }
     
