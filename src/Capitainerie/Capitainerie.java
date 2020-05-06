@@ -2,9 +2,12 @@ package Capitainerie;
 
 import Classes.*;
 import Exceptions.CapitainerieException;
+import Network.IInOutEvent;
 import Network.NetworkBasicServer;
 import Utilisateurs.Connexion;
 import java.awt.Color;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +23,7 @@ import javax.swing.JList;
  *
  * @author Florent & Wadi
  */
-public class Capitainerie extends javax.swing.JFrame {
+public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
 
     private boolean isLoggedIn = false;
 
@@ -39,7 +42,7 @@ public class Capitainerie extends javax.swing.JFrame {
         initComponents();
         
         try {
-            this.networkBS = new NetworkBasicServer(PORT, this.LOnOff, this.BtnDemarrerServeur);
+            this.networkBS = new NetworkBasicServer(PORT, this, this.LOnOff, this.BtnDemarrerServeur);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -202,7 +205,7 @@ public class Capitainerie extends javax.swing.JFrame {
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel6.setText("Emplacement :");
+        jLabel6.setText("Emplacement:");
 
         BtnEnvoyerEmplacement.setText("Envoyer");
         BtnEnvoyerEmplacement.addActionListener(new java.awt.event.ActionListener() {
@@ -425,7 +428,7 @@ public class Capitainerie extends javax.swing.JFrame {
                                 .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(BtnChoisirEmplacement))
                             .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addGap(130, 130, 130)
@@ -705,5 +708,27 @@ public class Capitainerie extends javax.swing.JFrame {
 
         }
         return " ";
+    }
+    
+    // IInOutEvent
+    
+    @Override
+    public String getMessage() {
+        return this.networkBS.getMessage();
+    }
+    
+    @Override
+    public String readMessage() {
+        return this.networkBS.readMessage();
+    }
+    
+    @Override
+    public void sendMessage(String message) {
+        this.networkBS.sendMessage(message);
+    }
+    
+    @Override
+    public void messageReceived() {
+        System.out.println("[Capitainerie | Info] [<<<] " + this.getMessage());
     }
 }

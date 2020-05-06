@@ -1,13 +1,13 @@
 package Phare;
 
+import Network.IInOutEvent;
 import Network.NetworkBasicClient;
-import java.awt.Color;
 
 /**
  *
  * @author Florent & Wadi
  */
-public class Phare extends javax.swing.JFrame {
+public class Phare extends javax.swing.JFrame implements IInOutEvent {
 
     private NetworkBasicClient networkBC = null;
     private final int PORT = 50000;
@@ -18,7 +18,7 @@ public class Phare extends javax.swing.JFrame {
     public Phare() {
         initComponents();
         try {
-            this.networkBC = new NetworkBasicClient("localhost", PORT, this.LOnOff, this.BtnSeConnecterAuServeur);
+            this.networkBC = new NetworkBasicClient("localhost", PORT, this, this.LOnOff, this.BtnSeConnecterAuServeur);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -60,6 +60,7 @@ public class Phare extends javax.swing.JFrame {
         jLabel10.setText("jLabel10");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Le phare");
 
         jPanel1.setBackground(new java.awt.Color(220, 220, 220));
 
@@ -104,6 +105,11 @@ public class Phare extends javax.swing.JFrame {
         jScrollPane3.setViewportView(jList3);
 
         jButton1.setText("Identifier le bateau");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jScrollPane4.setViewportView(jList4);
 
@@ -136,7 +142,7 @@ public class Phare extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(BtnSeConnecterAuServeur, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(BtnSeConnecterAuServeur, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -224,6 +230,12 @@ public class Phare extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_BtnSeConnecterAuServeurActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (this.networkBC.isConnected()) {
+            this.networkBC.sendMessage("Test !");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -284,4 +296,27 @@ public class Phare extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
+
+    // IInOutEvent
+    
+    @Override
+    public String getMessage() {
+        return this.networkBC.getMessage();
+    }
+    
+    @Override
+    public String readMessage() {
+        return this.networkBC.readMessage();
+    }
+    
+    @Override
+    public void sendMessage(String message) {
+        this.networkBC.sendMessage(message);
+    }
+    
+    @Override
+    public void messageReceived() {
+        System.out.println("[Phare | Info] [<<<] " + this.getMessage());
+    }
+
 }

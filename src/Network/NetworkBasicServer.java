@@ -7,28 +7,32 @@ import javax.swing.JLabel;
  *
  * @author Florent
  */
-public class NetworkBasicServer {
+public class NetworkBasicServer implements IInOutEvent {
 
     // Properties
     
+    private IInOutEvent inOutEvent;
+    
     private int port = -1;
-    private JLabel LOnOff = null;
-    private JButton BtnDemarrerServeur = null;
-    private ThreadServeur thread = null;
+    public JLabel LOnOff = null;
+    public JButton BtnDemarrerServeur = null;
+    private ThreadServer thread = null;
     
     // Constructors
     
-    public NetworkBasicServer(int port, JLabel LOnOff, JButton BtnDemarrerServeur) throws Exception {
+    public NetworkBasicServer(int port, IInOutEvent inOutEvent, JLabel LOnOff, JButton BtnDemarrerServeur) throws Exception {
         this.setPort(port);
         this.LOnOff = LOnOff;
         this.BtnDemarrerServeur = BtnDemarrerServeur;
+        this.inOutEvent = inOutEvent;
     }
     
     // Methods
     
     public void connect() throws Exception {
-        if (this.isDisconnected())
-            this.thread = new ThreadServeur(port, this.LOnOff, this.BtnDemarrerServeur);
+        if (this.isDisconnected()) {
+            this.thread = new ThreadServer(this);
+        }
         this.thread.start();
     }
     
@@ -51,12 +55,26 @@ public class NetworkBasicServer {
         return !this.thread.getInService();
     }
     
+    @Override
     public String getMessage() {
         return this.thread.getMessage();
     }
     
+    @Override
+    public String readMessage() {
+        return this.thread.readMessage();
+    }
+    
+    @Override
     public void sendMessage(String message) {
         this.thread.sendMessage(message);
+    }
+    
+    @Override
+    public void messageReceived() {
+        // Invoked when a message is received in thread
+        System.out.println("[NetworkBasicServer | Info] [<<<] " + this.readMessage());
+        this.inOutEvent.messageReceived();
     }
     
     // Getters and setters
@@ -71,4 +89,8 @@ public class NetworkBasicServer {
         this.port = port;
     }
 
+    public ThreadServer getThread() {
+        return thread;
+    }
+    
 }

@@ -12,8 +12,6 @@ import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 
 // To get trace of exception error
 // Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, exception);
@@ -22,26 +20,23 @@ import javax.swing.JLabel;
  *
  * @author Florent
  */
-class ThreadServeur extends Thread {
+public class ThreadServer extends Thread {
 
     // Properties
     
-    private int port;
+    private NetworkBasicServer server = null;
+    
     private Socket clientSocket = null;
     private ServerSocket serverSocket;
     private BufferedReader bufferRead = null;
     private BufferedWriter bufferWrite = null;
     private LinkedList messagesList = new LinkedList();
     private boolean inService = false;
-    private JLabel LOnOff = null;
-    private JButton BtnDemarrerServeur = null;
 
     // Constructors
     
-    public ThreadServeur(int port, JLabel LOnOff, JButton BtnDemarrerServeur) throws Exception {
-        this.setPort(port);
-        this.LOnOff = LOnOff;
-        this.BtnDemarrerServeur = BtnDemarrerServeur;
+    public ThreadServer(NetworkBasicServer server) throws Exception {
+        this.server = server;
     }
     
     // Methods
@@ -52,7 +47,7 @@ class ThreadServeur extends Thread {
         
         // Server's socket creation
         try {
-            this.serverSocket = new ServerSocket(this.port);
+            this.serverSocket = new ServerSocket(this.server.getPort());
         } catch (Exception e) {
             System.err.println("[ThreadServer | Error] Cloudn't create server socket. \"" + e + "\"");
             if (this.inService) this.close();
@@ -63,14 +58,14 @@ class ThreadServeur extends Thread {
             if (this.inService) this.close();
             return;
         } else {
-            System.out.println("[ThreadServer | Info] Server launched on port " + this.port);
-            this.LOnOff.setText("ON");
-            this.LOnOff.setForeground(Color.GREEN);
-            this.BtnDemarrerServeur.setText("Arr?ter le serveur");
+            System.out.println("[ThreadServer | Info] Server launched on port " + this.server.getPort());
+            this.server.LOnOff.setText("ON");
+            this.server.LOnOff.setForeground(Color.GREEN);
+            this.server.BtnDemarrerServeur.setText("Arr?ter le serveur");
         }
         
         while (this.inService) {
-            System.out.println("[ThreadServer | Info] Server waiting for client on port " + this.port);
+            System.out.println("[ThreadServer | Info] Server waiting for client on port " + this.server.getPort());
             
             // Waiting for client to connect
             try {
@@ -142,9 +137,9 @@ class ThreadServeur extends Thread {
 
     public void close() {
         this.inService = false;
-        this.LOnOff.setText("OFF");
-        this.LOnOff.setForeground(Color.RED);
-        this.BtnDemarrerServeur.setText("Démarrer le serveur");
+        this.server.LOnOff.setText("OFF");
+        this.server.LOnOff.setForeground(Color.RED);
+        this.server.BtnDemarrerServeur.setText("Démarrer le serveur");
         this.sendMessage("server_stopping");
         try {
             if (this.bufferRead != null)
@@ -169,13 +164,17 @@ class ThreadServeur extends Thread {
                 this.bufferWrite.flush();
                 System.out.println("[ThreadServer | Info] [>>>] " + message);
             } catch (IOException ex) {
-                Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, ex);
+                Logger.getLogger(ThreadServer.class.getName()).log(Level.SEVERE, (String)null, ex);
             }
         }
     }
 
     public synchronized boolean addMessage(String str) {
-        return this.messagesList.add(str);
+        if (this.messagesList.add(str)) {
+            this.server.messageReceived();
+            return true;
+        }
+        return false;
     }
 
     public synchronized String getMessage() {
@@ -187,21 +186,15 @@ class ThreadServeur extends Thread {
         return "";
     }
 
+    public synchronized String readMessage() {
+        return (!this.messagesList.isEmpty()) ? (String) this.messagesList.getFirst() : "";
+    }
+
     public synchronized String[] getAllMessages() {
         return (String[])this.messagesList.toArray();
     }
     
     // Getters and setters
-    
-    public int getPort() {
-        return this.port;
-    }
-
-    public void setPort(int port) throws Exception {
-        if (port < 0)
-            throw new Exception("[ThreadServer | Error] Port must be a positive integer.");
-        this.port = port;
-    }
 
     public Socket getClientSocket() {
         return this.clientSocket;
@@ -222,5 +215,15 @@ class ThreadServeur extends Thread {
     public boolean getInService() {
         return this.inService;
     }
+
+    public BufferedReader getBufferRead() {
+        return bufferRead;
+    }
+
+    public BufferedWriter getBufferWrite() {
+        return bufferWrite;
+    }
+    
+    
 
 }

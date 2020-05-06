@@ -215,7 +215,7 @@
                           </Group>
                           <Component id="jLabel9" alignment="0" min="-2" pref="309" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="67" max="32767" attributes="0"/>
+                      <EmptySpace pref="70" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="130" pref="130" max="-2" attributes="0"/>
@@ -388,7 +388,7 @@
           <Font name="Tahoma" size="11" style="1"/>
         </Property>
         <Property name="horizontalAlignment" type="int" value="2"/>
-        <Property name="text" type="java.lang.String" value="Emplacement :"/>
+        <Property name="text" type="java.lang.String" value="Emplacement:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="BtnEnvoyerEmplacement">

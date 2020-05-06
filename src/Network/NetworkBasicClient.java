@@ -7,21 +7,24 @@ import javax.swing.JLabel;
  *
  * @author Florent
  */
-public class NetworkBasicClient {
+public class NetworkBasicClient implements IInOutEvent {
 
     // Properties
     
+    private IInOutEvent inOutEvent;
+    
     private String serverName;
     private int port = -1;
-    private JLabel LOnOff = null;
-    private JButton BtnSeConnecterAuServeur = null;
+    public JLabel LOnOff = null;
+    public JButton BtnSeConnecterAuServeur = null;
     private ThreadClient thread = null;
     
     // Constructors
     
-    public NetworkBasicClient(String serverName, int port, JLabel LOnOff, JButton BtnSeConnecterAuServeur) throws Exception {
+    public NetworkBasicClient(String serverName, int port, IInOutEvent inOutEvent, JLabel LOnOff, JButton BtnSeConnecterAuServeur) throws Exception {
         this.setServerName(serverName);
         this.setPort(port);
+        this.inOutEvent = inOutEvent;
         this.LOnOff = LOnOff;
         this.BtnSeConnecterAuServeur = BtnSeConnecterAuServeur;
     }
@@ -30,7 +33,7 @@ public class NetworkBasicClient {
     
     public void connect() throws Exception {
         if (this.isDisconnected())
-            this.thread = new ThreadClient(this.serverName, this.port, this.LOnOff, this.BtnSeConnecterAuServeur);
+            this.thread = new ThreadClient(this);
         this.thread.start();
     }
     
@@ -53,8 +56,25 @@ public class NetworkBasicClient {
         return !this.thread.getInService();
     }
     
+    @Override
+    public String getMessage() {
+        return this.thread.getMessage();
+    }
+    
+    @Override
+    public String readMessage() {
+        return this.thread.readMessage();
+    }
+    
+    @Override
     public void sendMessage(String message) {
         this.thread.sendMessage(message);
+    }
+    
+    @Override
+    public void messageReceived() {
+        // Invoked when a message is received in thread
+        System.out.println("[NetworkBasicClient | Info] [<<<] " + this.readMessage());
     }
     
     // Getters and setters
@@ -77,6 +97,10 @@ public class NetworkBasicClient {
         if (port < 0)
             throw new Exception("[NetworkBasicClient | Error] Port must be a positive integer.");
         this.port = port;
+    }
+    
+    public ThreadClient getThread() {
+        return this.thread;
     }
 
 }

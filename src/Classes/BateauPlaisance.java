@@ -1,12 +1,13 @@
 package Classes;
 
 import Exceptions.ShipWithoutIdentificationException;
+import java.io.Serializable;
 
 /**
  *
  * @author Florent & Wadi
  */
-public class BateauPlaisance extends Bateau {
+public class BateauPlaisance extends Bateau implements Serializable {
 
     public static enum TypePermis {
         PlaisanceOptionCotiere,
@@ -15,7 +16,7 @@ public class BateauPlaisance extends Bateau {
 
     private TypePermis typePermis;
 
-    public BateauPlaisance( String nom, String portAttache, int tonnage, float longeur,TypePermis typePermis,String pavillon) throws ShipWithoutIdentificationException{
+    public BateauPlaisance( String nom, String portAttache, int tonnage, float longeur,TypePermis typePermis, String pavillon) throws ShipWithoutIdentificationException{
         super(nom, portAttache, tonnage, longeur,pavillon);
         this.typePermis = typePermis;
     }

@@ -1,12 +1,13 @@
 package Classes;
 
 import Exceptions.ShipWithoutIdentificationException;
+import java.io.Serializable;
 
 /**
  *
  * @author Florent & Wadi
  */
-public class Bateau extends MoyenDeTransportSurEau implements AUnIdentifiant {
+public class Bateau extends MoyenDeTransportSurEau implements AUnIdentifiant, Serializable {
 
     //rajouter les nationalite..faire fonction qui va lire toutes les nationalites au demarrage et rajouter uk voir liste de florent
     private String nom;

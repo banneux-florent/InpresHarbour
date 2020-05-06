@@ -21,27 +21,22 @@ import javax.swing.JLabel;
  *
  * @author Florent
  */
-class ThreadClient extends Thread {
+public class ThreadClient extends Thread {
     
     // Properties
 
-    private String serverName;
-    private int port = -1;
+    private NetworkBasicClient client;
+    
     private Socket clientSocket = null;
     private BufferedReader bufferRead = null;
     private BufferedWriter bufferWrite = null;
     private LinkedList messagesList = new LinkedList();
     private boolean inService = false;
-    private JLabel LOnOff = null;
-    private JButton BtnSeConnecterAuServeur = null;
     
     // Constructors
     
-    public ThreadClient(String serverName, int port, JLabel LOnOff, JButton BtnSeConnecterAuServeur) throws Exception {
-        this.setServerName(serverName);
-        this.setPort(port);
-        this.LOnOff = LOnOff;
-        this.BtnSeConnecterAuServeur = BtnSeConnecterAuServeur;
+    public ThreadClient(NetworkBasicClient client) throws Exception {
+        this.client = client;
     }
     
     // Methods
@@ -52,7 +47,7 @@ class ThreadClient extends Thread {
         
         // Client's socket creation
         try {
-            this.clientSocket = new Socket(this.serverName, this.port);
+            this.clientSocket = new Socket(this.client.getServerName(), this.client.getPort());
         } catch (UnknownHostException e) {
             System.err.println("[ThreadClient | Error] Host unknown.");
             if (this.inService) this.close(true);
@@ -68,9 +63,9 @@ class ThreadClient extends Thread {
             return;
         } else {
             System.out.println("[ThreadClient | Info] Client connected: " + this.clientSocket.getInetAddress().toString());
-            this.LOnOff.setText("ON");
-            this.LOnOff.setForeground(Color.GREEN);
-            this.BtnSeConnecterAuServeur.setText("Se déconnecter du serveur");
+            this.client.LOnOff.setText("ON");
+            this.client.LOnOff.setForeground(Color.GREEN);
+            this.client.BtnSeConnecterAuServeur.setText("Se déconnecter du serveur");
         }
         
         // Creating read/write buffers
@@ -96,15 +91,13 @@ class ThreadClient extends Thread {
             try {
                 System.out.println("[ThreadClient | Info] Waiting for an input...");
                 message = this.bufferRead.readLine();
-                System.out.println("[ThreadClient | Info] [<<<] " + message); 
+                System.out.println("[ThreadClient | Info] [<<<] " + message);
                 if (message.equals("server_stopping")) { // Server is closing, client needs to stop
                     this.close(false);
                 } else if (message.equals("client_stop_ok")) { // Server confirmation for stopping client
                     System.out.println("[ThreadClient | Info] Server sended confirmation to stop.");
                 } else {
-                    if (addMessage(message)) {
-                        System.out.println("[ThreadClient | Info] Input saved.");
-                    } else {
+                    if (!addMessage(message)) {
                         System.err.println("[ThreadClient | Error] Couldn't save the input.");
                     }
                 }
@@ -117,9 +110,9 @@ class ThreadClient extends Thread {
     
     public void close(boolean confirmation) {
         this.inService = false;
-        this.LOnOff.setText("OFF");
-        this.LOnOff.setForeground(Color.RED);
-        this.BtnSeConnecterAuServeur.setText("Se connecter au serveur");
+        this.client.LOnOff.setText("OFF");
+        this.client.LOnOff.setForeground(Color.RED);
+        this.client.BtnSeConnecterAuServeur.setText("Se connecter au serveur");
         try {
             if (confirmation)
                 this.sendMessage("client_stop_confirmation"); // Send closing alert to the server with the need of a confirmation (to unlock bufferRead.readLine())
@@ -151,7 +144,11 @@ class ThreadClient extends Thread {
     }
 
     public synchronized boolean addMessage(String str) {
-        return this.messagesList.add(str);
+        if (this.messagesList.add(str)) {
+            this.client.messageReceived();
+            return true;
+        }
+        return false;
     }
 
     public synchronized String getMessage() {
@@ -161,6 +158,10 @@ class ThreadClient extends Thread {
             return str;
         }
         return "";
+    }
+
+    public synchronized String readMessage() {
+        return (!this.messagesList.isEmpty()) ? (String) this.messagesList.getFirst() : "";
     }
 
     public synchronized String[] getAllMessages() {
@@ -181,28 +182,20 @@ class ThreadClient extends Thread {
     
     // Getters and setters
     
-    public String getServerName() {
-        return this.serverName;
-    }
-    
-    public final void setServerName(String serverName) throws Exception {
-        if (serverName.isEmpty())
-            throw new Exception("[ThreadClient | Error] Server name can't be empty.");
-        this.serverName = serverName;
-    }
-    
-    public int getPort() {
-        return this.port;
-    }
-    
-    public final void setPort(int port) throws Exception {
-        if (port < 0)
-            throw new Exception("[ThreadClient | Error] Port must be a positive integer.");
-        this.port = port;
-    }
-    
     public boolean getInService() {
         return this.inService;
     }
 
+    public BufferedReader getBufferRead() {
+        return bufferRead;
+    }
+
+    public BufferedWriter getBufferWrite() {
+        return bufferWrite;
+    }
+
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
+    
 }
