@@ -1,7 +1,20 @@
 package Phare;
 
+import Classes.Bateau;
+import Classes.BateauPeche;
+import Classes.BateauPlaisance;
+import Classes.Equipage;
+import Classes.Marin;
+import Network.Frame;
 import Network.IInOutEvent;
 import Network.NetworkBasicClient;
+import Network.XMLFormatter;
+import java.io.StringWriter;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.LinkedList;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 
 /**
  *
@@ -12,13 +25,45 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
     private NetworkBasicClient networkBC = null;
     private final int PORT = 50000;
     
+    private LinkedList<Bateau> bateauxNonIdentifies = new LinkedList<Bateau>();
+    private LinkedList<Bateau> bateauxIdentifies = new LinkedList<Bateau>();
+    private LinkedList<Bateau> reponsesCapitainerie = new LinkedList<Bateau>();
+    private LinkedList<Bateau> confirmationsCapitainerie = new LinkedList<Bateau>();
+    
     /**
      * Creates new form Phare
      */
     public Phare() {
         initComponents();
+        
         try {
             this.networkBC = new NetworkBasicClient("localhost", PORT, this, this.LOnOff, this.BtnSeConnecterAuServeur);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        
+        this.LBBateauxNonIdentifies.setModel(new DefaultListModel());
+        this.LBBateauxIdentifies.setModel(new DefaultListModel());
+        this.LBReponsesCapitainerie.setModel(new DefaultListModel());
+        this.LBConfirmationsCapitainerie.setModel(new DefaultListModel());
+        
+        try {
+            Marin capitaine = new Marin("Mokh", "Wad", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Capitaine);
+            Marin second = new Marin("Flo", "Bann", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Second);
+            Marin bosco = new Marin("Air", "29", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Bosco);
+            Marin mecanicien = new Marin("Oussama", "Achour", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.MaitreMecanicien);
+            
+            Equipage equipage = new Equipage(capitaine, second);
+            equipage.getMarins().add(bosco);
+            equipage.getMarins().add(mecanicien);
+            
+            BateauPlaisance tempBateauPlaisance = new BateauPlaisance("Bateau", "Exeter", 200, 5, BateauPlaisance.TypePermis.PlaisanceExtentionHauturiere, "BE");
+            BateauPeche tempBateauPeche = new BateauPeche("BateauPeche", "Liege", 100, 10, BateauPeche.TypeDePeche.Thonier, "FR");
+            
+            ((DefaultListModel)this.LBBateauxNonIdentifies.getModel()).addElement(tempBateauPlaisance);
+            bateauxNonIdentifies.add(tempBateauPlaisance);
+            ((DefaultListModel)this.LBBateauxNonIdentifies.getModel()).addElement(tempBateauPeche);
+            bateauxNonIdentifies.add(tempBateauPeche);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -34,27 +79,27 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
     private void initComponents() {
 
         jLabel10 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
+        PanelHeader = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         BtnSeConnecterAuServeur = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         LOnOff = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList3 = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
+        LBBateauxNonIdentifies = new javax.swing.JList<>();
+        BtnIdentifierLeBateau = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jList4 = new javax.swing.JList<>();
+        LBBateauxIdentifies = new javax.swing.JList<>();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        BtnDemanderAutorisationEntrer = new javax.swing.JButton();
         jLabel17 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jList5 = new javax.swing.JList<>();
-        jButton3 = new javax.swing.JButton();
+        LBReponsesCapitainerie = new javax.swing.JList<>();
+        BtnBateauEntrerDansLaRade = new javax.swing.JButton();
         jLabel18 = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        jList6 = new javax.swing.JList<>();
+        LBConfirmationsCapitainerie = new javax.swing.JList<>();
         jSeparator1 = new javax.swing.JSeparator();
 
         jLabel10.setText("jLabel10");
@@ -62,25 +107,25 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Le phare");
 
-        jPanel1.setBackground(new java.awt.Color(220, 220, 220));
+        PanelHeader.setBackground(new java.awt.Color(220, 220, 220));
 
         jLabel9.setBackground(new java.awt.Color(220, 220, 220));
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel9.setText("Le phare");
         jLabel9.setAutoscrolls(true);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout PanelHeaderLayout = new javax.swing.GroupLayout(PanelHeader);
+        PanelHeader.setLayout(PanelHeaderLayout);
+        PanelHeaderLayout.setHorizontalGroup(
+            PanelHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelHeaderLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        PanelHeaderLayout.setVerticalGroup(
+            PanelHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelHeaderLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
                 .addContainerGap())
@@ -102,39 +147,49 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
 
         jLabel7.setText("Bateau(x) non-identifié(s) :");
 
-        jScrollPane3.setViewportView(jList3);
+        jScrollPane3.setViewportView(LBBateauxNonIdentifies);
 
-        jButton1.setText("Identifier le bateau");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        BtnIdentifierLeBateau.setText("Identifier le bateau");
+        BtnIdentifierLeBateau.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                BtnIdentifierLeBateauActionPerformed(evt);
             }
         });
 
-        jScrollPane4.setViewportView(jList4);
+        jScrollPane4.setViewportView(LBBateauxIdentifies);
 
         jLabel15.setText("Bateau(x) identifié(s) :");
 
         jLabel16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel16.setText("Bateau(x) en attente de rentrer dans la rade");
 
-        jButton2.setText("Demander autorisation d'entrer");
+        BtnDemanderAutorisationEntrer.setText("Demander autorisation d'entrer");
+        BtnDemanderAutorisationEntrer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnDemanderAutorisationEntrerActionPerformed(evt);
+            }
+        });
 
         jLabel17.setText("Réponse(s) de la capitainerie :");
 
-        jScrollPane5.setViewportView(jList5);
+        jScrollPane5.setViewportView(LBReponsesCapitainerie);
 
-        jButton3.setText("Bateau entré dans la rade");
+        BtnBateauEntrerDansLaRade.setText("Bateau entré dans la rade");
+        BtnBateauEntrerDansLaRade.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnBateauEntrerDansLaRadeActionPerformed(evt);
+            }
+        });
 
         jLabel18.setText("Confirmation(s) de la capitainerie :");
 
-        jScrollPane6.setViewportView(jList6);
+        jScrollPane6.setViewportView(LBConfirmationsCapitainerie);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(PanelHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -149,7 +204,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
                                 .addComponent(LOnOff))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton1)
+                                    .addComponent(BtnIdentifierLeBateau)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)))
@@ -158,12 +213,12 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                    .addComponent(BtnDemanderAutorisationEntrer, javax.swing.GroupLayout.Alignment.TRAILING)))
                             .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton3)
+                            .addComponent(BtnBateauEntrerDansLaRade)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -176,7 +231,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(PanelHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtnSeConnecterAuServeur)
@@ -196,8 +251,8 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(BtnIdentifierLeBateau)
+                    .addComponent(BtnDemanderAutorisationEntrer))
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -211,7 +266,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
+                .addComponent(BtnBateauEntrerDansLaRade)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -230,11 +285,43 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
         }
     }//GEN-LAST:event_BtnSeConnecterAuServeurActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (this.networkBC.isConnected()) {
-            this.networkBC.sendMessage("Test !");
+    private void BtnIdentifierLeBateauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnIdentifierLeBateauActionPerformed
+        int selectedIndex = this.LBBateauxNonIdentifies.getSelectedIndex();
+        if (selectedIndex != -1) {
+            Bateau bateau = this.bateauxNonIdentifies.get(selectedIndex);
+            
+            // Identification du bateau
+            // Ouvrir fen?tre pour remplir nom/longueur
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_BtnIdentifierLeBateauActionPerformed
+
+    private void BtnDemanderAutorisationEntrerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDemanderAutorisationEntrerActionPerformed
+        int selectedIndex = this.LBBateauxNonIdentifies.getSelectedIndex();
+        if (selectedIndex != -1) {
+            Bateau bateau = this.bateauxNonIdentifies.get(selectedIndex);
+            String xmlBateau = XMLFormatter.toXML(bateau);
+            
+            // Envois bateau dans capitainerie
+            Frame.send(this.networkBC, new String[] {"capitainerie_ajouter_bateau_liste", "bateau_attente_entree", xmlBateau});
+            
+            // Retrait bateau phare
+            // Flemme
+        }
+    }//GEN-LAST:event_BtnDemanderAutorisationEntrerActionPerformed
+
+    private void BtnBateauEntrerDansLaRadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBateauEntrerDansLaRadeActionPerformed
+        int selectedIndex = this.LBBateauxIdentifies.getSelectedIndex();
+        if (selectedIndex != -1) {
+            Bateau bateau = this.bateauxIdentifies.get(selectedIndex);
+            String xmlBateau = XMLFormatter.toXML(bateau);
+            
+            // Envois bateau dans capitainerie
+            Frame.send(this.networkBC, new String[] {"capitainerie_ajouter_bateau_liste", "bateau_entre_rade", xmlBateau});
+            
+            // Retrait bateau phare
+            // Flemme
+        }
+    }//GEN-LAST:event_BtnBateauEntrerDansLaRadeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -272,11 +359,16 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtnBateauEntrerDansLaRade;
+    private javax.swing.JButton BtnDemanderAutorisationEntrer;
+    private javax.swing.JButton BtnIdentifierLeBateau;
     private javax.swing.JButton BtnSeConnecterAuServeur;
+    private javax.swing.JList<String> LBBateauxIdentifies;
+    private javax.swing.JList<String> LBBateauxNonIdentifies;
+    private javax.swing.JList<String> LBConfirmationsCapitainerie;
+    private javax.swing.JList<String> LBReponsesCapitainerie;
     private javax.swing.JLabel LOnOff;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JPanel PanelHeader;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
@@ -285,11 +377,6 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JList<String> jList3;
-    private javax.swing.JList<String> jList4;
-    private javax.swing.JList<String> jList5;
-    private javax.swing.JList<String> jList6;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;

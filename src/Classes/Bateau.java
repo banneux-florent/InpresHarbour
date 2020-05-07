@@ -28,6 +28,8 @@ public class Bateau extends MoyenDeTransportSurEau implements AUnIdentifiant, Se
             this.pavillon=pavillon;
         }
     }
+    
+    public Bateau() {}
 
     @Override
     public String getIdentifiant() {

@@ -2,8 +2,10 @@ package Capitainerie;
 
 import Classes.*;
 import Exceptions.CapitainerieException;
+import Network.Frame;
 import Network.IInOutEvent;
 import Network.NetworkBasicServer;
+import Network.XMLFormatter;
 import Utilisateurs.Connexion;
 import java.awt.Color;
 import java.io.ObjectInputStream;
@@ -27,13 +29,14 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
 
     private boolean isLoggedIn = false;
 
+    private NetworkBasicServer networkBS;
+    private final int PORT = 50000;
+    
     private LinkedList<Bateau> bateauAttenteEntrer = new LinkedList<Bateau>();
     private LinkedList<Bateau> bateauEnCoursDAmarrage = new LinkedList<Bateau>();
     private LinkedList<Bateau> bateauEntresDansLaRade = new LinkedList<Bateau>();
     private LinkedList<Ponton> pontons = new LinkedList<Ponton>();
     private LinkedList<Quai> quais = new LinkedList<Quai>();
-    private NetworkBasicServer networkBS;
-    private final int PORT = 50000;
 
     /**
      * Creates new form Capitainerie
@@ -52,62 +55,11 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
 
         pontons.add(new Ponton("1", 12, 15));
         quais.add(new Quai("1", 12, 15));
-
-        DefaultListModel listModelBateauAttenteEntrer = new DefaultListModel();
-        DefaultListModel listModelBateauEnCoursDAmarrage = new DefaultListModel();
-        DefaultListModel listModelBateauEntresDansLaRade = new DefaultListModel();
-        DefaultListModel listModelBateauxAmarres = new DefaultListModel();
-
-        for (int i = 0; i < 10; i++) {
-            try {
-                Marin capitaine = new Marin("Mokh", "Wad", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Capitaine);
-                Marin second = new Marin("Flo", "Bann", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Second);
-                Marin tempMarin = new Marin("Air", "29", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Bosco);
-                Marin tempMarin2 = new Marin("Oussama", "Achour", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.MaitreMecanicien);
-
-                Equipage equipageTemporaire = new Equipage(capitaine, second);
-                equipageTemporaire.getMarins().add(tempMarin);
-                equipageTemporaire.getMarins().add(tempMarin2);
-
-                BateauPlaisance tempBateauPlaisance = new BateauPlaisance("Bateau" + i, "Exeter", 200, 5, BateauPlaisance.TypePermis.PlaisanceExtentionHauturiere, "BE");
-                // System.out.println(tempBateauPlaisance);
-                tempBateauPlaisance.setEquipage(equipageTemporaire);
-                bateauAttenteEntrer.add(tempBateauPlaisance);
-                bateauEntresDansLaRade.add(tempBateauPlaisance);
-                bateauEnCoursDAmarrage.add(tempBateauPlaisance);
-                pontons.get(0).addMTSE(tempBateauPlaisance);
-
-                BateauPeche tempBateauPeche = new BateauPeche("Bateaupeche" + i, "Liege", 100, 10, BateauPeche.TypeDePeche.Thonier, "FR");
-                // System.out.println(tempBateauPeche);
-                tempBateauPeche.setEquipage(equipageTemporaire);
-                bateauAttenteEntrer.add(tempBateauPeche);
-                bateauEntresDansLaRade.add(tempBateauPeche);
-                bateauEnCoursDAmarrage.add(tempBateauPeche);
-                quais.get(0).addMTSE(tempBateauPeche);
-
-                listModelBateauAttenteEntrer.addElement(bateauAttenteEntrer.get(i));
-                listModelBateauEntresDansLaRade.addElement(bateauEntresDansLaRade.get(i));
-                listModelBateauEnCoursDAmarrage.addElement(bateauEnCoursDAmarrage.get(i));
-
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-
-        for (int i = 0; i < pontons.size(); i++) {
-            for (int j = 0; j < pontons.get(i).getListe(1).length; j++) {
-                listModelBateauxAmarres.addElement(pontons.get(i).getListe(1)[j]);
-            }
-            for (int j = 0; j < pontons.get(i).getListe(2).length; j++) {
-                //System.out.println(pontons.get(i).getListe(2)[j]);
-                listModelBateauxAmarres.addElement(pontons.get(i).getListe(2)[j]);
-            }
-        }
-
-        this.LBBateauAttenteEntrer.setModel(listModelBateauAttenteEntrer);
-        this.LBBateauEnCoursDAmarrage.setModel(listModelBateauEnCoursDAmarrage);
-        this.LBBateauEntresDansLaRade.setModel(listModelBateauEntresDansLaRade);
-        this.LBBateauxAmarres.setModel(listModelBateauxAmarres);
+        
+        this.LBBateauAttenteEntrer.setModel(new DefaultListModel());
+        this.LBBateauEnCoursDAmarrage.setModel(new DefaultListModel());
+        this.LBBateauEntresDansLaRade.setModel(new DefaultListModel());
+        this.LBBateauxAmarres.setModel(new DefaultListModel());
     }
 
     /**
@@ -143,9 +95,9 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         BtnEnvoyerConfirmation = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
+        PanelHeader = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        MenuPrincipal = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         MILogin = new javax.swing.JMenuItem();
         MILogout = new javax.swing.JMenuItem();
@@ -239,25 +191,25 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel11.setText("Capitainerie");
 
-        jPanel1.setBackground(new java.awt.Color(220, 220, 220));
+        PanelHeader.setBackground(new java.awt.Color(220, 220, 220));
 
         jLabel12.setBackground(new java.awt.Color(220, 220, 220));
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel12.setText("La capitainerie");
         jLabel12.setAutoscrolls(true);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout PanelHeaderLayout = new javax.swing.GroupLayout(PanelHeader);
+        PanelHeader.setLayout(PanelHeaderLayout);
+        PanelHeaderLayout.setHorizontalGroup(
+            PanelHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelHeaderLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        PanelHeaderLayout.setVerticalGroup(
+            PanelHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelHeaderLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
                 .addContainerGap())
@@ -289,7 +241,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         });
         jMenu1.add(MINouveau);
 
-        jMenuBar1.add(jMenu1);
+        MenuPrincipal.add(jMenu1);
 
         jMenu2.setText("Amarrages");
 
@@ -309,7 +261,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         });
         jMenu2.add(MIPeche);
 
-        jMenuBar1.add(jMenu2);
+        MenuPrincipal.add(jMenu2);
 
         jMenu3.setText("Bateaux");
 
@@ -329,7 +281,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         });
         jMenu3.add(MIRechercherUnBateau);
 
-        jMenuBar1.add(jMenu3);
+        MenuPrincipal.add(jMenu3);
 
         jMenu4.setText("Personnel");
 
@@ -349,7 +301,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         });
         jMenu4.add(MIRechercheUnMarin);
 
-        jMenuBar1.add(jMenu4);
+        MenuPrincipal.add(jMenu4);
 
         jMenu6.setText("Param?tres");
 
@@ -373,7 +325,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         });
         jMenu6.add(MIAffichageDateHeureCourante);
 
-        jMenuBar1.add(jMenu6);
+        MenuPrincipal.add(jMenu6);
 
         jMenu5.setText("? propos");
 
@@ -393,9 +345,9 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         });
         jMenu5.add(MIAide);
 
-        jMenuBar1.add(jMenu5);
+        MenuPrincipal.add(jMenu5);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(MenuPrincipal);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -441,12 +393,12 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
                                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(PanelHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(PanelHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtnDemarrerServeur)
@@ -639,6 +591,8 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
     private javax.swing.JMenuItem MIPlaisance;
     private javax.swing.JMenuItem MIRechercheUnMarin;
     private javax.swing.JMenuItem MIRechercherUnBateau;
+    private javax.swing.JMenuBar MenuPrincipal;
+    private javax.swing.JPanel PanelHeader;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -655,8 +609,6 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -685,27 +637,18 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         if (mtse instanceof BateauPlaisance) {
             for (int i = 0; i < pontons.size(); i++) {
                 for (int j = 0; j < pontons.get(i).getListe(1).length; j++) {
-                    if (pontons.get(i).getListe(1)[j] == mtse) {
-                        return "P" + i + "1*" + j;
-                    }
+                    if (pontons.get(i).getListe(1)[j] == mtse) return "P" + i + "1*" + j;
                 }
                 for (int j = 0; j < pontons.get(i).getListe(2).length; j++) {
-                    if (pontons.get(i).getListe(2)[j] == mtse) {
-                        return "P" + i + "2*" + j;
-                    }
+                    if (pontons.get(i).getListe(2)[j] == mtse) return "P" + i + "2*" + j;
                 }
             }
         } else {
-
             for (int i = 0; i < quais.size(); i++) {
                 for (int j = 0; j < quais.get(i).getListeBateauxAmarres().length; j++) {
-                    if (quais.get(i).getListeBateauxAmarres()[j] == mtse) {
-                        return "Q" + "1*" + j;
-                    }
+                    if (quais.get(i).getListeBateauxAmarres()[j] == mtse) return "Q" + "1*" + j;
                 }
-
             }
-
         }
         return " ";
     }
@@ -729,6 +672,26 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
     
     @Override
     public void messageReceived() {
-        System.out.println("[Capitainerie | Info] [<<<] " + this.getMessage());
+        System.out.println("[Capitainerie | Info] [<<<] " + this.readMessage());
+        Frame frame = (Frame)XMLFormatter.fromXML(this.getMessage());
+        
+        String action = frame.getAction();
+        if (action.equals("capitainerie_ajouter_bateau_liste")) {
+            String list = frame.getArg(1);
+            if (list.equals("bateau_attente_entree")) {
+                String objectXml = XMLFormatter.decode(frame.getArg(2));
+                Object object = XMLFormatter.fromXML(objectXml);
+                if (object instanceof Bateau) {
+                    ((DefaultListModel)this.LBBateauAttenteEntrer.getModel()).addElement((Bateau)object);
+                    this.bateauAttenteEntrer.add((Bateau)object);
+                } else {
+                    System.err.println("[Capitainerie | Error] Couldn't cast object received as \"Bateau\"");
+                }
+            } else if (list.equals("bateau_entre_rande")) {
+                // To do
+            }
+        } else if (action.equals("capitainerie_supprimer_bateau_liste")) {
+            
+        }
     }
 }

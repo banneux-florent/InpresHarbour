@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Florent
  */
-public class ThreadServer extends Thread {
+public class ThreadServer extends Thread implements NetworkThread {
 
     // Properties
     
@@ -30,12 +30,12 @@ public class ThreadServer extends Thread {
     private ServerSocket serverSocket;
     private BufferedReader bufferRead = null;
     private BufferedWriter bufferWrite = null;
-    private LinkedList messagesList = new LinkedList();
+    private LinkedList<String> messagesList = new LinkedList<String>();
     private boolean inService = false;
 
     // Constructors
     
-    public ThreadServer(NetworkBasicServer server) throws Exception {
+    public ThreadServer(NetworkBasicServer server) {
         this.server = server;
     }
     
@@ -134,7 +134,10 @@ public class ThreadServer extends Thread {
         }
         System.out.println("[ThreadServer | Info] Server stopped.");
     }
+    
+    // NetworkThread
 
+    @Override
     public void close() {
         this.inService = false;
         this.server.LOnOff.setText("OFF");
@@ -156,6 +159,7 @@ public class ThreadServer extends Thread {
         System.out.println("[ThreadServer | Info] Stopping server...");
     }
 
+    @Override
     public void sendMessage(String message) {
         if (this.bufferWrite != null) {
             try {
@@ -169,7 +173,9 @@ public class ThreadServer extends Thread {
         }
     }
 
+    @Override
     public synchronized boolean addMessage(String str) {
+        System.out.println(str);
         if (this.messagesList.add(str)) {
             this.server.messageReceived();
             return true;
@@ -177,6 +183,7 @@ public class ThreadServer extends Thread {
         return false;
     }
 
+    @Override
     public synchronized String getMessage() {
         if (!this.messagesList.isEmpty()) {
             String str = (String) this.messagesList.getFirst();
@@ -186,12 +193,19 @@ public class ThreadServer extends Thread {
         return "";
     }
 
+    @Override
     public synchronized String readMessage() {
         return (!this.messagesList.isEmpty()) ? (String) this.messagesList.getFirst() : "";
     }
 
+    @Override
     public synchronized String[] getAllMessages() {
         return (String[])this.messagesList.toArray();
+    }
+    
+    @Override
+    public boolean getInService() {
+        return this.inService;
     }
     
     // Getters and setters
@@ -211,10 +225,6 @@ public class ThreadServer extends Thread {
     public void setServerSocket(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
     }
-    
-    public boolean getInService() {
-        return this.inService;
-    }
 
     public BufferedReader getBufferRead() {
         return bufferRead;
@@ -223,7 +233,5 @@ public class ThreadServer extends Thread {
     public BufferedWriter getBufferWrite() {
         return bufferWrite;
     }
-    
-    
 
 }

@@ -1,11 +1,16 @@
 package Classes;
 
 import Exceptions.ShipWithoutIdentificationException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Florent & Wadi
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class BateauPeche extends Bateau {
 
     public static enum TypeDePeche {
@@ -20,6 +25,8 @@ public class BateauPeche extends Bateau {
         super(nom, portAttache, tonnage, longeur,pavillon);
         this.typeDePeche = typeDePeche;
     }
+    
+    public BateauPeche() {}
 
     /**
      * @return the typeDePeche

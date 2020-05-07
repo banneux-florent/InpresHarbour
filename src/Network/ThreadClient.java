@@ -21,7 +21,7 @@ import javax.swing.JLabel;
  *
  * @author Florent
  */
-public class ThreadClient extends Thread {
+public class ThreadClient extends Thread implements NetworkThread {
     
     // Properties
 
@@ -30,12 +30,14 @@ public class ThreadClient extends Thread {
     private Socket clientSocket = null;
     private BufferedReader bufferRead = null;
     private BufferedWriter bufferWrite = null;
-    private LinkedList messagesList = new LinkedList();
+    private LinkedList<String> messagesList = new LinkedList<String>();
     private boolean inService = false;
+    
+    private boolean closeConfirmation = true;
     
     // Constructors
     
-    public ThreadClient(NetworkBasicClient client) throws Exception {
+    public ThreadClient(NetworkBasicClient client) {
         this.client = client;
     }
     
@@ -50,16 +52,16 @@ public class ThreadClient extends Thread {
             this.clientSocket = new Socket(this.client.getServerName(), this.client.getPort());
         } catch (UnknownHostException e) {
             System.err.println("[ThreadClient | Error] Host unknown.");
-            if (this.inService) this.close(true);
+            if (this.inService) this.close();
             return;
         } catch (IOException e) {
             System.err.println("[ThreadClient | Error] \"" + e + "\". Connection missing ?");
-            if (this.inService) this.close(true);
+            if (this.inService) this.close();
             return;
         }
         if (this.clientSocket == null) {
             System.err.println("[ThreadClient | Error] Client socket couln't be created.");
-            if (this.inService) this.close(true);
+            if (this.inService) this.close();
             return;
         } else {
             System.out.println("[ThreadClient | Info] Client connected: " + this.clientSocket.getInetAddress().toString());
@@ -74,12 +76,12 @@ public class ThreadClient extends Thread {
             this.bufferWrite = new BufferedWriter(new OutputStreamWriter(this.clientSocket.getOutputStream()));
         } catch (IOException e) {
             System.err.println("[ThreadClient | Error] \"" + e + "\". Connection missing ?");
-            if (this.inService) this.close(true);
+            if (this.inService) this.close();
             return;
         }
         if (this.bufferRead == null || this.bufferWrite == null) {
             System.err.println("[ThreadClient | Error] Read or write buffer couldn't be created.");
-            if (this.inService) this.close(true);
+            if (this.inService) this.close();
             return;
         } else {
             System.out.println("[ThreadClient | Info] Stream created.");
@@ -93,7 +95,7 @@ public class ThreadClient extends Thread {
                 message = this.bufferRead.readLine();
                 System.out.println("[ThreadClient | Info] [<<<] " + message);
                 if (message.equals("server_stopping")) { // Server is closing, client needs to stop
-                    this.close(false);
+                    this.closeConfirmation = false;
                 } else if (message.equals("client_stop_ok")) { // Server confirmation for stopping client
                     System.out.println("[ThreadClient | Info] Server sended confirmation to stop.");
                 } else {
@@ -108,13 +110,14 @@ public class ThreadClient extends Thread {
         System.out.println("[ThreadClient | Info] Client stopped.");
     }
     
-    public void close(boolean confirmation) {
+    @Override
+    public void close() {
         this.inService = false;
         this.client.LOnOff.setText("OFF");
         this.client.LOnOff.setForeground(Color.RED);
         this.client.BtnSeConnecterAuServeur.setText("Se connecter au serveur");
         try {
-            if (confirmation)
+            if (this.closeConfirmation)
                 this.sendMessage("client_stop_confirmation"); // Send closing alert to the server with the need of a confirmation (to unlock bufferRead.readLine())
             else
                 this.sendMessage("client_stop_noconfirmation"); // Send closing alert to the server without needing confirmation
@@ -130,6 +133,7 @@ public class ThreadClient extends Thread {
         System.out.println("[ThreadClient | Info] Stopping client...");
     }
     
+    @Override
     public void sendMessage(String message) {
         if (this.bufferWrite != null) {
             try {
@@ -143,6 +147,7 @@ public class ThreadClient extends Thread {
         }
     }
 
+    @Override
     public synchronized boolean addMessage(String str) {
         if (this.messagesList.add(str)) {
             this.client.messageReceived();
@@ -151,6 +156,7 @@ public class ThreadClient extends Thread {
         return false;
     }
 
+    @Override
     public synchronized String getMessage() {
         if (!this.messagesList.isEmpty()) {
             String str = (String) this.messagesList.getFirst();
@@ -160,12 +166,19 @@ public class ThreadClient extends Thread {
         return "";
     }
 
+    @Override
     public synchronized String readMessage() {
         return (!this.messagesList.isEmpty()) ? (String) this.messagesList.getFirst() : "";
     }
 
+    @Override
     public synchronized String[] getAllMessages() {
         return (String[])this.messagesList.toArray();
+    }
+    
+    @Override
+    public boolean getInService() {
+        return this.inService;
     }
     
     /*
@@ -181,10 +194,6 @@ public class ThreadClient extends Thread {
     */
     
     // Getters and setters
-    
-    public boolean getInService() {
-        return this.inService;
-    }
 
     public BufferedReader getBufferRead() {
         return bufferRead;
