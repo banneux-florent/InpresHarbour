@@ -22,12 +22,8 @@ public class Bateaux_ListComplete extends javax.swing.JFrame {
     public Bateaux_ListComplete(LinkedList<Ponton> pontons, LinkedList<Quai> quais) {
         initComponents();
 
-        DefaultTableModel tableModelBateauPlaisance = new DefaultTableModel();
         String[] columnNames = {"Nom", "Pavillon", "Emplacement"};
 
-        for (String columnName : columnNames) {
-            tableModelBateauPlaisance.addColumn(columnName);
-        }
         BateauPeche tempBateauPeche;
 
         DefaultTableModel tableModelBateauPeche = new DefaultTableModel();
@@ -41,11 +37,43 @@ public class Bateaux_ListComplete extends javax.swing.JFrame {
                 tempBateauPeche = (BateauPeche) quais.get(i).getListeBateauxAmarres()[j];
                 if (tempBateauPeche != null) {
                     tableModelBateauPeche.addRow(new Object[]{tempBateauPeche.getNom(), tempBateauPeche.getPavillon(), "Q" + i + "*" + j});
+                } else {
+                    tableModelBateauPeche.addRow(new Object[]{"Aucun bateau", "", "Q" + i + "*" + j});
+
                 }
             }
         }
 
         TableBateauxPeche.setModel(tableModelBateauPeche);
+
+        DefaultTableModel tableModelBateauPlaisance = new DefaultTableModel();
+        for (String columnName : columnNames) {
+            tableModelBateauPlaisance.addColumn(columnName);
+        }
+        BateauPlaisance tempBateauPlaisance;
+        for (int i = 0; i < pontons.size(); i++) {
+            for (int j = 0; j < pontons.get(i).getListe(1).length; j++) {
+                tempBateauPlaisance = (BateauPlaisance) pontons.get(i).getListe(1)[j];
+                if (tempBateauPlaisance != null) {
+                    tableModelBateauPlaisance.addRow(new Object[]{tempBateauPlaisance.getNom(), tempBateauPlaisance.getPavillon(), "P" + i + "1*" + j});
+                } else {
+                    tableModelBateauPlaisance.addRow(new Object[]{"Aucun Bateau", "", "P" + i + "1*" + j});
+                }
+            }
+            for (int j = 0; j < pontons.get(i).getListe(2).length; j++) {
+                tempBateauPlaisance = (BateauPlaisance) pontons.get(i).getListe(2)[j];
+                if (tempBateauPlaisance != null) {
+                    tableModelBateauPlaisance.addRow(new Object[]{tempBateauPlaisance.getNom(), tempBateauPlaisance.getPavillon(), "P" + i + "2*" + j});
+                } else {
+                    tableModelBateauPlaisance.addRow(new Object[]{"Aucun Bateau", " ", "P" + i + "2*" + j});
+                }
+            }
+        }
+
+        this.TableBateauxPlaisance.setModel(tableModelBateauPlaisance);
+        this.TableBateauxPlaisance.getColumnModel().getColumn(0).setPreferredWidth(30);
+        this.TableBateauxPlaisance.getColumnModel().getColumn(1).setPreferredWidth(30);
+
     }
 
     /**
