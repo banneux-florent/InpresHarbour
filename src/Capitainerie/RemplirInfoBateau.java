@@ -11,7 +11,6 @@ import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 
-
 /**
  *
  * @author Florent & Wadi
@@ -19,20 +18,22 @@ import javax.swing.DefaultListModel;
 public class RemplirInfoBateau extends javax.swing.JDialog {
 
     private Bateau bateauARemplir;
-    
+    private Capitainerie capitainerie;
+
     /**
      * Creates new form BateauEntrant
-     */    
-    public RemplirInfoBateau(java.awt.Frame parent, boolean modal, Bateau bateau, String emplacement) {
+     */
+    public RemplirInfoBateau(Capitainerie parent, boolean modal, Bateau bateau, String emplacement) {
         super(parent, modal);
         initComponents();
+        this.capitainerie = parent;
         this.bateauARemplir = bateau;
         this.LNomDuBateau.setText(bateau.getNom());
         this.LEmplacement.setText(emplacement);
         this.LPavillon.setText(bateau.getPavillon());
         this.TFPortDAttache.setText(bateau.getPortAttache());
-        this.STonnage.setValue((Integer)bateau.getTonnage());
-        
+        this.STonnage.setValue((Integer) bateau.getTonnage());
+
         DefaultListModel listModelEquipage = new DefaultListModel();
         listModelEquipage.addElement(bateau.getEquipage().getCapitaine());
         listModelEquipage.addElement(bateau.getEquipage().getSecond());
@@ -41,7 +42,6 @@ public class RemplirInfoBateau extends javax.swing.JDialog {
         }
         this.LBEquipage.setModel(listModelEquipage);
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -299,22 +299,31 @@ public class RemplirInfoBateau extends javax.swing.JDialog {
 
     private void BtnValiderInformationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnValiderInformationsActionPerformed
         String portAttache = this.TFPortDAttache.getText();
-        int tonnage = (Integer)this.STonnage.getValue();
-        
+        boolean valide = true;
+        int tonnage = (Integer) this.STonnage.getValue();
+
         if (portAttache.length() > 0) {
             if (portAttache.length() <= 255) {
                 this.bateauARemplir.setPortAttache(portAttache);
             } else {
+                valide = false;
                 new CapitainerieException("Erreur", "Le nom du port d'attache doit être inférieur à 255 caractères.");
             }
         } else {
+            valide = false;
             new CapitainerieException("Erreur", "Le nom du port d'attache est requis.");
         }
         if (tonnage > 0) {
             this.bateauARemplir.setTonnage(tonnage);
         } else {
+            valide = false;
             new CapitainerieException("Erreur", "Le tonnage du bateau doit être strictement positif.");
         }
+        if (valide) {
+            this.capitainerie.ajouterBateauListeBateauAmmare(bateauARemplir);
+            this.dispose();
+        }
+
     }//GEN-LAST:event_BtnValiderInformationsActionPerformed
 
     private void BtnSupprimerLeMarinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSupprimerLeMarinActionPerformed
@@ -323,7 +332,7 @@ public class RemplirInfoBateau extends javax.swing.JDialog {
             if (selectedIndex <= 1) {
                 new CapitainerieException("Erreur", "Vous ne pouvez pas supprimer le capitaine ou le second.");
             } else {
-                ((DefaultListModel)this.LBEquipage.getModel()).remove(selectedIndex);
+                ((DefaultListModel) this.LBEquipage.getModel()).remove(selectedIndex);
                 this.bateauARemplir.getEquipage().getMarins().remove(selectedIndex - 2);
             }
         }
@@ -332,7 +341,7 @@ public class RemplirInfoBateau extends javax.swing.JDialog {
     private void BtnAjouterLeMarinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAjouterLeMarinActionPerformed
         String nom = this.TFNom.getText();
         String prenom = this.TFPrenom.getText();
-        
+
         if (nom.isEmpty() || prenom.isEmpty()) {
             new CapitainerieException("Erreur", "Veillez compléter le nom et le prénom.");
         } else {
@@ -344,7 +353,7 @@ public class RemplirInfoBateau extends javax.swing.JDialog {
                 LocalDate dateDeNaissance = LocalDate.of(ddn_annee, ddn_mois, ddn_jour);
                 Marin marin = new Marin(nom, prenom, dateDeNaissance, Marin.Fonction.valueOf(this.CBFonction.getItemAt(this.CBFonction.getSelectedIndex())));
                 this.bateauARemplir.getEquipage().getMarins().add(marin);
-                ((DefaultListModel)this.LBEquipage.getModel()).addElement(marin);
+                ((DefaultListModel) this.LBEquipage.getModel()).addElement(marin);
             } catch (DateTimeException e) {
                 new CapitainerieException("Erreur", "La date est invalide.");
             } catch (SailorWithoutIdentificationException e) {
@@ -359,7 +368,7 @@ public class RemplirInfoBateau extends javax.swing.JDialog {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

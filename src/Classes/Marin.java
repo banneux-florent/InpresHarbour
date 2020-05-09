@@ -3,11 +3,16 @@ package Classes;
 import java.time.LocalDate;
 import Exceptions.SailorWithoutIdentificationException;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Florent & Wadi
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class Marin extends Humain implements AUnIdentifiant {
     
     public static enum Fonction {
@@ -54,6 +59,12 @@ public class Marin extends Humain implements AUnIdentifiant {
         super(marin.getNom(), marin.getPrenom(), marin.getDateNaissance());
         this.fonction = marin.getFonction();
     }
+
+    public Marin() {
+    }
+
+    
+    
 
     @Override
     public String getIdentifiant() {

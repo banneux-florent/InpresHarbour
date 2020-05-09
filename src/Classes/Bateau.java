@@ -25,11 +25,12 @@ public class Bateau extends MoyenDeTransportSurEau implements AUnIdentifiant, Se
             this.portAttache = portAttache;
             this.tonnage = tonnage;
             this.longeur = longeur;
-            this.pavillon=pavillon;
+            this.pavillon = pavillon;
         }
     }
-    
-    public Bateau() {}
+
+    public Bateau() {
+    }
 
     @Override
     public String getIdentifiant() {
@@ -128,6 +129,12 @@ public class Bateau extends MoyenDeTransportSurEau implements AUnIdentifiant, Se
      */
     public void setPavillon(String pavillon) {
         this.pavillon = pavillon;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        final Bateau other = (Bateau) obj;
+        return this.nom.equals(other.nom);
     }
 
 }

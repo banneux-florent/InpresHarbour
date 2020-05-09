@@ -24,49 +24,63 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
 
     private NetworkBasicClient networkBC = null;
     private final int PORT = 50000;
-    
+
     private LinkedList<Bateau> bateauxNonIdentifies = new LinkedList<Bateau>();
     private LinkedList<Bateau> bateauxIdentifies = new LinkedList<Bateau>();
     private LinkedList<Bateau> reponsesCapitainerie = new LinkedList<Bateau>();
     private LinkedList<Bateau> confirmationsCapitainerie = new LinkedList<Bateau>();
-    
+
     /**
      * Creates new form Phare
      */
     public Phare() {
         initComponents();
-        
+
         try {
             this.networkBC = new NetworkBasicClient("localhost", PORT, this, this.LOnOff, this.BtnSeConnecterAuServeur);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        
+
         this.LBBateauxNonIdentifies.setModel(new DefaultListModel());
         this.LBBateauxIdentifies.setModel(new DefaultListModel());
         this.LBReponsesCapitainerie.setModel(new DefaultListModel());
         this.LBConfirmationsCapitainerie.setModel(new DefaultListModel());
-        
+
         try {
             Marin capitaine = new Marin("Mokh", "Wad", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Capitaine);
             Marin second = new Marin("Flo", "Bann", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Second);
             Marin bosco = new Marin("Air", "29", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Bosco);
             Marin mecanicien = new Marin("Oussama", "Achour", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.MaitreMecanicien);
-            
+
             Equipage equipage = new Equipage(capitaine, second);
             equipage.getMarins().add(bosco);
             equipage.getMarins().add(mecanicien);
-            
+
             BateauPlaisance tempBateauPlaisance = new BateauPlaisance("Bateau", "Exeter", 200, 5, BateauPlaisance.TypePermis.PlaisanceExtentionHauturiere, "BE");
             BateauPeche tempBateauPeche = new BateauPeche("BateauPeche", "Liege", 100, 10, BateauPeche.TypeDePeche.Thonier, "FR");
-            
-            ((DefaultListModel)this.LBBateauxNonIdentifies.getModel()).addElement(tempBateauPlaisance);
+
+            tempBateauPlaisance.setEquipage(equipage);
+            tempBateauPeche.setEquipage(equipage);
+
             bateauxNonIdentifies.add(tempBateauPlaisance);
-            ((DefaultListModel)this.LBBateauxNonIdentifies.getModel()).addElement(tempBateauPeche);
             bateauxNonIdentifies.add(tempBateauPeche);
+
+            ((DefaultListModel) this.LBBateauxNonIdentifies.getModel()).addElement(tempBateauPlaisance);
+            ((DefaultListModel) this.LBBateauxNonIdentifies.getModel()).addElement(tempBateauPeche);
+
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+
+    }
+
+    public void AjouterBateauIdentifier(Bateau bateau) {
+        //Supprimer de la liste non identifier et rajouter dans la liste des bateaux identifies
+        bateauxIdentifies.add(bateau);
+        bateauxNonIdentifies.remove(bateau);
+        ((DefaultListModel) this.LBBateauxNonIdentifies.getModel()).removeElement(bateau);
+        ((DefaultListModel) this.LBBateauxIdentifies.getModel()).addElement(bateau);
     }
 
     /**
@@ -289,37 +303,46 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
         int selectedIndex = this.LBBateauxNonIdentifies.getSelectedIndex();
         if (selectedIndex != -1) {
             Bateau bateau = this.bateauxNonIdentifies.get(selectedIndex);
-            
+
+            IdentificationBateau identificationBateau = new IdentificationBateau(this, bateau);
+            identificationBateau.setVisible(true);
+
             // Identification du bateau
             // Ouvrir fen?tre pour remplir nom/longueur
         }
     }//GEN-LAST:event_BtnIdentifierLeBateauActionPerformed
 
     private void BtnDemanderAutorisationEntrerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDemanderAutorisationEntrerActionPerformed
-        int selectedIndex = this.LBBateauxNonIdentifies.getSelectedIndex();
+        int selectedIndex = this.LBBateauxIdentifies.getSelectedIndex();
         if (selectedIndex != -1) {
-            Bateau bateau = this.bateauxNonIdentifies.get(selectedIndex);
+            Bateau bateau = this.bateauxIdentifies.get(selectedIndex);
+
             String xmlBateau = XMLFormatter.toXML(bateau);
-            
+
             // Envois bateau dans capitainerie
-            Frame.send(this.networkBC, new String[] {"capitainerie_ajouter_bateau_liste", "bateau_attente_entree", xmlBateau});
-            
+            Frame.send(this.networkBC, new String[]{"capitainerie_ajouter_bateau_liste", "bateau_attente_entree", xmlBateau});
+
             // Retrait bateau phare
-            // Flemme
+            bateauxIdentifies.remove(bateau);
+            ((DefaultListModel) this.LBBateauxIdentifies.getModel()).removeElement(bateau);
+
         }
     }//GEN-LAST:event_BtnDemanderAutorisationEntrerActionPerformed
 
     private void BtnBateauEntrerDansLaRadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBateauEntrerDansLaRadeActionPerformed
-        int selectedIndex = this.LBBateauxIdentifies.getSelectedIndex();
+        int selectedIndex = this.LBReponsesCapitainerie.getSelectedIndex();
         if (selectedIndex != -1) {
-            Bateau bateau = this.bateauxIdentifies.get(selectedIndex);
+
+            Bateau bateau = this.reponsesCapitainerie.get(selectedIndex);
             String xmlBateau = XMLFormatter.toXML(bateau);
-            
+
             // Envois bateau dans capitainerie
-            Frame.send(this.networkBC, new String[] {"capitainerie_ajouter_bateau_liste", "bateau_entre_rade", xmlBateau});
-            
+            Frame.send(this.networkBC, new String[]{"capitainerie_ajouter_bateau_liste", "bateau_entre_rade", xmlBateau});
+
             // Retrait bateau phare
-            // Flemme
+            reponsesCapitainerie.remove(bateau);
+            ((DefaultListModel) this.LBReponsesCapitainerie.getModel()).removeElement(bateau);
+
         }
     }//GEN-LAST:event_BtnBateauEntrerDansLaRadeActionPerformed
 
@@ -385,25 +408,51 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
     // End of variables declaration//GEN-END:variables
 
     // IInOutEvent
-    
     @Override
     public String getMessage() {
         return this.networkBC.getMessage();
     }
-    
+
     @Override
     public String readMessage() {
         return this.networkBC.readMessage();
     }
-    
+
     @Override
     public void sendMessage(String message) {
         this.networkBC.sendMessage(message);
     }
-    
+
     @Override
     public void messageReceived() {
-        System.out.println("[Phare | Info] [<<<] " + this.getMessage());
+        System.out.println("[Phare | Info] [<<<] " + this.readMessage());
+        Frame frame = (Frame) XMLFormatter.fromXML(this.getMessage());
+        String action = frame.getAction();
+        if (action.equals("phare_ajouter_bateau_liste")) {
+            String list = frame.getArg(1);
+            String objectXml = XMLFormatter.decode(frame.getArg(2));
+            Object object = XMLFormatter.fromXML(objectXml);
+            if (list.equals("reponse_capitainerie")) {
+
+                if (object instanceof Bateau) {
+                    ((DefaultListModel) this.LBReponsesCapitainerie.getModel()).addElement((Bateau) object);
+                    this.reponsesCapitainerie.add((Bateau) object);
+                } else {
+                    System.err.println("[Phare | Error] Couldn't cast object received as \"Bateau\"");
+                }
+            } else if (list.equals("confirmation_capitainerie")) {
+                Bateau bateau = (Bateau) object;
+                this.reponsesCapitainerie.remove(bateau);
+                ((DefaultListModel) this.LBReponsesCapitainerie.getModel()).removeElement(bateau);
+                this.confirmationsCapitainerie.add(bateau);
+                ((DefaultListModel) this.LBConfirmationsCapitainerie.getModel()).addElement(bateau);
+
+            }
+        } else if (action.equals("capitainerie_supprimer_bateau_liste")) {
+
+        } else {
+            System.err.println("Aucune action...");
+        }
     }
 
 }

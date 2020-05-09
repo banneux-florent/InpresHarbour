@@ -18,7 +18,7 @@ public class Quai extends Amarrage {
         setPlaces(capacite);
     }
 
-    /**
+    /**n,
      * @return the listeBateauxAmarres
      */
     public MoyenDeTransportSurEau[] getListeBateauxAmarres() {

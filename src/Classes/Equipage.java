@@ -3,12 +3,19 @@ package Classes;
 import Exceptions.SailorIndicatedIsNotACaptainException;
 import Exceptions.SailorIndicatedIsNotASecondException;
 import java.util.LinkedList;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Florent & Wadi
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class Equipage {
+
+  
     
     private Marin capitaine;
     private Marin second;
@@ -47,6 +54,8 @@ public class Equipage {
      */
     public Equipage(Marin capitaine, Marin second) throws SailorIndicatedIsNotACaptainException, SailorIndicatedIsNotASecondException {
         this(capitaine, second, new LinkedList<Marin>());
+    }
+      public Equipage() {
     }
 
     /**

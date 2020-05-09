@@ -2,6 +2,7 @@ package Capitainerie;
 
 import Classes.*;
 import Exceptions.CapitainerieException;
+import Exceptions.ShipWithoutIdentificationException;
 import Network.Frame;
 import Network.IInOutEvent;
 import Network.NetworkBasicServer;
@@ -18,6 +19,8 @@ import java.time.Year;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
@@ -31,10 +34,11 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
 
     private NetworkBasicServer networkBS;
     private final int PORT = 50000;
-    
+
     private LinkedList<Bateau> bateauAttenteEntrer = new LinkedList<Bateau>();
     private LinkedList<Bateau> bateauEnCoursDAmarrage = new LinkedList<Bateau>();
     private LinkedList<Bateau> bateauEntresDansLaRade = new LinkedList<Bateau>();
+
     private LinkedList<Ponton> pontons = new LinkedList<Ponton>();
     private LinkedList<Quai> quais = new LinkedList<Quai>();
 
@@ -43,23 +47,52 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
      */
     public Capitainerie() {
         initComponents();
-        
+
         try {
             this.networkBS = new NetworkBasicServer(PORT, this, this.LOnOff, this.BtnDemarrerServeur);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        
+
         Date now = new Date();
         setDateHeure(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.FRANCE).format(now));
 
         pontons.add(new Ponton("1", 12, 15));
+        pontons.add(new Ponton("1", 12, 15));
+
         quais.add(new Quai("1", 12, 15));
-        
+        quais.add(new Quai("1", 12, 15));
+
         this.LBBateauAttenteEntrer.setModel(new DefaultListModel());
         this.LBBateauEnCoursDAmarrage.setModel(new DefaultListModel());
         this.LBBateauEntresDansLaRade.setModel(new DefaultListModel());
         this.LBBateauxAmarres.setModel(new DefaultListModel());
+
+        BateauPlaisance tempBateauPlaisance = null;
+        BateauPeche tempBateauPeche = null;
+        try {
+            tempBateauPlaisance = new BateauPlaisance("Bateau", "Exeter", 200, 5, BateauPlaisance.TypePermis.PlaisanceExtentionHauturiere, "BE");
+            tempBateauPeche = new BateauPeche("BateauPeche", "Liege", 100, 10, BateauPeche.TypeDePeche.Thonier, "FR");
+
+            Marin capitaine = new Marin("Mokh", "Wad", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Capitaine);
+            Marin second = new Marin("Flo", "Bann", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Second);
+            Marin bosco = new Marin("Air", "29", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Bosco);
+            Marin mecanicien = new Marin("Oussama", "Achour", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.MaitreMecanicien);
+            Equipage equipage = new Equipage(capitaine, second);
+            equipage.getMarins().add(bosco);
+            equipage.getMarins().add(mecanicien);
+            tempBateauPlaisance.setEquipage(equipage);
+            tempBateauPeche.setEquipage(equipage);
+        } catch (Exception ex) {
+            Logger.getLogger(Capitainerie.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        bateauAttenteEntrer.add(tempBateauPlaisance);
+        bateauAttenteEntrer.add(tempBateauPeche);
+
+        ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).addElement(tempBateauPlaisance);
+        ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).addElement(tempBateauPeche);
+
     }
 
     /**
@@ -88,7 +121,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         jScrollPane3 = new javax.swing.JScrollPane();
         LBBateauEnCoursDAmarrage = new javax.swing.JList<>();
         jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        LBEmplacement = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         LBBateauEntresDansLaRade = new javax.swing.JList<>();
         jLabel9 = new javax.swing.JLabel();
@@ -140,6 +173,11 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
 
         jLabel4.setText("Bateau(x) en attente pour entrer :");
 
+        LBBateauAttenteEntrer.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                LBBateauAttenteEntrerValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(LBBateauAttenteEntrer);
 
         jScrollPane2.setViewportView(LBBateauxAmarres);
@@ -152,6 +190,11 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         });
 
         BtnChoisirEmplacement.setText("Choisir un emplacement");
+        BtnChoisirEmplacement.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnChoisirEmplacementActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Bateau(x) amarré(s) :");
 
@@ -171,8 +214,8 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         jLabel7.setText("Bateau(x) en cours d'amarrage :");
         jLabel7.setToolTipText("");
 
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel8.setText("Aucun");
+        LBEmplacement.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        LBEmplacement.setText("Aucun");
 
         jScrollPane4.setViewportView(LBBateauEntresDansLaRade);
 
@@ -370,7 +413,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(LBEmplacement, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(BtnEnvoyerEmplacement, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -418,7 +461,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(LBEmplacement, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(BtnEnvoyerEmplacement))
                         .addGap(18, 18, 18)
                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -457,10 +500,86 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
     }//GEN-LAST:event_BtnDemarrerServeurActionPerformed
 
     private void BtnEnvoyerConfirmationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEnvoyerConfirmationActionPerformed
+        int selectedIndex = this.LBBateauEntresDansLaRade.getSelectedIndex();
+        boolean trouve = false;
 
+        if (selectedIndex != -1) {
+            Bateau bateau = (Bateau) ((DefaultListModel) this.LBBateauEntresDansLaRade.getModel()).getElementAt(selectedIndex);
+
+            String xmlBateau = XMLFormatter.toXML(bateau);
+            // Envois bateau dans phare
+            Frame.send(this.networkBS, new String[]{"phare_ajouter_bateau_liste", "confirmation_capitainerie", xmlBateau});
+
+            // Retrait bateau capitainerie
+            this.bateauEntresDansLaRade.remove(bateau);
+            ((DefaultListModel) this.LBBateauEntresDansLaRade.getModel()).removeElement(bateau);
+
+            this.bateauEnCoursDAmarrage.add(bateau);
+            ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).addElement(bateau);
+        }
     }//GEN-LAST:event_BtnEnvoyerConfirmationActionPerformed
 
     private void BtnEnvoyerEmplacementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEnvoyerEmplacementActionPerformed
+
+        int selectedIndex = this.LBBateauAttenteEntrer.getSelectedIndex();
+        boolean trouve = false;
+
+        if (selectedIndex != -1) {
+            Bateau bateau = (Bateau) ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).getElementAt(selectedIndex);
+
+            if (bateau instanceof BateauPeche) {
+                BateauPeche tempBateauPeche;
+                for (int i = 0; i < quais.size(); i++) {
+                    for (int j = 0; j < quais.get(i).getListeBateauxAmarres().length; j++) {
+                        tempBateauPeche = (BateauPeche) quais.get(i).getListeBateauxAmarres()[j];
+                        if (tempBateauPeche == bateau) {
+                            trouve = true;
+                        }
+                    }
+                }
+
+            } else {
+                for (int i = 0; i < this.pontons.size(); i++) {
+                    for (int j = 0; j < this.pontons.get(i).getListe(1).length && !trouve; j++) {
+                        BateauPlaisance tempBateauPlaisance = (BateauPlaisance) this.pontons.get(i).getListe(1)[j];
+                        if (tempBateauPlaisance != null) {
+                            if (tempBateauPlaisance == tempBateauPlaisance) {
+                                trouve = true;
+                            }
+                        }
+                    }
+                    for (int j = 0; j < this.pontons.get(i).getListe(2).length && !trouve; j++) {
+                        BateauPlaisance tempBateauPlaisance = (BateauPlaisance) this.pontons.get(i).getListe(2)[j];
+                        if (tempBateauPlaisance != null) {
+                            if (tempBateauPlaisance == tempBateauPlaisance) {
+                                trouve = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (trouve == true) {
+
+                String xmlBateau = XMLFormatter.toXML(bateau);
+                // Envois bateau dans phare
+                Frame.send(this.networkBS, new String[]{"phare_ajouter_bateau_liste", "reponse_capitainerie", xmlBateau});
+
+                // Retrait bateau capitainerie
+                this.bateauAttenteEntrer.remove(bateau);
+                ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).removeElement(bateau);
+
+            } else {
+                DialogErreur de = new DialogErreur("Erreur", "Aucun emplacement n'a été choisis pour ce bateau");
+                de.setVisible(true);
+
+            }
+
+        } else {
+            DialogErreur de = new DialogErreur("Erreur", "Aucun bateau n'a été choisis");
+            de.setVisible(true);
+
+        }
 
     }//GEN-LAST:event_BtnEnvoyerEmplacementActionPerformed
 
@@ -510,9 +629,9 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         int selectedIndex = this.LBBateauEnCoursDAmarrage.getSelectedIndex();
         if (selectedIndex != -1) {
             Bateau bateau = this.bateauEnCoursDAmarrage.get(selectedIndex);
-            String emplacement = this.getEmplacementMTSE(bateau);
+            String emplacement = this.getEmplacementBateau(bateau);
             RemplirInfoBateau remplirInfoBateau = new RemplirInfoBateau(this, true, bateau, emplacement);
-            remplirInfoBateau.setTitle("Ajout informations du bateau « " + bateau.getNom() + " »");
+            remplirInfoBateau.setTitle("Ajout informations du bateau  " + bateau.getNom() + " ");
             remplirInfoBateau.setVisible(true);
         }
     }//GEN-LAST:event_BtnRemplirInformationsBateauActionPerformed
@@ -558,6 +677,42 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         prunmm.setVisible(true);
     }//GEN-LAST:event_MIRechercheUnMarinActionPerformed
 
+    private void BtnChoisirEmplacementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnChoisirEmplacementActionPerformed
+
+        int selectedIndex = this.LBBateauAttenteEntrer.getSelectedIndex();
+        if (selectedIndex != -1) {
+            Bateau bateau = this.bateauAttenteEntrer.get(selectedIndex);
+            ChoisirEmplacementBateau choisirEmplacement;
+            if (bateau instanceof BateauPeche) {
+                choisirEmplacement = new ChoisirEmplacementBateau(this, true, bateau, quais);
+            } else {
+                choisirEmplacement = new ChoisirEmplacementBateau(this, true, bateau, pontons, 1);
+            }
+
+            choisirEmplacement.setAlwaysOnTop(true);
+            choisirEmplacement.setVisible(true);
+        }
+
+
+    }//GEN-LAST:event_BtnChoisirEmplacementActionPerformed
+
+    private void LBBateauAttenteEntrerValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_LBBateauAttenteEntrerValueChanged
+        int selectedIndex = this.LBBateauAttenteEntrer.getSelectedIndex();
+        boolean trouve = false;
+
+        if (selectedIndex != -1) {
+            Bateau bateau = (Bateau) ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).getElementAt(selectedIndex);
+            this.LBEmplacement.setText(this.getEmplacementMTSE(bateau));
+        }
+    }//GEN-LAST:event_LBBateauAttenteEntrerValueChanged
+
+    public  void ajouterBateauListeBateauAmmare(Bateau bateau) {
+        this.bateauEnCoursDAmarrage.remove(bateau);
+        ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).removeElement(bateau);
+        ((DefaultListModel) this.LBBateauxAmarres.getModel()).addElement(bateau);
+
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -575,6 +730,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
     private javax.swing.JList<String> LBBateauEnCoursDAmarrage;
     private javax.swing.JList<String> LBBateauEntresDansLaRade;
     private javax.swing.JList<String> LBBateauxAmarres;
+    private javax.swing.JLabel LBEmplacement;
     private javax.swing.JLabel LDateHeure;
     private javax.swing.JLabel LOnOff;
     private javax.swing.JCheckBoxMenuItem MIAffichageDateHeureCourante;
@@ -601,7 +757,6 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -637,61 +792,112 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         if (mtse instanceof BateauPlaisance) {
             for (int i = 0; i < pontons.size(); i++) {
                 for (int j = 0; j < pontons.get(i).getListe(1).length; j++) {
-                    if (pontons.get(i).getListe(1)[j] == mtse) return "P" + i + "1*" + j;
+                    if (pontons.get(i).getListe(1)[j] == mtse) {
+                        return "P" + i + "1*" + j;
+                    }
                 }
                 for (int j = 0; j < pontons.get(i).getListe(2).length; j++) {
-                    if (pontons.get(i).getListe(2)[j] == mtse) return "P" + i + "2*" + j;
+                    if (pontons.get(i).getListe(2)[j] == mtse) {
+                        return "P" + i + "2*" + j;
+                    }
                 }
             }
         } else {
             for (int i = 0; i < quais.size(); i++) {
                 for (int j = 0; j < quais.get(i).getListeBateauxAmarres().length; j++) {
-                    if (quais.get(i).getListeBateauxAmarres()[j] == mtse) return "Q" + "1*" + j;
+                    if (quais.get(i).getListeBateauxAmarres()[j] == mtse) {
+                        return "Q" + "1*" + j;
+                    }
                 }
             }
         }
-        return " ";
+        return "Aucun";
     }
-    
+
+    public String getEmplacementBateau(Bateau mtse) {
+
+        if (mtse instanceof BateauPlaisance) {
+            for (int i = 0; i < pontons.size(); i++) {
+                for (int j = 0; j < pontons.get(i).getListe(1).length; j++) {
+
+                    if (pontons.get(i).getListe(1)[j] != null) {
+                        System.err.println(pontons.get(i).getListe(1)[j]);
+                        if (pontons.get(i).getListe(1)[j].equals(mtse)) {
+                            return "P" + i + "1*" + j;
+                        }
+                    }
+
+                }
+                for (int j = 0; j < pontons.get(i).getListe(2).length; j++) {
+                    if (pontons.get(i).getListe(2)[j] != null) {
+                        if (pontons.get(i).getListe(2)[j].equals(mtse)) {
+                            return "P" + i + "2*" + j;
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < quais.size(); i++) {
+                for (int j = 0; j < quais.get(i).getListeBateauxAmarres().length; j++) {
+                    if (quais.get(i).getListeBateauxAmarres()[j] != null) {
+                        if (quais.get(i).getListeBateauxAmarres()[j].equals(mtse)) {
+                            return "Q" + "1*" + j;
+                        }
+                    }
+                }
+            }
+        }
+        return "Aucun";
+    }
+
     // IInOutEvent
-    
     @Override
     public String getMessage() {
         return this.networkBS.getMessage();
     }
-    
+
     @Override
     public String readMessage() {
         return this.networkBS.readMessage();
     }
-    
+
     @Override
     public void sendMessage(String message) {
         this.networkBS.sendMessage(message);
     }
-    
+
     @Override
     public void messageReceived() {
         System.out.println("[Capitainerie | Info] [<<<] " + this.readMessage());
-        Frame frame = (Frame)XMLFormatter.fromXML(this.getMessage());
-        
+        Frame frame = (Frame) XMLFormatter.fromXML(this.getMessage());
+
         String action = frame.getAction();
         if (action.equals("capitainerie_ajouter_bateau_liste")) {
             String list = frame.getArg(1);
+            String objectXml = XMLFormatter.decode(frame.getArg(2));
+            Object object = XMLFormatter.fromXML(objectXml);
             if (list.equals("bateau_attente_entree")) {
-                String objectXml = XMLFormatter.decode(frame.getArg(2));
-                Object object = XMLFormatter.fromXML(objectXml);
+
                 if (object instanceof Bateau) {
-                    ((DefaultListModel)this.LBBateauAttenteEntrer.getModel()).addElement((Bateau)object);
-                    this.bateauAttenteEntrer.add((Bateau)object);
+                    ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).addElement((Bateau) object);
+                    this.bateauAttenteEntrer.add((Bateau) object);
                 } else {
                     System.err.println("[Capitainerie | Error] Couldn't cast object received as \"Bateau\"");
                 }
-            } else if (list.equals("bateau_entre_rande")) {
-                // To do
+            } else if (list.equals("bateau_entre_rade")) {
+
+                //Ajouter dans bateau entre dans la rade
+                ((DefaultListModel) this.LBBateauEntresDansLaRade.getModel()).addElement((Bateau) object);
+                this.bateauEntresDansLaRade.add((Bateau) object);
+
             }
         } else if (action.equals("capitainerie_supprimer_bateau_liste")) {
-            
+
         }
     }
+
+    public void modifierLBEmplacement(String emp) {
+        this.LBEmplacement.setText(emp);
+    }
+
 }

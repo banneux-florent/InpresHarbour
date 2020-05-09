@@ -1,5 +1,9 @@
 package Capitainerie;
 
+import Classes.*;
+import java.awt.Frame;
+import java.util.LinkedList;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -9,22 +13,40 @@ import javax.swing.table.TableColumn;
  */
 public class ChoisirEmplacementBateau extends javax.swing.JDialog {
 
+    private int typeBateau;//1 Peche 2 Plaisance
+    private String emplacement = "";
+    private int row = -1;
+    private LinkedList<Quai> quais;
+    private LinkedList<Ponton> pontons;
+    private Bateau bateauAAjouter;
+    private Capitainerie capitainerie;
+
     /**
      * Creates new form AmarrageBateau
+     *
+     * @param parent
      */
-    public ChoisirEmplacementBateau(java.awt.Frame parent, boolean modal) {
+    public ChoisirEmplacementBateau(Capitainerie parent, boolean modal, Bateau bateau, LinkedList<Quai> quais) {
         super(parent, modal);
         initComponents();
-        DefaultTableModel tableModel = new DefaultTableModel();
-        String[] columnNames = {"Ponton", "Emplacement", "Bateau", "Port d'attache"};
+        this.quais = quais;
+        capitainerie = parent;
+        this.LBTypeAmmarage.setText("Quais");
+        this.initTableauPeche();
+        typeBateau = 1;
+        this.bateauAAjouter = bateau;
 
-        for(String columnName : columnNames){
-           tableModel.addColumn(columnName);
-        }
+    }
 
-        jTable1.setModel(tableModel);
-        jTable1.getColumnModel().getColumn(0).setPreferredWidth(30);
-        jTable1.getColumnModel().getColumn(1).setPreferredWidth(30);
+    public ChoisirEmplacementBateau(Capitainerie parent, boolean modal, Bateau bateau, LinkedList<Ponton> pontons, int a) {
+        super(parent, modal);
+        initComponents();
+        this.pontons = pontons;
+        capitainerie = parent;
+        this.initTableauPlaisance();
+        typeBateau = 2;
+        this.bateauAAjouter = bateau;
+
     }
 
     /**
@@ -39,15 +61,15 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        TableEmplacement = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        LBTypeAmmarage = new javax.swing.JLabel();
+        LBNumeroAmmarage = new javax.swing.JLabel();
+        LBE = new javax.swing.JLabel();
+        BtnChoisir = new javax.swing.JButton();
+        LBNumeroCote = new javax.swing.JLabel();
+        BtnAnnuler = new javax.swing.JButton();
+        LbEmplacement = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -73,7 +95,7 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
             .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TableEmplacement.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -84,28 +106,34 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        TableEmplacement.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        TableEmplacement.setShowGrid(true);
+        jScrollPane1.setViewportView(TableEmplacement);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("Emplacement sélectionné:");
 
-        jLabel2.setText("Ponton");
+        LBTypeAmmarage.setText("Ponton");
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel3.setText("11");
+        LBNumeroAmmarage.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
 
-        jLabel6.setText("Emplacement");
+        LBE.setText("Emplacement");
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel7.setText("1");
+        BtnChoisir.setText("Choisir cet emplacement");
+        BtnChoisir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnChoisirActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Choisir cet emplacement");
+        LBNumeroCote.setFont(new java.awt.Font("Tahoma", 2, 10)); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 2, 10)); // NOI18N
-        jLabel8.setText("(1-Gauche)");
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel5.setText("Black Berry");
+        BtnAnnuler.setText("Annuler");
+        BtnAnnuler.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnAnnulerActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -116,70 +144,205 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(LBE, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                            .addComponent(LBTypeAmmarage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(LBNumeroAmmarage, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(LBNumeroCote, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(LbEmplacement, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(BtnAnnuler, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(BtnChoisir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(51, 51, 51)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jButton2)
-                    .addComponent(jLabel8))
+                    .addComponent(LBTypeAmmarage)
+                    .addComponent(LBNumeroAmmarage)
+                    .addComponent(BtnChoisir)
+                    .addComponent(LBNumeroCote))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7))
+                    .addComponent(LBE)
+                    .addComponent(LbEmplacement))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(BtnAnnuler)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void BtnChoisirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnChoisirActionPerformed
+        int row = this.TableEmplacement.getSelectedRow();
+
+        if (row != -1) {
+            this.row = row;
+            String numero = this.TableEmplacement.getModel().getValueAt(row, 0).toString();
+            String emplacement = this.TableEmplacement.getModel().getValueAt(row, 1).toString();
+            String bateau = this.TableEmplacement.getModel().getValueAt(row, 2).toString();
+            String portAttache = this.TableEmplacement.getModel().getValueAt(row, 3).toString();
+
+            if (bateau.length() == 0 && portAttache.length() == 0) {
+                this.LBNumeroAmmarage.setText(numero);
+                this.LbEmplacement.setText(emplacement);
+                this.LBNumeroAmmarage.setText(numero);
+                this.LbEmplacement.setText(emplacement);
+                this.emplacement = emplacement;
+
+                if (this.typeBateau == 1) {
+                    for (int i = 0; i < this.quais.size(); i++) {
+                        for (int j = 0; j < this.quais.get(i).getListeBateauxAmarres().length; j++) {
+                            if (this.bateauAAjouter == this.quais.get(i).getListeBateauxAmarres()[j]) {
+                                this.quais.get(i).getListeBateauxAmarres()[j] = null;
+                                break;
+                            }
+                        }
+                    }
+                    int numeroQuai, numeroEmplacement;
+                    numeroQuai = Integer.parseInt(this.emplacement.substring(1, 2));
+                    numeroEmplacement = Integer.parseInt(this.emplacement.substring(3));
+                    this.quais.get(numeroQuai).getListeBateauxAmarres()[numeroEmplacement] = this.bateauAAjouter;
+                    this.initTableauPeche();
+                } else {
+                    for (int i = 0; i < this.pontons.size(); i++) {
+                        for (int j = 0; j < this.pontons.get(i).getListe(1).length; j++) {
+                            if (this.pontons.get(i).getListe(1)[j] == this.bateauAAjouter) {
+                                this.pontons.get(i).getListe(1)[j] = null;
+                            }
+                        }
+                        for (int j = 0; j < this.pontons.get(i).getListe(2).length; j++) {
+                            if (this.pontons.get(i).getListe(2)[j] == this.bateauAAjouter) {
+                                this.pontons.get(i).getListe(2)[j] = null;
+                            }
+                        }
+                    }
+                    int numeroPonton, numeroEmplacement, cote;
+                    numeroPonton = Integer.parseInt(this.emplacement.substring(1, 2));
+                    cote = Integer.parseInt(this.emplacement.substring(2, 3));
+                    numeroEmplacement = Integer.parseInt(this.emplacement.substring(4));
+                    this.pontons.get(numeroPonton).getListe(cote)[numeroEmplacement] = this.bateauAAjouter;
+                    this.initTableauPlaisance();
+
+                }
+                this.capitainerie.modifierLBEmplacement(this.emplacement);
+
+            } else {
+                this.emplacement = "";
+                DialogErreur de = new DialogErreur("Erreur", "Cet emplacement est déja pris");
+                de.setVisible(true);
+            }
+        }
+
+    }//GEN-LAST:event_BtnChoisirActionPerformed
+
+    private void BtnAnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAnnulerActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_BtnAnnulerActionPerformed
+
+    public void initTableauPeche() {
+        DefaultTableModel tableModelBateauPeche = new DefaultTableModel();
+        String[] columnNames = new String[4];
+        columnNames[0] = "Quai";
+        columnNames[1] = "Emplacement";
+        columnNames[2] = "Bateau";
+        columnNames[3] = "Port d'attache";
+
+        BateauPeche tempBateauPeche;
+
+        for (String columnName : columnNames) {
+            tableModelBateauPeche.addColumn(columnName);
+        }
+
+        for (int i = 0; i < quais.size(); i++) {
+            for (int j = 0; j < quais.get(i).getListeBateauxAmarres().length; j++) {
+                tempBateauPeche = (BateauPeche) quais.get(i).getListeBateauxAmarres()[j];
+                if (tempBateauPeche != null) {
+                    tableModelBateauPeche.addRow(new Object[]{i, "Q" + i + "*" + j, tempBateauPeche.getNom(), tempBateauPeche.getPortAttache()});
+                } else {
+                    tableModelBateauPeche.addRow(new Object[]{i, "Q" + i + "*" + j, "", ""});
+                }
+            }
+        }
+        TableEmplacement.setModel(tableModelBateauPeche);
+        TableEmplacement.getColumnModel().getColumn(0).setPreferredWidth(30);
+        TableEmplacement.getColumnModel().getColumn(1).setPreferredWidth(30);
+
+    }
+
+    public void initTableauPlaisance() {
+        DefaultTableModel tableModelBateauPlaisance = new DefaultTableModel();
+        String[] columnNames = new String[4];
+        columnNames[0] = "Pontons";
+        columnNames[1] = "Emplacement";
+        columnNames[2] = "Bateau";
+        columnNames[3] = "Port d'attache";
+
+        for (String columnName : columnNames) {
+            tableModelBateauPlaisance.addColumn(columnName);
+        }
+
+        BateauPlaisance tempBateauPlaisance;
+        for (int i = 0; i < pontons.size(); i++) {
+            for (int j = 0; j < pontons.get(i).getListe(1).length; j++) {
+                tempBateauPlaisance = (BateauPlaisance) pontons.get(i).getListe(1)[j];
+                if (tempBateauPlaisance != null) {
+                    tableModelBateauPlaisance.addRow(new Object[]{i, "P" + i + "1*" + j, tempBateauPlaisance.getNom(), tempBateauPlaisance.getPortAttache()});
+                } else {
+                    tableModelBateauPlaisance.addRow(new Object[]{i, "P" + i + "1*" + j, "", ""});
+                }
+            }
+            for (int j = 0; j < pontons.get(i).getListe(2).length; j++) {
+                tempBateauPlaisance = (BateauPlaisance) pontons.get(i).getListe(2)[j];
+                if (tempBateauPlaisance != null) {
+                    tableModelBateauPlaisance.addRow(new Object[]{i, "P" + i + "2*" + j, tempBateauPlaisance.getNom(), tempBateauPlaisance.getPortAttache()});
+                } else {
+                    tableModelBateauPlaisance.addRow(new Object[]{i, "P" + i + "2*" + j, "", ""});
+                }
+            }
+        }
+
+        TableEmplacement.setModel(tableModelBateauPlaisance);
+        TableEmplacement.getColumnModel().getColumn(0).setPreferredWidth(30);
+        TableEmplacement.getColumnModel().getColumn(1).setPreferredWidth(30);
+
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton BtnAnnuler;
+    private javax.swing.JButton BtnChoisir;
+    private javax.swing.JLabel LBE;
+    private javax.swing.JLabel LBNumeroAmmarage;
+    private javax.swing.JLabel LBNumeroCote;
+    private javax.swing.JLabel LBTypeAmmarage;
+    private javax.swing.JLabel LbEmplacement;
+    private javax.swing.JTable TableEmplacement;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

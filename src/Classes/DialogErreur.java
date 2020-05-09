@@ -39,7 +39,7 @@ public class DialogErreur extends javax.swing.JDialog {
         this.setModal(true);
         this.setAlwaysOnTop(true);
         String sep = System.getProperty("file.separator");
-        ImageIcon a = new ImageIcon(System.getProperty("user.dir") + sep + "src" + sep + "main" + sep + "java" + sep + "Donnees" + sep + "error" + ".png");
+        ImageIcon a = new ImageIcon(System.getProperty("user.dir") + sep + "src" +  sep + "Donnees" + sep + "error" + ".png");
         this.LImage.setIcon(a);
     }
 

@@ -26,12 +26,13 @@ public class BateauPlaisance extends Bateau {
 
     private TypePermis typePermis;
 
-    public BateauPlaisance(String nom, String portAttache, int tonnage, float longeur, TypePermis typePermis, String pavillon) throws ShipWithoutIdentificationException{
+    public BateauPlaisance(String nom, String portAttache, int tonnage, float longeur, TypePermis typePermis, String pavillon) throws ShipWithoutIdentificationException {
         super(nom, portAttache, tonnage, longeur, pavillon);
         this.typePermis = typePermis;
     }
-    
-    public BateauPlaisance() {}
+
+    public BateauPlaisance() {
+    }
 
     /**
      * @return the typePermis
@@ -49,7 +50,12 @@ public class BateauPlaisance extends Bateau {
 
     @Override
     public String toString() {
-        return "BateauPlaisance / "+ super.toString();
+        return "BateauPlaisance / " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

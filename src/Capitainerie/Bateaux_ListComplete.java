@@ -28,25 +28,6 @@ public class Bateaux_ListComplete extends javax.swing.JFrame {
         for (String columnName : columnNames) {
             tableModelBateauPlaisance.addColumn(columnName);
         }
-
-        BateauPlaisance tempBateauPlaisance;
-        for (int i = 0; i < pontons.size(); i++) {
-            for (int j = 0; j < pontons.get(i).getListe(1).length; j++) {
-                tempBateauPlaisance = (BateauPlaisance) pontons.get(i).getListe(1)[j];
-                if (tempBateauPlaisance != null) {
-                    tableModelBateauPlaisance.addRow(new Object[]{tempBateauPlaisance.getNom(), tempBateauPlaisance.getPavillon(), "P" + i + "1*" + j});
-                }
-            }
-            for (int j = 0; j < pontons.get(i).getListe(2).length; j++) {
-                tempBateauPlaisance = (BateauPlaisance) pontons.get(i).getListe(2)[j];
-                if (tempBateauPlaisance != null) {
-                    tableModelBateauPlaisance.addRow(new Object[]{tempBateauPlaisance.getNom(), tempBateauPlaisance.getPavillon(), "P" + i + "2*" + j});
-                }
-            }
-        }
-
-        TableBateauxPlaisance.setModel(tableModelBateauPlaisance);
-
         BateauPeche tempBateauPeche;
 
         DefaultTableModel tableModelBateauPeche = new DefaultTableModel();
