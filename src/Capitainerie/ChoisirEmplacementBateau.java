@@ -70,6 +70,7 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
         LBNumeroCote = new javax.swing.JLabel();
         BtnAnnuler = new javax.swing.JButton();
         LbEmplacement = new javax.swing.JLabel();
+        BtnFermer = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -135,6 +136,13 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
             }
         });
 
+        BtnFermer.setText("Fermer");
+        BtnFermer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnFermerActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -157,8 +165,9 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(LBNumeroCote, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(LbEmplacement, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 34, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(BtnFermer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(BtnAnnuler, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(BtnChoisir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
@@ -177,11 +186,13 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
                     .addComponent(BtnChoisir)
                     .addComponent(LBNumeroCote))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LBE)
-                    .addComponent(LbEmplacement))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(LBE)
+                        .addComponent(LbEmplacement))
+                    .addComponent(BtnAnnuler))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(BtnAnnuler)
+                .addComponent(BtnFermer)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -201,8 +212,6 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
             if (bateau.length() == 0 && portAttache.length() == 0) {
                 this.LBNumeroAmmarage.setText(numero);
                 this.LbEmplacement.setText(emplacement);
-                this.LBNumeroAmmarage.setText(numero);
-                this.LbEmplacement.setText(emplacement);
                 this.emplacement = emplacement;
 
                 if (this.typeBateau == 1) {
@@ -210,6 +219,7 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
                         for (int j = 0; j < this.quais.get(i).getListeBateauxAmarres().length; j++) {
                             if (this.bateauAAjouter == this.quais.get(i).getListeBateauxAmarres()[j]) {
                                 this.quais.get(i).getListeBateauxAmarres()[j] = null;
+                                i = this.quais.size();
                                 break;
                             }
                         }
@@ -252,9 +262,38 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnChoisirActionPerformed
 
     private void BtnAnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAnnulerActionPerformed
-        // TODO add your handling code here:
+        if (this.typeBateau == 1) {
+            for (int i = 0; i < this.quais.size(); i++) {
+                for (int j = 0; j < this.quais.get(i).getListeBateauxAmarres().length; j++) {
+                    if (this.bateauAAjouter == this.quais.get(i).getListeBateauxAmarres()[j]) {
+                        this.quais.get(i).getListeBateauxAmarres()[j] = null;
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < this.pontons.size(); i++) {
+                for (int j = 0; j < this.pontons.get(i).getListe(1).length; j++) {
+                    if (this.pontons.get(i).getListe(1)[j] == this.bateauAAjouter) {
+                        this.pontons.get(i).getListe(1)[j] = null;
+                    }
+                }
+                for (int j = 0; j < this.pontons.get(i).getListe(2).length; j++) {
+                    if (this.pontons.get(i).getListe(2)[j] == this.bateauAAjouter) {
+                        this.pontons.get(i).getListe(2)[j] = null;
+                    }
+                }
+            }
+        }
+        this.capitainerie.modifierLBEmplacement("Aucun");
         this.dispose();
     }//GEN-LAST:event_BtnAnnulerActionPerformed
+
+    private void BtnFermerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnFermerActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+
+    }//GEN-LAST:event_BtnFermerActionPerformed
 
     public void initTableauPeche() {
         DefaultTableModel tableModelBateauPeche = new DefaultTableModel();
@@ -334,6 +373,7 @@ public class ChoisirEmplacementBateau extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnAnnuler;
     private javax.swing.JButton BtnChoisir;
+    private javax.swing.JButton BtnFermer;
     private javax.swing.JLabel LBE;
     private javax.swing.JLabel LBNumeroAmmarage;
     private javax.swing.JLabel LBNumeroCote;

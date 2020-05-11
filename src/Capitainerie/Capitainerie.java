@@ -89,7 +89,6 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
 
         bateauAttenteEntrer.add(tempBateauPlaisance);
         bateauAttenteEntrer.add(tempBateauPeche);
-
         ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).addElement(tempBateauPlaisance);
         ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).addElement(tempBateauPeche);
 
@@ -154,6 +153,11 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         LDateHeure.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         LDateHeure.setText("...");
@@ -629,8 +633,36 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         int selectedIndex = this.LBBateauEnCoursDAmarrage.getSelectedIndex();
         if (selectedIndex != -1) {
             Bateau bateau = this.bateauEnCoursDAmarrage.get(selectedIndex);
+            Bateau bateauAEnvoyer = null;
+            if (bateau instanceof BateauPeche) {
+
+                for (int i = 0; i < this.quais.size(); i++) {
+                    for (int j = 0; j < this.quais.get(i).getListeBateauxAmarres().length; j++) {
+                        if (bateau.equals(this.quais.get(i).getListeBateauxAmarres()[j])) {
+                            bateauAEnvoyer = (Bateau) this.quais.get(i).getListeBateauxAmarres()[j];
+                            i = this.quais.size();
+                            break;
+                        }
+                    }
+                }
+
+            } else {
+                for (int i = 0; i < this.pontons.size(); i++) {
+                    for (int j = 0; j < this.pontons.get(i).getListe(1).length; j++) {
+                        if (bateau.equals(this.pontons.get(i).getListe(1)[j])) {
+                            bateauAEnvoyer = (Bateau) this.pontons.get(i).getListe(1)[j];
+                        }
+                    }
+                    for (int j = 0; j < this.pontons.get(i).getListe(2).length; j++) {
+                        if (bateau.equals(this.pontons.get(i).getListe(2)[j])) {
+                            bateauAEnvoyer = (Bateau) this.pontons.get(i).getListe(2)[j];
+                        }
+                    }
+                }
+
+            }
             String emplacement = this.getEmplacementBateau(bateau);
-            RemplirInfoBateau remplirInfoBateau = new RemplirInfoBateau(this, true, bateau, emplacement);
+            RemplirInfoBateau remplirInfoBateau = new RemplirInfoBateau(this, true, bateauAEnvoyer, emplacement);
             remplirInfoBateau.setTitle("Ajout informations du bateau  " + bateau.getNom() + " ");
             remplirInfoBateau.setVisible(true);
         }
@@ -706,7 +738,12 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         }
     }//GEN-LAST:event_LBBateauAttenteEntrerValueChanged
 
-    public  void ajouterBateauListeBateauAmmare(Bateau bateau) {
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+
+
+    }//GEN-LAST:event_formWindowClosing
+
+    public void ajouterBateauListeBateauAmmare(Bateau bateau) {
         this.bateauEnCoursDAmarrage.remove(bateau);
         ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).removeElement(bateau);
         ((DefaultListModel) this.LBBateauxAmarres.getModel()).addElement(bateau);

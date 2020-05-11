@@ -134,7 +134,10 @@ public class Bateau extends MoyenDeTransportSurEau implements AUnIdentifiant, Se
     @Override
     public boolean equals(Object obj) {
         final Bateau other = (Bateau) obj;
-        return this.nom.equals(other.nom);
+        if (obj == null) {
+            return false;
+        }
+        return this.getIdentifiant().equals(other.getIdentifiant());
     }
 
 }
