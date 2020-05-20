@@ -14,15 +14,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Humain {
-
-    public Humain() {
-    }
-    
     
     private String nom;
     private String prenom;
     
-     @XmlJavaTypeAdapter(value = LocalDateAdapter.class)
+    @XmlJavaTypeAdapter(value = LocalDateAdapter.class)
     private LocalDate dateNaissance;
 
     /**
@@ -37,6 +33,8 @@ public class Humain {
         this.prenom = prenom;
         this.dateNaissance = dateNaissance;
     }
+
+    public Humain() {}
     
     /**
      * @return the nom

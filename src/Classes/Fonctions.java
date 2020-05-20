@@ -67,23 +67,32 @@ public class Fonctions {
             return false;
         }
     }
+    
+    public static String getFilePath(String filename) {
+        String sep = System.getProperty("file.separator");
+        String filePath = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep + filename;
+        if (!Fonctions.fileExists(filePath)) {
+            filePath = System.getProperty("user.dir") + sep + "Donnees" + sep + filename;
+            if (!Fonctions.fileExists(filePath)) {
+                System.out.println("Le fichier ? " + filename + " ? n'existe pas.");
+                return "";
+            }
+        }
+        return filePath;
+    }
 
     public static LinkedList<String[]> readCsv(String filename) {
         LinkedList<String[]> donnees = new LinkedList<String[]>();
 
         String sep = System.getProperty("file.separator");
-        String csvFile = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep + filename + ".csv";
-        if (!Fonctions.fileExists(csvFile)) {
-            csvFile = System.getProperty("user.dir") + sep + "Donnees" + sep + filename + ".csv";
-            if (!Fonctions.fileExists(csvFile)) {
-                System.out.println("Le fichier ? " + filename + " ? n'existe pas.");
-                return donnees;
-            }
-        }
+        String csvFile = Fonctions.getFilePath(filename + ".csv");
+        
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = ";";
-
+        
+        System.out.println(csvFile);
+        
         try {
             br = new BufferedReader(new FileReader(csvFile));
             while ((line = br.readLine()) != null) {
@@ -106,14 +115,14 @@ public class Fonctions {
         return donnees;
     }
 
-    public static Properties chargerConfig(String filename) throws IOException, FileNotFoundException {
+    public static Properties chargerConfig() throws IOException, FileNotFoundException {
 
         String sep = System.getProperty("file.separator");
-        String file = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep + filename;
+        String file = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep + "config.properties";
         if (!Fonctions.fileExists(file)) {
-            file = System.getProperty("user.dir") + sep + "Donnees" + sep + filename;
+            file = System.getProperty("user.dir") + sep + "Donnees" + sep + "config.properties";
             if (!Fonctions.fileExists(file)) {
-                System.out.println("Le fichier ? " + filename + " ? n'existe pas.");
+                System.out.println("Le fichier ? config.properties ? n'existe pas.");
                 return null;
             }
         }
@@ -121,16 +130,11 @@ public class Fonctions {
         Properties properties = new Properties();
         FileInputStream input = new FileInputStream(file);
         try {
-
             properties.load(input);
             return properties;
-
         } finally {
-
             input.close();
-
         }
-
     }
 
 }

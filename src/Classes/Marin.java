@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Florent & Wadi
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Marin extends Humain implements AUnIdentifiant {
     
     public static enum Fonction {

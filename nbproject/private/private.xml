@@ -3,10 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/WADI/Desktop/InpresHarbour/test/test.java</file>
-            <file>file:/C:/Users/WADI/Desktop/InpresHarbour/src/Classes/Fonctions.java</file>
-            <file>file:/C:/Users/WADI/Desktop/InpresHarbour/src/Capitainerie/Capitainerie.java</file>
-            <file>file:/C:/Users/WADI/Desktop/InpresHarbour/test/NewMain.java</file>
+            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Capitainerie/Capitainerie.java</file>
+            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Phare/Phare.java</file>
+            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Classes/BateauPlaisance.java</file>
+            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Capitainerie/Bateaux_ListComplete.java</file>
+            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Donnees/config.properties</file>
+            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Network/XMLFormatter.java</file>
+            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Classes/CapitainerieSavable.java</file>
         </group>
     </open-files>
 </project-private>

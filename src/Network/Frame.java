@@ -73,7 +73,11 @@ public class Frame {
             for (String arg : args) {
                 frame.addArg(arg);
             }
-            network.sendMessage(XMLFormatter.toXML(frame));
+            try {
+                network.sendMessage(XMLFormatter.toXML(frame));
+            } catch (Exception e) {
+                System.err.println("[Frame | Error] \"" + e.getMessage() + "\"");
+            }
         }
     }
     

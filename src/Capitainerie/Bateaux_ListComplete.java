@@ -5,6 +5,8 @@ import Classes.BateauPeche;
 import Classes.BateauPlaisance;
 import Classes.Ponton;
 import Classes.Quai;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import javax.swing.table.DefaultTableModel;
 
@@ -23,25 +25,36 @@ public class Bateaux_ListComplete extends javax.swing.JFrame {
         initComponents();
 
         String[] columnNames = {"Nom", "Pavillon", "Emplacement"};
-
-        BateauPeche tempBateauPeche;
+        
+        Comparator objComparator = new Comparator<Object[]>() {
+            @Override
+            public int compare(Object[] obj1, Object[] obj2)
+            {
+                return ((String)obj1[0]).compareTo((String)obj2[0]);
+            }
+        };
 
         DefaultTableModel tableModelBateauPeche = new DefaultTableModel();
-
         for (String columnName : columnNames) {
             tableModelBateauPeche.addColumn(columnName);
         }
+        
+        ArrayList arrayListPeche = new ArrayList();
 
         for (int i = 0; i < quais.size(); i++) {
             for (int j = 0; j < quais.get(i).getListeBateauxAmarres().length; j++) {
-                tempBateauPeche = (BateauPeche) quais.get(i).getListeBateauxAmarres()[j];
+                BateauPeche tempBateauPeche = (BateauPeche) quais.get(i).getListeBateauxAmarres()[j];
                 if (tempBateauPeche != null) {
-                    tableModelBateauPeche.addRow(new Object[]{tempBateauPeche.getNom(), tempBateauPeche.getPavillon(), "Q" + i + "*" + j});
-                } else {
-                    tableModelBateauPeche.addRow(new Object[]{"Aucun bateau", "", "Q" + i + "*" + j});
-
+                    arrayListPeche.add(new Object[]{tempBateauPeche.getNom(), tempBateauPeche.getPavillon(), "Q" + i + "*" + j});
                 }
             }
+        }
+        
+        arrayListPeche.sort(objComparator);
+        
+        for (int i=0; i < arrayListPeche.size(); i++) {
+            Object[] obj = (Object[])arrayListPeche.get(i);
+            tableModelBateauPeche.addRow(obj);
         }
 
         TableBateauxPeche.setModel(tableModelBateauPeche);
@@ -50,24 +63,29 @@ public class Bateaux_ListComplete extends javax.swing.JFrame {
         for (String columnName : columnNames) {
             tableModelBateauPlaisance.addColumn(columnName);
         }
-        BateauPlaisance tempBateauPlaisance;
+        
+        ArrayList arrayListPlaisance = new ArrayList();
+        
         for (int i = 0; i < pontons.size(); i++) {
             for (int j = 0; j < pontons.get(i).getListe(1).length; j++) {
-                tempBateauPlaisance = (BateauPlaisance) pontons.get(i).getListe(1)[j];
+                BateauPlaisance tempBateauPlaisance = (BateauPlaisance) pontons.get(i).getListe(1)[j];
                 if (tempBateauPlaisance != null) {
-                    tableModelBateauPlaisance.addRow(new Object[]{tempBateauPlaisance.getNom(), tempBateauPlaisance.getPavillon(), "P" + i + "1*" + j});
-                } else {
-                    tableModelBateauPlaisance.addRow(new Object[]{"Aucun Bateau", "", "P" + i + "1*" + j});
+                    arrayListPlaisance.add(new Object[]{tempBateauPlaisance.getNom(), tempBateauPlaisance.getPavillon(), "P" + i + "1*" + j});
                 }
             }
             for (int j = 0; j < pontons.get(i).getListe(2).length; j++) {
-                tempBateauPlaisance = (BateauPlaisance) pontons.get(i).getListe(2)[j];
+                BateauPlaisance tempBateauPlaisance = (BateauPlaisance) pontons.get(i).getListe(2)[j];
                 if (tempBateauPlaisance != null) {
-                    tableModelBateauPlaisance.addRow(new Object[]{tempBateauPlaisance.getNom(), tempBateauPlaisance.getPavillon(), "P" + i + "2*" + j});
-                } else {
-                    tableModelBateauPlaisance.addRow(new Object[]{"Aucun Bateau", " ", "P" + i + "2*" + j});
+                    arrayListPlaisance.add(new Object[]{tempBateauPlaisance.getNom(), tempBateauPlaisance.getPavillon(), "P" + i + "2*" + j});
                 }
             }
+        }
+        
+        arrayListPlaisance.sort(objComparator);
+        
+        for (int i=0; i < arrayListPlaisance.size(); i++) {
+            Object[] obj = (Object[])arrayListPlaisance.get(i);
+            tableModelBateauPlaisance.addRow(obj);
         }
 
         this.TableBateauxPlaisance.setModel(tableModelBateauPlaisance);

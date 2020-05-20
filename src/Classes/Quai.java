@@ -1,35 +1,42 @@
 package Classes;
 
 import Exceptions.AmarrageException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Florent & Wadi
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Quai extends Amarrage {
 
-    private MoyenDeTransportSurEau[] listeBateauxAmarres;
+    private MoyenDeTransportSurEau[] listeMTSEAmarres;
     private int placesOccupees = 0;
     private int places = 0;
 
     public Quai(String identifiant, int capacite, double longueurMaximum) {
         super(identifiant, capacite, longueurMaximum);
-        listeBateauxAmarres = new MoyenDeTransportSurEau[capacite];
+        listeMTSEAmarres = new MoyenDeTransportSurEau[capacite];
         setPlaces(capacite);
     }
+    
+    public Quai() {}
 
     /**n,
-     * @return the listeBateauxAmarres
+     * @return the listeMTSEAmarres
      */
     public MoyenDeTransportSurEau[] getListeBateauxAmarres() {
-        return listeBateauxAmarres;
+        return listeMTSEAmarres;
     }
 
     /**
-     * @param listeBateauxAmarres the listeBateauxAmarres to set
+     * @param listeBateauxAmarres the listeMTSEAmarres to set
      */
     public void setListeBateauxAmarres(MoyenDeTransportSurEau[] listeBateauxAmarres) {
-        this.listeBateauxAmarres = listeBateauxAmarres;
+        this.listeMTSEAmarres = listeBateauxAmarres;
     }
 
     public void addMTSE(MoyenDeTransportSurEau mtse) throws AmarrageException {
@@ -40,7 +47,7 @@ public class Quai extends Amarrage {
             }
         }
         if (getPlacesOccupees() < getPlaces()) {
-            listeBateauxAmarres[getPlacesOccupees()] = mtse;
+            listeMTSEAmarres[getPlacesOccupees()] = mtse;
             placesOccupees++;
         } else {
             // Plus de places

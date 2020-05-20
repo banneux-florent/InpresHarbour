@@ -8,8 +8,15 @@ package Network;
 import Classes.Bateau;
 import Classes.BateauPeche;
 import Classes.BateauPlaisance;
+import Classes.CapitainerieSavable;
+import Classes.Fonctions;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.bind.JAXBContext;
@@ -22,7 +29,7 @@ import javax.xml.bind.Unmarshaller;
  */
 public class XMLFormatter {
 
-    public static String toXML(Object object) {
+    public static String toXML(Object object) throws Exception {
         try {
             //Create JAXB Context
             JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
@@ -52,12 +59,11 @@ public class XMLFormatter {
 
             return xml;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         }
-        return "";
     }
 
-    public static Object fromXML(String xml) {
+    public static Object fromXML(String xml) throws Exception {
         Object objectToReturn = null;
         try {
             //Create JAXB Context
@@ -78,6 +84,9 @@ public class XMLFormatter {
                 case "frame":
                     objectClass = Frame.class;
                     break;
+                case "capitainerieSavable":
+                    objectClass = CapitainerieSavable.class;
+                    break;
                 default:
                     System.err.println("[XMLFormatter | Error] Type \"" + type + "\" isn't supported.");
                     return objectToReturn;
@@ -93,7 +102,7 @@ public class XMLFormatter {
 
             objectToReturn = jaxbUnmarshaller.unmarshal(sr);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         }
         return objectToReturn;
     }
@@ -108,12 +117,28 @@ public class XMLFormatter {
         return xml.replace("&lt;", "<").replace("&gt;", ">");
     }
 
-    public static void saveXml(String ficher, Object obj) {
-
+    public static void saveXML(String filename, Object object) {
+        try {
+            String xml = toXML(object);
+            filename = Fonctions.getFilePath(filename + ".xml");
+            
+            FileWriter writer = new FileWriter(filename, false);
+            writer.write(xml);
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static Object loadXml(String ficher) {
-
+    public static Object loadXML(String filename) {
+        try {
+            filename = Fonctions.getFilePath(filename + ".xml");
+            byte[] encoded = Files.readAllBytes(Paths.get(filename));
+            String xml = new String(encoded, StandardCharsets.UTF_8);
+            return (!xml.equals("")) ? fromXML(xml) : null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

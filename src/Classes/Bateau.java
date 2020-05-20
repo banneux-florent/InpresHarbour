@@ -2,12 +2,17 @@ package Classes;
 
 import Exceptions.ShipWithoutIdentificationException;
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Florent & Wadi
  */
-public class Bateau extends MoyenDeTransportSurEau implements AUnIdentifiant, Serializable {
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Bateau extends MoyenDeTransportSurEau implements AUnIdentifiant {
 
     //rajouter les nationalite..faire fonction qui va lire toutes les nationalites au demarrage et rajouter uk voir liste de florent
     private String nom;

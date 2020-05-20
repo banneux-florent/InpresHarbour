@@ -12,10 +12,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Florent & Wadi
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Equipage {
-
-  
     
     private Marin capitaine;
     private Marin second;
@@ -55,8 +53,8 @@ public class Equipage {
     public Equipage(Marin capitaine, Marin second) throws SailorIndicatedIsNotACaptainException, SailorIndicatedIsNotASecondException {
         this(capitaine, second, new LinkedList<Marin>());
     }
-      public Equipage() {
-    }
+    
+    public Equipage() {}
 
     /**
      * @return the capitaine

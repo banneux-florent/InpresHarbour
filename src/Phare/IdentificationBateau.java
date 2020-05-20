@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
 
 /**
  *
- * @author WADI
+ * @author Florent & Wadi
  */
 public class IdentificationBateau extends javax.swing.JDialog {
 

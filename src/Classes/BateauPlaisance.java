@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Florent & Wadi
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class BateauPlaisance extends Bateau {
 
     public static enum TypePermis {
@@ -31,8 +31,7 @@ public class BateauPlaisance extends Bateau {
         this.typePermis = typePermis;
     }
 
-    public BateauPlaisance() {
-    }
+    public BateauPlaisance() {}
 
     /**
      * @return the typePermis
@@ -55,7 +54,7 @@ public class BateauPlaisance extends Bateau {
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj); //To change body of generated methods, choose Tools | Templates.
+        return super.equals(obj);
     }
 
 }

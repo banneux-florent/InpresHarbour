@@ -1,9 +1,15 @@
 package Classes;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author Florent & Wadi
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Amarrage implements AUnIdentifiant {
 
     private double longueurMaximum;
@@ -15,6 +21,8 @@ public abstract class Amarrage implements AUnIdentifiant {
         this.identifiant = identifiant;
         this.longueurMaximum = longueurMaximum;
     }
+    
+    public Amarrage() {}
 
     /**
      * @return the capacite

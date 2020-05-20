@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Florent & Wadi
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class BateauPeche extends Bateau {
 
     public static enum TypeDePeche {
