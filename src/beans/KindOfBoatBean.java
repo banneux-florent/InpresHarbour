@@ -14,18 +14,20 @@ import java.util.LinkedList;
  */
 public class KindOfBoatBean implements IUserNumber {
     
-    private String id;
-    private LinkedList<BoatListener> listeners = new LinkedList<BoatListener>();
-    private BoatEvent boatEvent = new BoatEvent(this);
+    private final String id;
+    private final LinkedList<BoatListener> listeners = new LinkedList<BoatListener>();
+    private final BoatEvent boatEvent = new BoatEvent(this);
     
     public KindOfBoatBean(String id) {
         this.id = id;
     }
     
+    @Override
     public String getId() {
         return this.id;
     }
     
+    @Override
     public void processNumber(int n) {
         // Set le type en fonction de n du coup..?
         this.boatEvent.setBoatType(BoatType.Plaisance);

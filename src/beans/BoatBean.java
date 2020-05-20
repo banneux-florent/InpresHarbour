@@ -13,7 +13,7 @@ import java.util.LinkedList;
  */
 public class BoatBean implements BoatListener {
     
-    private LinkedList<BoatListener> listeners = new LinkedList<BoatListener>();
+    private final LinkedList<BoatListener> listeners = new LinkedList<BoatListener>();
     private BoatEvent boatEvent = null;
 
     public BoatBean() {}

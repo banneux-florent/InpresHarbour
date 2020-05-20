@@ -7,7 +7,6 @@ package beans;
 
 import java.time.LocalDateTime;
 import java.util.EventObject;
-import java.util.LinkedList;
 
 /**
  *
