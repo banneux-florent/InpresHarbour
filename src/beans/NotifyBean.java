@@ -9,6 +9,12 @@ package beans;
  *
  * @author Florent & Wadi
  */
-public class NotifyBean {
+public class NotifyBean implements BoatListener {
+    
+    @Override
+    public void BoatDetected(BoatEvent boatEvent) {
+        // Affichage de la modal
+        // Ajout du bateau dans la liste
+    }
     
 }

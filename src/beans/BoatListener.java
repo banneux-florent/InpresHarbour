@@ -9,10 +9,8 @@ package beans;
  *
  * @author Florent & Wadi
  */
-public class BoatListener {
+public interface BoatListener {
     
-    public void BoatDetected(BoatEvent boatEvent) {
-        
-    }
+    public void BoatDetected(BoatEvent boatEvent);
     
 }

@@ -24,8 +24,44 @@ public class BoatEvent extends EventObject {
     private BoatType boatType = null;
     private int flag = -1;
     
-    public BoatEvent(Object source) {
+    public BoatEvent(Object source) { // Default constructor
         super(source);
+    }
+    
+    public BoatEvent(BoatEvent boatEvent) { // Copy constructor
+        this(boatEvent.getSource(), boatEvent.getBoatType(), boatEvent.getFlag());
+    }
+    
+    public BoatEvent(Object source, BoatType boatType, int flag) { // Init constructor
+        super(source);
+        this.receptedAt = LocalDateTime.now();
+        this.boatType = boatType;
+        this.flag = flag;
+    }
+
+    public LocalDateTime getReceptedAt() {
+        return receptedAt;
+    }
+
+    public void setReceptedAt(LocalDateTime receptedAt) {
+        this.receptedAt = receptedAt;
+    }
+
+    public BoatType getBoatType() {
+        return boatType;
+    }
+
+    public void setBoatType(BoatType boatType) {
+        this.boatType = boatType;
+    }
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        if (flag > 0)
+            this.flag = flag;
     }
     
 }

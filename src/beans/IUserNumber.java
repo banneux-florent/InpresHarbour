@@ -3,13 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package threadsutils;
+package beans;
 
 /**
  *
  * @author Florent & Wadi
  */
-public interface IUtilisateurNombre {
-    String getIdentifiant();
-    void traiteNombre(int n);
+public interface IUserNumber {
+    
+    String getId();
+    void processNumber(int n);
+    
 }
+

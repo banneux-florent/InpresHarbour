@@ -5,26 +5,46 @@
  */
 package beans;
 
-import threadsutils.IUtilisateurNombre;
+import beans.BoatEvent.BoatType;
+import java.util.LinkedList;
 
 /**
  *
  * @author Florent & Wadi
  */
-public class KindOfBoatBean implements IUtilisateurNombre {
+public class KindOfBoatBean implements IUserNumber {
     
-    private String identifiant;
+    private String id;
+    private LinkedList<BoatListener> listeners = new LinkedList<BoatListener>();
+    private BoatEvent boatEvent = new BoatEvent(this);
     
-    public KindOfBoatBean(String identifiant) {
-        this.identifiant = identifiant;
+    public KindOfBoatBean(String id) {
+        this.id = id;
     }
     
-    public String getIdentifiant() {
-        return this.identifiant;
+    public String getId() {
+        return this.id;
     }
     
-    public void traiteNombre(int n){
-        
+    public void processNumber(int n) {
+        // Set le type en fonction de n du coup..?
+        this.boatEvent.setBoatType(BoatType.Plaisance);
+        notifyBoatDetected();
+    }
+    
+    public void addListener(BoatListener boatListener) {
+        this.listeners.add(boatListener);
+    }
+    
+    public void removeListener(BoatListener boatListener) {
+        this.listeners.remove(boatListener);
+    }
+    
+    protected void notifyBoatDetected() {
+        BoatEvent boatEvent = new BoatEvent(this.boatEvent); // Pour éviter des bugs de référence
+        for (BoatListener boatListener : this.listeners) {
+            boatListener.BoatDetected(boatEvent);
+        }
     }
     
 }
