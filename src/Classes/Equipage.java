@@ -2,6 +2,7 @@ package Classes;
 
 import Exceptions.SailorIndicatedIsNotACaptainException;
 import Exceptions.SailorIndicatedIsNotASecondException;
+import java.io.Serializable;
 import java.util.LinkedList;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Equipage {
+public class Equipage implements Serializable {
     
     private Marin capitaine;
     private Marin second;

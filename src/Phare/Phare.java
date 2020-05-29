@@ -4,37 +4,70 @@ import Classes.Bateau;
 import Classes.BateauPeche;
 import Classes.BateauPlaisance;
 import Classes.Equipage;
+import Classes.Fonctions;
 import Classes.Marin;
 import Network.Frame;
 import Network.IInOutEvent;
 import Network.NetworkBasicClient;
 import Network.XMLFormatter;
+import beans.BoatBean;
+import beans.IUserNumber;
+import beans.KindOfBoatBean;
+import beans.NotifyBean;
+import java.beans.Beans;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.LinkedList;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import threadsutils.ThreadRandomGenerator;
 
 /**
  *
  * @author Florent & Wadi
  */
-public class Phare extends javax.swing.JFrame implements IInOutEvent {
+public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumber {
 
     private NetworkBasicClient networkBC = null;
-    private final int PORT = 50000;
+    private ThreadRandomGenerator threadRandomGenerator;
+    private int PORT;
+    private int idKindOfBoatBean = 1;
 
     private LinkedList<Bateau> bateauxNonIdentifies = new LinkedList<Bateau>();
     private LinkedList<Bateau> bateauxIdentifies = new LinkedList<Bateau>();
     private LinkedList<Bateau> reponsesCapitainerie = new LinkedList<Bateau>();
     private LinkedList<Bateau> confirmationsCapitainerie = new LinkedList<Bateau>();
+    private int lowerBound;
+    private int upperBound;
+    private int triggerMultiple;
+    private int waitingTime;
+    private Properties properties;
 
     /**
      * Creates new form Phare
      */
     public Phare() {
         initComponents();
+        try {
+            this.properties = Fonctions.chargerConfig();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        this.PORT = Integer.parseInt(this.properties.getProperty("port.ecoute"));
+        this.lowerBound = Integer.parseInt(this.properties.getProperty("lowerBound"));
+        this.upperBound = Integer.parseInt(this.properties.getProperty("upperBound"));
+        this.triggerMultiple = Integer.parseInt(this.properties.getProperty("triggerMultiple"));
+        this.waitingTime = Integer.parseInt(this.properties.getProperty("waitingTime"));
+
+        this.threadRandomGenerator = new ThreadRandomGenerator(this, lowerBound, upperBound, triggerMultiple, waitingTime);
+        this.threadRandomGenerator.start();
 
         try {
             this.networkBC = new NetworkBasicClient("localhost", PORT, this, this.LOnOff, this.BtnSeConnecterAuServeur);
@@ -316,7 +349,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
         int selectedIndex = this.LBBateauxIdentifies.getSelectedIndex();
         if (selectedIndex != -1) {
             Bateau bateau = this.bateauxIdentifies.get(selectedIndex);
-            
+
             try {
                 String xmlBateau = XMLFormatter.toXML(bateau);
 
@@ -463,6 +496,43 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent {
         } catch (Exception e) {
             System.err.println("[Phare | Error] \"" + e.getMessage() + "\"");
         }
+    }
+
+    @Override
+    public String getId() {
+        return this.getClass().getName() + " 1998";
+    }
+
+    @Override
+    public void processNumber(int n) {
+        String id =  "Kind of boat bean" + this.idKindOfBoatBean;
+        KindOfBoatBean kindOfBoatBean = null;
+        BoatBean boatBean = null;
+        NotifyBean notifyBean = null;
+        try {
+            kindOfBoatBean = (KindOfBoatBean) Beans.instantiate(null, "beans.KindOfBoatBean");
+            boatBean = (BoatBean) Beans.instantiate(null, "beans.BoatBean");
+            notifyBean = (NotifyBean) Beans.instantiate(null, "beans.NotifyBean");
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        notifyBean.setPhare(this);
+        kindOfBoatBean.setEnMarche(true);
+        kindOfBoatBean.setId(id);
+        kindOfBoatBean.addPropertyChangeListener(boatBean);
+        boatBean.addListener(notifyBean);
+        kindOfBoatBean.start();
+        
+
+        this.idKindOfBoatBean++;
+    }
+
+    public void AddBoatNoIdentified(Bateau b) {
+        bateauxNonIdentifies.add(b);
+
+        ((DefaultListModel) this.LBBateauxNonIdentifies.getModel()).addElement(b);
     }
 
 }

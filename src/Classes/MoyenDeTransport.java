@@ -1,5 +1,6 @@
 package Classes;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -10,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class MoyenDeTransport implements AvecHumains {
+public abstract class MoyenDeTransport implements AvecHumains,Serializable {
 
     protected enum Energie {
         Essence,

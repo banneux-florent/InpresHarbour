@@ -1,6 +1,7 @@
 package Classes;
 
 import Exceptions.AmarrageException;
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -11,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Ponton extends Amarrage {
+public class Ponton extends Amarrage implements Serializable {
 
     private MoyenDeTransportSurEau[] listeMTSEAmarresCote1;
     private int placesOccupeesCote1 = 0;

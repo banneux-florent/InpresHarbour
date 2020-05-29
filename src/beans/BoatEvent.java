@@ -5,6 +5,8 @@
  */
 package beans;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.time.LocalDateTime;
 import java.util.EventObject;
 
@@ -13,7 +15,7 @@ import java.util.EventObject;
  * @author Florent & Wadi
  */
 public class BoatEvent extends EventObject {
-    
+
     public static enum BoatType {
         Plaisance,
         Peche
@@ -22,15 +24,12 @@ public class BoatEvent extends EventObject {
     private LocalDateTime receptedAt = null;
     private BoatType boatType = null;
     private int flag = -1;
-    
+
     public BoatEvent(Object source) { // Default constructor
         super(source);
+        this.receptedAt = LocalDateTime.now();
     }
-    
-    public BoatEvent(BoatEvent boatEvent) { // Copy constructor
-        this(boatEvent.getSource(), boatEvent.getBoatType(), boatEvent.getFlag());
-    }
-    
+
     public BoatEvent(Object source, BoatType boatType, int flag) { // Init constructor
         super(source);
         this.receptedAt = LocalDateTime.now();
@@ -59,8 +58,9 @@ public class BoatEvent extends EventObject {
     }
 
     public void setFlag(int flag) {
-        if (flag > 0)
+        if (flag > 0) {
             this.flag = flag;
+        }
     }
-    
+
 }

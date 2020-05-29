@@ -5,12 +5,14 @@
  */
 package beans;
 
+import java.util.EventListener;
+
 /**
  *
  * @author Florent & Wadi
  */
-public interface BoatListener {
-    
+public interface BoatListener extends EventListener {
+
     public void BoatDetected(BoatEvent boatEvent);
-    
+
 }

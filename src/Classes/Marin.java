@@ -2,6 +2,7 @@ package Classes;
 
 import java.time.LocalDate;
 import Exceptions.SailorWithoutIdentificationException;
+import java.io.Serializable;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Marin extends Humain implements AUnIdentifiant {
+public class Marin extends Humain implements AUnIdentifiant  , Serializable {
     
     public static enum Fonction {
         Capitaine,

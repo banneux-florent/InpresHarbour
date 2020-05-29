@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class BateauPlaisance extends Bateau {
+public class BateauPlaisance extends Bateau implements Serializable {
 
     public static enum TypePermis {
         PlaisanceOptionCotiere,
