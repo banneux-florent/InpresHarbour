@@ -23,8 +23,13 @@ public class BateauPeche extends Bateau implements Serializable{
     private TypeDePeche typeDePeche;
 
     public BateauPeche(String nom, String portAttache, int tonnage, float longeur, TypeDePeche typeDePeche, String pavillon) throws ShipWithoutIdentificationException {
-        super(nom, portAttache, tonnage, longeur,pavillon);
+        super(nom, portAttache, tonnage, longeur, pavillon);
         this.typeDePeche = typeDePeche;
+    }
+
+    public BateauPeche(BateauPeche bateauPeche) throws ShipWithoutIdentificationException {
+        super(bateauPeche.getNom(), bateauPeche.getPortAttache(), bateauPeche.getTonnage(), bateauPeche.getLongeur(), bateauPeche.getPavillon());
+        this.typeDePeche = bateauPeche.getTypeDePeche();
     }
     
     public BateauPeche() {}

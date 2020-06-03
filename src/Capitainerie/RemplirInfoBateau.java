@@ -1,9 +1,12 @@
 package Capitainerie;
 
 import Classes.Bateau;
+import Classes.BateauPeche;
+import Classes.BateauPlaisance;
 import Classes.Marin;
 import Exceptions.CapitainerieException;
 import Exceptions.SailorWithoutIdentificationException;
+import Exceptions.ShipWithoutIdentificationException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Month;
@@ -17,17 +20,22 @@ import javax.swing.DefaultListModel;
  */
 public class RemplirInfoBateau extends javax.swing.JDialog {
 
-    private Bateau bateauARemplir;
+    private Bateau bateauARemplir, bateauARetirer;
     private Capitainerie capitainerie;
 
     /**
      * Creates new form BateauEntrant
      */
-    public RemplirInfoBateau(Capitainerie parent, boolean modal, Bateau bateau, String emplacement) {
+    public RemplirInfoBateau(Capitainerie parent, boolean modal, Bateau bateau, String emplacement) throws ShipWithoutIdentificationException {
         super(parent, modal);
         initComponents();
         this.capitainerie = parent;
-        this.bateauARemplir = bateau;
+        this.bateauARetirer = bateau;
+        if (bateau instanceof BateauPeche) {
+            this.bateauARemplir = new BateauPeche((BateauPeche) bateau);
+        } else {
+            this.bateauARemplir = new BateauPlaisance((BateauPlaisance)bateau);
+        }
         this.LNomDuBateau.setText(bateau.getNom());
         this.LEmplacement.setText(emplacement);
         this.LPavillon.setText(bateau.getPavillon());
@@ -320,7 +328,7 @@ public class RemplirInfoBateau extends javax.swing.JDialog {
             new CapitainerieException("Erreur", "Le tonnage du bateau doit être strictement positif.");
         }
         if (valide) {
-            this.capitainerie.ajouterBateauListeBateauAmmare(bateauARemplir);
+            this.capitainerie.ajouterBateauListeBateauAmmare(bateauARemplir, bateauARetirer);
             this.dispose();
         }
 

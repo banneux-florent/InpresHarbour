@@ -4,6 +4,7 @@ import Classes.Bateau;
 import Classes.BateauPeche;
 import Classes.BateauPlaisance;
 import Classes.Equipage;
+import Classes.FichierLog;
 import Classes.Fonctions;
 import Classes.Marin;
 import Network.Frame;
@@ -53,9 +54,12 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
      */
     public Phare() {
         initComponents();
+        
+        FichierLog fl = new FichierLog();
+        fl.ecrireLigne("Le Phare a été démarré.");
+        
         try {
             this.properties = Fonctions.chargerConfig();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,7 +83,8 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
         this.LBBateauxIdentifies.setModel(new DefaultListModel());
         this.LBReponsesCapitainerie.setModel(new DefaultListModel());
         this.LBConfirmationsCapitainerie.setModel(new DefaultListModel());
-
+        
+        /*
         try {
             Marin capitaine = new Marin("Mokh", "Wad", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Capitaine);
             Marin second = new Marin("Flo", "Bann", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Second);
@@ -105,6 +110,8 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+        
+        */
 
     }
 
@@ -153,6 +160,11 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Le phare");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         PanelHeader.setBackground(new java.awt.Color(220, 220, 220));
 
@@ -339,9 +351,6 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
 
             IdentificationBateau identificationBateau = new IdentificationBateau(this, bateau);
             identificationBateau.setVisible(true);
-
-            // Identification du bateau
-            // Ouvrir fen?tre pour remplir nom/longueur
         }
     }//GEN-LAST:event_BtnIdentifierLeBateauActionPerformed
 
@@ -384,6 +393,11 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
             }
         }
     }//GEN-LAST:event_BtnBateauEntrerDansLaRadeActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        FichierLog fl = new FichierLog();
+        fl.ecrireLigne("Le Phare a été fermé.");
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

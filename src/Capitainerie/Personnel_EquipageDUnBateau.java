@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Florent & Wadi
  */
-public class Personnel_EquipageDUnBateau extends javax.swing.JFrame {
+public class Personnel_EquipageDUnBateau extends javax.swing.JDialog {
 
     private LinkedList<Ponton> pontons = new LinkedList<Ponton>();
     private LinkedList<Quai> quais = new LinkedList<Quai>();

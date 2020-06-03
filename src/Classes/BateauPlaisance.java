@@ -31,6 +31,11 @@ public class BateauPlaisance extends Bateau implements Serializable {
         this.typePermis = typePermis;
     }
 
+    public BateauPlaisance(BateauPlaisance bateauPlaisance) throws ShipWithoutIdentificationException {
+        super(bateauPlaisance.getNom(), bateauPlaisance.getPortAttache(), bateauPlaisance.getTonnage(), bateauPlaisance.getLongeur(), bateauPlaisance.getPavillon());
+        this.typePermis = bateauPlaisance.getTypePermis();
+    }
+
     public BateauPlaisance() {}
 
     /**

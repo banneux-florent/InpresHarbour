@@ -1,0 +1,2 @@
+[Wed Jun 03 20:11:19 CEST 2020] Un nouveau bateau a été généré: BateauPlaisance / La Réunion / RE
+[Wed Jun 03 20:12:59 CEST 2020] La capintainerie a été démarrée.

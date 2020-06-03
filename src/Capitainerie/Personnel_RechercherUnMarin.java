@@ -11,7 +11,7 @@ import javax.swing.DefaultListModel;
  *
  * @author Florent & Wadi
  */
-public class Personnel_RechercherUnMarin extends javax.swing.JFrame {
+public class Personnel_RechercherUnMarin extends javax.swing.JDialog {
 
     /**
      * Creates new form RechercherBateau

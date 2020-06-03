@@ -60,6 +60,9 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
      */
     public Capitainerie() {
         initComponents();
+        
+        FichierLog fl = new FichierLog();
+        fl.ecrireLigne("La Capintainerie a été démarrée.");
 
         try {
             this.networkBS = new NetworkBasicServer(PORT, this, this.LOnOff, this.BtnDemarrerServeur);
@@ -83,13 +86,16 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         }
 
         this.PORT = Integer.parseInt(this.properties.getProperty("port.ecoute"));
-        /*
+        
+        /* 
         
         this.pontons.add(new Ponton("1", 12, 15.0));
         this.pontons.add(new Ponton("2", 12, 15.0));
         
         this.quais.add(new Quai("1", 6, 15.0));
         this.quais.add(new Quai("2", 6, 15.0));
+        
+        /*
         
         
 
@@ -126,102 +132,105 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
 
     private void init() {
         String sep = System.getProperty("file.separator");
-        String file = System.getProperty("user.dir") + sep + "Donnees" + sep;
-        File dossier = new File(file);
-// le "fichier" existe et est un dossier 
-        if (dossier.exists() && dossier.isDirectory()) {
+        String path = System.getProperty("user.dir") + sep + "Donnees" + sep;
+        File directory = new File(path);
+        
+        if (!directory.exists()) {
+            path = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep;
+            directory = new File(path);
+            if (!directory.exists()) {
+                return;
+            }
+        }
 
-        } else {
-            file = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep;
-            dossier = new File(file);
-            if (dossier.exists() && dossier.isDirectory()) {
+        try {
+            File toCheck = new File(path + "bateauAttenteEntrer.dat");
+            if (toCheck.exists()) {
+                FileInputStream fileIn = new FileInputStream(path + "bateauAttenteEntrer.dat");
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
 
+                this.bateauAttenteEntrer = (LinkedList<Bateau>) objectIn.readObject();
+
+                for (int i = 0; i < this.bateauAttenteEntrer.size(); i++) {
+                    ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).addElement(this.bateauAttenteEntrer.get(i));
+                }
+                objectIn.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        try {
+            File toCheck = new File(path + "bateauEnCoursDAmarrage.dat");
+            if (toCheck.exists()) {
+                FileInputStream fileIn = new FileInputStream(path + "bateauEnCoursDAmarrage.dat");
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+                this.bateauEnCoursDAmarrage = (LinkedList<Bateau>) objectIn.readObject();
+                for (int i = 0; i < this.bateauEnCoursDAmarrage.size(); i++) {
+                    ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).addElement(this.bateauEnCoursDAmarrage.get(i));
+                }
+                objectIn.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        try {
+            File toCheck = new File(path + "bateauEntresDansLaRade.dat");
+            if (toCheck.exists()) {
+                FileInputStream fileIn = new FileInputStream(path + "bateauEntresDansLaRade.dat");
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+                this.bateauEntresDansLaRade = (LinkedList<Bateau>) objectIn.readObject();
+
+                for (int i = 0; i < this.bateauEntresDansLaRade.size(); i++) {
+                    ((DefaultListModel) this.LBBateauEntresDansLaRade.getModel()).addElement(this.bateauEntresDansLaRade.get(i));
+                }
+                objectIn.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        try {
+            File toCheck = new File(path + "bateauAmarre.dat");
+            if (toCheck.exists()) {
+                FileInputStream fileIn = new FileInputStream(path + "bateauAmarre.dat");
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+                this.bateauAmarre = (LinkedList<Bateau>) objectIn.readObject();
+
+                for (int i = 0; i < this.bateauAmarre.size(); i++) {
+                    ((DefaultListModel) this.LBBateauxAmarres.getModel()).addElement(this.bateauAmarre.get(i));
+                }
+                objectIn.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        try {
+            File toCheck = new File(path + "pontons.dat");
+            if (toCheck.exists()) {
+                FileInputStream fileIn = new FileInputStream(path + "pontons.dat");
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+                this.pontons = (LinkedList<Ponton>) objectIn.readObject();
+                objectIn.close();
             } else {
+                this.pontons.add(new Ponton("1", 12, 15.0));
+                this.pontons.add(new Ponton("2", 12, 15.0));
             }
-        }
-
-        try {
-
-            FileInputStream fileIn = new FileInputStream(file + "bateauAttenteEntrer.dat");
-            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-
-            this.bateauAttenteEntrer = (LinkedList<Bateau>) objectIn.readObject();
-
-            for (int i = 0; i < this.bateauAttenteEntrer.size(); i++) {
-                ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).addElement(this.bateauAttenteEntrer.get(i));
-            }
-
-            objectIn.close();
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         try {
-
-            FileInputStream fileIn = new FileInputStream(file + "bateauEnCoursDAmarrage.dat");
-            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-
-            this.bateauEnCoursDAmarrage = (LinkedList<Bateau>) objectIn.readObject();
-            for (int i = 0; i < this.bateauEnCoursDAmarrage.size(); i++) {
-                ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).addElement(this.bateauEnCoursDAmarrage.get(i));
+            File toCheck = new File(path + "quais.dat");
+            if (toCheck.exists()) {
+                FileInputStream fileIn = new FileInputStream(path + "quais.dat");
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+                this.quais = (LinkedList<Quai>) objectIn.readObject();
+                objectIn.close();
+            } else {
+                this.quais.add(new Quai("1", 6, 15.0));
+                this.quais.add(new Quai("2", 6, 15.0));
             }
-            objectIn.close();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        try {
-
-            FileInputStream fileIn = new FileInputStream(file + "bateauEntresDansLaRade.dat");
-            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-
-            this.bateauEntresDansLaRade = (LinkedList<Bateau>) objectIn.readObject();
-
-            for (int i = 0; i < this.bateauEntresDansLaRade.size(); i++) {
-                ((DefaultListModel) this.LBBateauEntresDansLaRade.getModel()).addElement(this.bateauEntresDansLaRade.get(i));
-            }
-            objectIn.close();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        try {
-
-            FileInputStream fileIn = new FileInputStream(file + "bateauAmarre.dat");
-            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-
-            this.bateauAmarre = (LinkedList<Bateau>) objectIn.readObject();
-
-            for (int i = 0; i < this.bateauAmarre.size(); i++) {
-                ((DefaultListModel) this.LBBateauxAmarres.getModel()).addElement(this.bateauAmarre.get(i));
-            }
-
-            objectIn.close();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        try {
-
-            FileInputStream fileIn = new FileInputStream(file + "pontons.dat");
-            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-
-            this.pontons = (LinkedList<Ponton>) objectIn.readObject();
-
-            objectIn.close();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        try {
-
-            FileInputStream fileIn = new FileInputStream(file + "quais.dat");
-            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-
-            this.quais = (LinkedList<Quai>) objectIn.readObject();
-
-            objectIn.close();
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -771,20 +780,30 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
                     for (int j = 0; j < this.pontons.get(i).getListe(1).length; j++) {
                         if (bateau.equals(this.pontons.get(i).getListe(1)[j])) {
                             bateauAEnvoyer = (Bateau) this.pontons.get(i).getListe(1)[j];
+                            i = this.pontons.size();
+                            break;
                         }
                     }
-                    for (int j = 0; j < this.pontons.get(i).getListe(2).length; j++) {
-                        if (bateau.equals(this.pontons.get(i).getListe(2)[j])) {
-                            bateauAEnvoyer = (Bateau) this.pontons.get(i).getListe(2)[j];
+                    if (i < this.pontons.size()) { // Si le bateau n'a pas été trouvé du côté 1 (Droite)
+                        for (int j = 0; j < this.pontons.get(i).getListe(2).length; j++) {
+                            if (bateau.equals(this.pontons.get(i).getListe(2)[j])) {
+                                bateauAEnvoyer = (Bateau) this.pontons.get(i).getListe(2)[j];
+                                i = this.pontons.size();
+                                break;
+                            }
                         }
                     }
                 }
 
             }
             String emplacement = this.getEmplacementBateau(bateau);
-            RemplirInfoBateau remplirInfoBateau = new RemplirInfoBateau(this, true, bateauAEnvoyer, emplacement);
-            remplirInfoBateau.setTitle("Ajout informations du bateau  " + bateau.getNom() + " ");
-            remplirInfoBateau.setVisible(true);
+            try {
+                RemplirInfoBateau remplirInfoBateau = new RemplirInfoBateau(this, true, bateauAEnvoyer, emplacement);
+                remplirInfoBateau.setTitle("Ajout informations du bateau  " + bateau.getNom() + " ");
+                remplirInfoBateau.setVisible(true);
+            } catch (ShipWithoutIdentificationException e) {
+                e.printStackTrace();
+            }
         }
     }//GEN-LAST:event_BtnRemplirInformationsBateauActionPerformed
 
@@ -860,83 +879,105 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         //private LinkedList<Quai> quais = new LinkedList<Quai>();
 
         String sep = System.getProperty("file.separator");
-        String file = System.getProperty("user.dir") + sep + "Donnees" + sep;
-        File dossier = new File(file);
-// le "fichier" existe et est un dossier 
-        if (dossier.exists() && dossier.isDirectory()) {
-
-        } else {
-            file = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep;
-            dossier = new File(file);
-            if (dossier.exists() && dossier.isDirectory()) {
-
-            } else {
+        String path = System.getProperty("user.dir") + sep + "Donnees" + sep;
+        File directory = new File(path);
+        if (!directory.exists() ) {
+            path = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep;
+            directory = new File(path);
+            if (!directory.exists()) {
+                return;
             }
         }
-
-        try (FileOutputStream fos = new FileOutputStream(file + "quais.dat");
-                ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
+        
+        try (FileOutputStream fos = new FileOutputStream(path + "quais.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.quais);
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        try (FileOutputStream fos = new FileOutputStream(file + "pontons.dat");
-                ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
+        
+        try (FileOutputStream fos = new FileOutputStream(path + "pontons.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.pontons);
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        try (FileOutputStream fos = new FileOutputStream(file + "bateauAttenteEntrer.dat");
-                ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
+        
+        try (FileOutputStream fos = new FileOutputStream(path + "bateauAttenteEntrer.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.bateauAttenteEntrer);
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        try (FileOutputStream fos = new FileOutputStream(file + "bateauEnCoursDAmarrage.dat");
-                ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
+        try (FileOutputStream fos = new FileOutputStream(path + "bateauEnCoursDAmarrage.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.bateauEnCoursDAmarrage);
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        try (FileOutputStream fos = new FileOutputStream(file + "bateauEntresDansLaRade.dat");
-                ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
+        
+        try (FileOutputStream fos = new FileOutputStream(path + "bateauEntresDansLaRade.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.bateauEntresDansLaRade);
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        try (FileOutputStream fos = new FileOutputStream(file + "bateauAmarre.dat");
-                ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
+        
+        try (FileOutputStream fos = new FileOutputStream(path + "bateauAmarre.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.bateauAmarre);
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
+        
+        FichierLog fl = new FichierLog();
+        fl.ecrireLigne("La Capintainerie a été fermée.");
     }//GEN-LAST:event_formWindowClosing
 
-    public void ajouterBateauListeBateauAmmare(Bateau bateau) {
-        this.bateauEnCoursDAmarrage.remove(bateau);
-        ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).removeElement(bateau);
-        ((DefaultListModel) this.LBBateauxAmarres.getModel()).addElement(bateau);
-        this.bateauAmarre.add(bateau);
+    /**
+     * @param Bateau bateauAAjouter copie du bateauARetirer
+     * @param Bateau bateauARetirer la référence du bateau initialement envoyé dans RemplirInfoBateau
+     */
+    public void ajouterBateauListeBateauAmmare(Bateau bateauAAjouter, Bateau bateauARetirer) {
+        this.bateauEnCoursDAmarrage.remove(bateauARetirer);
+        ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).removeElement(bateauARetirer);
+        ((DefaultListModel) this.LBBateauxAmarres.getModel()).addElement(bateauAAjouter);
+        this.bateauAmarre.add(bateauAAjouter);
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Capitainerie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Capitainerie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Capitainerie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Capitainerie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
 
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Capitainerie().setVisible(true);
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

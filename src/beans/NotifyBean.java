@@ -9,6 +9,7 @@ import Classes.Bateau;
 import Classes.BateauPeche;
 import Classes.BateauPlaisance;
 import Classes.Equipage;
+import Classes.FichierLog;
 import Classes.Marin;
 import Exceptions.SailorWithoutIdentificationException;
 import Exceptions.ShipWithoutIdentificationException;
@@ -70,6 +71,10 @@ public class NotifyBean implements BoatListener {
             }
         }
         b.setEquipage(equipage);
+        
+        FichierLog fl = new FichierLog();
+        fl.ecrireLigne("Un nouveau bateau a été généré: " + b.toString());
+        
         ArrivageBateau arrivageBateau = new ArrivageBateau(b);
         this.getPhare().AddBoatNoIdentified(b);
         arrivageBateau.setVisible(true);
