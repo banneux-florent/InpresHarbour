@@ -1,4 +1,4 @@
-package Utilisateurs;
+package utilisateurs;
 
 import Capitainerie.Capitainerie;
 import Classes.Fonctions;

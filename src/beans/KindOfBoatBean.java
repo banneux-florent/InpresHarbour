@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package beans;
 
 import Classes.Fonctions;
@@ -20,13 +15,13 @@ import threadsutils.ThreadRandomGenerator;
  */
 public class KindOfBoatBean implements IUserNumber {
 
-    private  String id;
+    private String id = "";
     private int lowerBound;
     private int upperBound;
     private int triggerMultiple;
     private int waitingTime;
     private ThreadRandomGenerator trg;
-    private boolean enMarche;
+    private boolean isRunning = false;
     private Properties properties;
     private int numberRefPlaisance;
     private int numberRefPeche;
@@ -35,44 +30,42 @@ public class KindOfBoatBean implements IUserNumber {
     private PropertyChangeSupport eventChange = new PropertyChangeSupport(this);
 
     public KindOfBoatBean() {
-        this.id = "";
-        setEnMarche(false);
-        System.err.println("Kind of boat beans instanciate");
+        System.err.println("[KoBB | Info] Kind of boat beans instanciated.");
         try {
             this.properties = Fonctions.chargerConfig();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.lowerBound = Integer.parseInt(this.properties.getProperty("lowerBound"));
-        this.upperBound = Integer.parseInt(this.properties.getProperty("upperBound"));
+        
+        this.lowerBound = Integer.parseInt(this.properties.getProperty("boatGenerator.lowerBound"));
+        this.upperBound = Integer.parseInt(this.properties.getProperty("boatGenerator.upperBound"));
         this.triggerMultiple = 1;
-        this.numberRefPeche = Integer.parseInt(this.properties.getProperty("numberRefPeche"));
-        this.numberRefPlaisance = Integer.parseInt(this.properties.getProperty("numberRefPlaisance"));
-        this.waitingTime = Integer.parseInt(this.properties.getProperty("waitingTime"));
+        this.numberRefPeche = Integer.parseInt(this.properties.getProperty("boatGenerator.numberRefPeche"));
+        this.numberRefPlaisance = Integer.parseInt(this.properties.getProperty("boatGenerator.numberRefPlaisance"));
+        this.waitingTime = Integer.parseInt(this.properties.getProperty("boatGenerator.waitingTime"));
     }
 
     public void start() {
-        if (isEnMarche()) {
+        if (isRunning()) {
             try {
                 trg = new ThreadRandomGenerator(this, lowerBound, upperBound, triggerMultiple, waitingTime);
                 trg.start();
             } catch (Exception e) {
+                e.printStackTrace();
             }
-
         }
     }
 
     public void stop() {
-        setEnMarche(false);
+        setIsRunning(false);
     }
 
-    public boolean isEnMarche() {
-        return enMarche;
+    public boolean isRunning() {
+        return isRunning;
     }
 
-    public void setEnMarche(boolean enMarche) {
-        this.enMarche = enMarche;
+    public void setIsRunning(boolean isRunning) {
+        this.isRunning = isRunning;
     }
 
     public String getKindOfBoat() {
@@ -94,18 +87,14 @@ public class KindOfBoatBean implements IUserNumber {
 
     @Override
     public void processNumber(int n) {
-        // Set le type en fonction de n du coup..?
-        System.err.println("Kinf of boat beans nombre generer" + n);
+        System.out.println("[KoBB | Info] Bean " + this.getId() + " is treating number " + n);
         if (n % numberRefPlaisance == 0) {
-            //this.boatEvent.setBoatType(BoatType.Plaisance);
-            System.err.println("Kob Bateau plaisance");
+            // System.err.println("[KoBB | Info] (" + n + ") Bateau généré! (Bateau de plaisance)");
             notifyBoatDetected("Plaisance");
         } else if (n % numberRefPeche == 0) {
-            //this.boatEvent.setBoatType(BoatType.Peche);
-            System.err.println("Kob Bateau peche");
+            // System.err.println("[KoBB | Info] (" + n + ") Bateau généré! (Bateau de p?che)");
             notifyBoatDetected("Peche");
         }
-
     }
 
     protected void notifyBoatDetected(String newKindOfBoat) {
@@ -113,7 +102,7 @@ public class KindOfBoatBean implements IUserNumber {
         String oldKindOfBoat = this.getKindOfBoat();
         this.setKindOfBoat(newKindOfBoat);
         eventChange.firePropertyChange("KindOfBoat", oldKindOfBoat, newKindOfBoat);
-        this.setEnMarche(false);
+        this.setIsRunning(false);
         trg.stop();
         return;
     }

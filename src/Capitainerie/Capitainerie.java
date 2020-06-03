@@ -7,7 +7,7 @@ import Network.Frame;
 import Network.IInOutEvent;
 import Network.NetworkBasicServer;
 import Network.XMLFormatter;
-import Utilisateurs.Connexion;
+import utilisateurs.Connexion;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,12 +44,13 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
     private boolean isLoggedIn = false;
 
     private NetworkBasicServer networkBS;
-    private int PORT = 50000;
+    private String HOST;
+    private int PORT;
 
     public LinkedList<Bateau> bateauAttenteEntrer = new LinkedList<Bateau>();
     public LinkedList<Bateau> bateauEnCoursDAmarrage = new LinkedList<Bateau>();
     public LinkedList<Bateau> bateauEntresDansLaRade = new LinkedList<Bateau>();
-    public LinkedList<Bateau> bateauAmarre = new LinkedList<Bateau>();
+    public LinkedList<Bateau> bateauxAmarres = new LinkedList<Bateau>();
 
     public LinkedList<Ponton> pontons = new LinkedList<Ponton>();
     public LinkedList<Quai> quais = new LinkedList<Quai>();
@@ -63,6 +64,16 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         
         FichierLog fl = new FichierLog();
         fl.ecrireLigne("La Capintainerie a été démarrée.");
+        
+        Properties properties = new Properties();
+        try {
+            properties = Fonctions.chargerConfig();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        this.HOST = properties.getProperty("network.host");
+        this.PORT = Integer.parseInt(properties.getProperty("network.port"));
 
         try {
             this.networkBS = new NetworkBasicServer(PORT, this, this.LOnOff, this.BtnDemarrerServeur);
@@ -70,24 +81,14 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
             System.err.println(e.getMessage());
         }
 
-        Date now = new Date();
-        setDateHeure(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.FRANCE).format(now));
+        setDateHeure(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.FRANCE).format(new Date()));
 
         this.LBBateauAttenteEntrer.setModel(new DefaultListModel());
         this.LBBateauEnCoursDAmarrage.setModel(new DefaultListModel());
         this.LBBateauEntresDansLaRade.setModel(new DefaultListModel());
         this.LBBateauxAmarres.setModel(new DefaultListModel());
-
-        try {
-            this.properties = Fonctions.chargerConfig();
-            this.init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        this.PORT = Integer.parseInt(this.properties.getProperty("port.ecoute"));
         
-        /* 
+        this.loadSavedData();
         
         this.pontons.add(new Ponton("1", 12, 15.0));
         this.pontons.add(new Ponton("2", 12, 15.0));
@@ -97,8 +98,6 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         
         /*
         
-        
-
         this.LBBateauAttenteEntrer.setModel(new DefaultListModel());
         this.LBBateauEnCoursDAmarrage.setModel(new DefaultListModel());
         this.LBBateauEntresDansLaRade.setModel(new DefaultListModel());
@@ -130,13 +129,13 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
          */
     }
 
-    private void init() {
+    private void loadSavedData() {
         String sep = System.getProperty("file.separator");
-        String path = System.getProperty("user.dir") + sep + "Donnees" + sep;
+        String path = System.getProperty("user.dir") + sep + "Donnees" + sep + "capitainerie" + sep;
         File directory = new File(path);
         
         if (!directory.exists()) {
-            path = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep;
+            path = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep + "capitainerie" + sep;
             directory = new File(path);
             if (!directory.exists()) {
                 return;
@@ -196,10 +195,10 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
                 FileInputStream fileIn = new FileInputStream(path + "bateauAmarre.dat");
                 ObjectInputStream objectIn = new ObjectInputStream(fileIn);
 
-                this.bateauAmarre = (LinkedList<Bateau>) objectIn.readObject();
+                this.bateauxAmarres = (LinkedList<Bateau>) objectIn.readObject();
 
-                for (int i = 0; i < this.bateauAmarre.size(); i++) {
-                    ((DefaultListModel) this.LBBateauxAmarres.getModel()).addElement(this.bateauAmarre.get(i));
+                for (int i = 0; i < this.bateauxAmarres.size(); i++) {
+                    ((DefaultListModel) this.LBBateauxAmarres.getModel()).addElement(this.bateauxAmarres.get(i));
                 }
                 objectIn.close();
             }
@@ -302,6 +301,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
             }
         });
 
+        LDateHeure.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         LDateHeure.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         LDateHeure.setText("...");
 
@@ -507,7 +507,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         jMenu6.add(MIFichierLog);
 
         MIAffichageDateHeureCourante.setSelected(true);
-        MIAffichageDateHeureCourante.setText("Affichage date heure courante");
+        MIAffichageDateHeureCourante.setText("Affichage date heure du démarrage");
         MIAffichageDateHeureCourante.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MIAffichageDateHeureCouranteActionPerformed(evt);
@@ -647,71 +647,78 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
     }//GEN-LAST:event_BtnDemarrerServeurActionPerformed
 
     private void BtnEnvoyerConfirmationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEnvoyerConfirmationActionPerformed
-        int selectedIndex = this.LBBateauEntresDansLaRade.getSelectedIndex();
-        boolean trouve = false;
+        if (this.networkBS.isConnected()) {
+            int selectedIndex = this.LBBateauEntresDansLaRade.getSelectedIndex();
+            if (selectedIndex != -1) {
+                Bateau bateau = (Bateau) ((DefaultListModel) this.LBBateauEntresDansLaRade.getModel()).getElementAt(selectedIndex);
+                try {
+                    String xmlBateau = XMLFormatter.toXML(bateau);
+                    // Envois bateau dans phare
+                    Frame.send(this.networkBS, new String[]{"phare_ajouter_bateau_liste", "confirmation_capitainerie", xmlBateau});
 
-        if (selectedIndex != -1) {
-            Bateau bateau = (Bateau) ((DefaultListModel) this.LBBateauEntresDansLaRade.getModel()).getElementAt(selectedIndex);
+                    // Retrait bateau capitainerie
+                    this.bateauEntresDansLaRade.remove(bateau);
+                    ((DefaultListModel) this.LBBateauEntresDansLaRade.getModel()).removeElement(bateau);
 
-            try {
-                String xmlBateau = XMLFormatter.toXML(bateau);
-                // Envois bateau dans phare
-                Frame.send(this.networkBS, new String[]{"phare_ajouter_bateau_liste", "confirmation_capitainerie", xmlBateau});
-
-                // Retrait bateau capitainerie
-                this.bateauEntresDansLaRade.remove(bateau);
-                ((DefaultListModel) this.LBBateauEntresDansLaRade.getModel()).removeElement(bateau);
-
-                this.bateauEnCoursDAmarrage.add(bateau);
-                ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).addElement(bateau);
-            } catch (Exception e) {
-                System.err.println("[Capitainerie | Error] \"" + e.getMessage() + "\"");
+                    this.bateauEnCoursDAmarrage.add(bateau);
+                    ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).addElement(bateau);
+                } catch (Exception e) {
+                    System.err.println("[Capitainerie | Error] \"" + e.getMessage() + "\"");
+                }
             }
+        } else {
+            DialogErreur de = new DialogErreur("Erreur", "Le serveur n'est pas allumé. Attention ? ce que le phare le soit aussi!");
+            de.setVisible(true);
         }
     }//GEN-LAST:event_BtnEnvoyerConfirmationActionPerformed
 
     private void BtnEnvoyerEmplacementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEnvoyerEmplacementActionPerformed
-        int selectedIndex = this.LBBateauAttenteEntrer.getSelectedIndex();
-        boolean trouve = false;
-        if (selectedIndex != -1) {
-            Bateau bateau = (Bateau) ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).getElementAt(selectedIndex);
-            if (bateau instanceof BateauPeche) {
-                for (int i = 0; i < quais.size() && !trouve; i++) {
-                    for (int j = 0; j < quais.get(i).getListeBateauxAmarres().length && !trouve; j++) {
-                        BateauPeche tempBateauPeche = (BateauPeche) quais.get(i).getListeBateauxAmarres()[j];
-                        trouve = (tempBateauPeche != null && bateau.equals(tempBateauPeche));
+        if (this.networkBS.isConnected()) {
+            int selectedIndex = this.LBBateauAttenteEntrer.getSelectedIndex();
+            boolean trouve = false;
+            if (selectedIndex != -1) {
+                Bateau bateau = (Bateau) ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).getElementAt(selectedIndex);
+                if (bateau instanceof BateauPeche) {
+                    for (int i = 0; i < quais.size() && !trouve; i++) {
+                        for (int j = 0; j < quais.get(i).getListeBateauxAmarres().length && !trouve; j++) {
+                            BateauPeche tempBateauPeche = (BateauPeche) quais.get(i).getListeBateauxAmarres()[j];
+                            trouve = (tempBateauPeche != null && bateau.equals(tempBateauPeche));
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < this.pontons.size() && !trouve; i++) {
+                        for (int j = 0; j < this.pontons.get(i).getListe(1).length && !trouve; j++) {
+                            BateauPlaisance tempBateauPlaisance = (BateauPlaisance) this.pontons.get(i).getListe(1)[j];
+                            trouve = (tempBateauPlaisance != null && bateau.equals(tempBateauPlaisance));
+                        }
+                        for (int j = 0; j < this.pontons.get(i).getListe(2).length && !trouve; j++) {
+                            BateauPlaisance tempBateauPlaisance = (BateauPlaisance) this.pontons.get(i).getListe(2)[j];
+                            trouve = (tempBateauPlaisance != null && bateau.equals(tempBateauPlaisance));
+                        }
                     }
                 }
-            } else {
-                for (int i = 0; i < this.pontons.size() && !trouve; i++) {
-                    for (int j = 0; j < this.pontons.get(i).getListe(1).length && !trouve; j++) {
-                        BateauPlaisance tempBateauPlaisance = (BateauPlaisance) this.pontons.get(i).getListe(1)[j];
-                        trouve = (tempBateauPlaisance != null && bateau.equals(tempBateauPlaisance));
-                    }
-                    for (int j = 0; j < this.pontons.get(i).getListe(2).length && !trouve; j++) {
-                        BateauPlaisance tempBateauPlaisance = (BateauPlaisance) this.pontons.get(i).getListe(2)[j];
-                        trouve = (tempBateauPlaisance != null && bateau.equals(tempBateauPlaisance));
-                    }
-                }
-            }
-            if (trouve) {
-                try {
-                    String xmlBateau = XMLFormatter.toXML(bateau);
-                    // Envois bateau dans phare
-                    Frame.send(this.networkBS, new String[]{"phare_ajouter_bateau_liste", "reponse_capitainerie", xmlBateau});
+                if (trouve) {
+                    try {
+                        String xmlBateau = XMLFormatter.toXML(bateau);
+                        // Envois bateau dans phare
+                        Frame.send(this.networkBS, new String[]{"phare_ajouter_bateau_liste", "reponse_capitainerie", xmlBateau});
 
-                    // Retrait bateau capitainerie
-                    this.bateauAttenteEntrer.remove(bateau);
-                    ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).removeElement(bateau);
-                } catch (Exception e) {
-                    System.err.println("[Capitainerie | Error] \"" + e.getMessage() + "\"");
+                        // Retrait bateau capitainerie
+                        this.bateauAttenteEntrer.remove(bateau);
+                        ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).removeElement(bateau);
+                    } catch (Exception e) {
+                        System.err.println("[Capitainerie | Error] \"" + e.getMessage() + "\"");
+                    }
+                } else {
+                    DialogErreur de = new DialogErreur("Erreur", "Aucun emplacement n'a été choisis pour ce bateau");
+                    de.setVisible(true);
                 }
             } else {
-                DialogErreur de = new DialogErreur("Erreur", "Aucun emplacement n'a été choisis pour ce bateau");
+                DialogErreur de = new DialogErreur("Erreur", "Aucun bateau n'a été choisis");
                 de.setVisible(true);
             }
         } else {
-            DialogErreur de = new DialogErreur("Erreur", "Aucun bateau n'a été choisis");
+            DialogErreur de = new DialogErreur("Erreur", "Le serveur n'est pas allumé. Attention ? ce que le phare le soit aussi!");
             de.setVisible(true);
         }
     }//GEN-LAST:event_BtnEnvoyerEmplacementActionPerformed
@@ -794,14 +801,13 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
                         }
                     }
                 }
-
             }
             String emplacement = this.getEmplacementBateau(bateau);
             try {
                 RemplirInfoBateau remplirInfoBateau = new RemplirInfoBateau(this, true, bateauAEnvoyer, emplacement);
                 remplirInfoBateau.setTitle("Ajout informations du bateau  " + bateau.getNom() + " ");
                 remplirInfoBateau.setVisible(true);
-            } catch (ShipWithoutIdentificationException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -867,22 +873,16 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         int selectedIndex = this.LBBateauAttenteEntrer.getSelectedIndex();
         if (selectedIndex != -1) {
             Bateau bateau = (Bateau) ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).getElementAt(selectedIndex);
-            this.LBEmplacement.setText(this.getEmplacementMTSE(bateau));
+            this.LBEmplacement.setText(this.getEmplacementBateau(bateau));
         }
     }//GEN-LAST:event_LBBateauAttenteEntrerValueChanged
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        //private LinkedList<Bateau> bateauAttenteEntrer = new LinkedList<Bateau>();
-        //private LinkedList<Bateau> bateauEnCoursDAmarrage = new LinkedList<Bateau>();
-        //private LinkedList<Bateau> bateauEntresDansLaRade = new LinkedList<Bateau>();
-        //private LinkedList<Ponton> pontons = new LinkedList<Ponton>();
-        //private LinkedList<Quai> quais = new LinkedList<Quai>();
-
         String sep = System.getProperty("file.separator");
-        String path = System.getProperty("user.dir") + sep + "Donnees" + sep;
+        String path = System.getProperty("user.dir") + sep + "Donnees" + sep + "capitainerie" + sep;
         File directory = new File(path);
-        if (!directory.exists() ) {
-            path = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep;
+        if (!directory.exists()) {
+            path = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep + "capitainerie" + sep;
             directory = new File(path);
             if (!directory.exists()) {
                 return;
@@ -925,7 +925,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         
         try (FileOutputStream fos = new FileOutputStream(path + "bateauAmarre.dat");
             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-            oos.writeObject(this.bateauAmarre);
+            oos.writeObject(this.bateauxAmarres);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -942,7 +942,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         this.bateauEnCoursDAmarrage.remove(bateauARetirer);
         ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).removeElement(bateauARetirer);
         ((DefaultListModel) this.LBBateauxAmarres.getModel()).addElement(bateauAAjouter);
-        this.bateauAmarre.add(bateauAAjouter);
+        this.bateauxAmarres.add(bateauAAjouter);
     }
 
     /**
@@ -1048,49 +1048,20 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         LDateHeure.setText(dateHeure);
     }
 
-    public String getEmplacementMTSE(MoyenDeTransportSurEau mtse) {
-        if (mtse instanceof BateauPlaisance) {
+    public String getEmplacementBateau(Bateau toFind) {
+        if (toFind instanceof BateauPlaisance) {
             for (int i = 0; i < pontons.size(); i++) {
                 for (int j = 0; j < pontons.get(i).getListe(1).length; j++) {
-                    if (pontons.get(i).getListe(1)[j] == mtse) {
-                        return "P" + i + "1*" + j;
-                    }
-                }
-                for (int j = 0; j < pontons.get(i).getListe(2).length; j++) {
-                    if (pontons.get(i).getListe(2)[j] == mtse) {
-                        return "P" + i + "2*" + j;
-                    }
-                }
-            }
-        } else {
-            for (int i = 0; i < quais.size(); i++) {
-                for (int j = 0; j < quais.get(i).getListeBateauxAmarres().length; j++) {
-                    if (quais.get(i).getListeBateauxAmarres()[j] == mtse) {
-                        return "Q" + "1*" + j;
-                    }
-                }
-            }
-        }
-        return "Aucun";
-    }
-
-    public String getEmplacementBateau(Bateau mtse) {
-
-        if (mtse instanceof BateauPlaisance) {
-            for (int i = 0; i < pontons.size(); i++) {
-                for (int j = 0; j < pontons.get(i).getListe(1).length; j++) {
-
                     if (pontons.get(i).getListe(1)[j] != null) {
                         System.err.println(pontons.get(i).getListe(1)[j]);
-                        if (pontons.get(i).getListe(1)[j].equals(mtse)) {
+                        if (toFind.equals(pontons.get(i).getListe(1)[j])) {
                             return "P" + i + "1*" + j;
                         }
                     }
-
                 }
                 for (int j = 0; j < pontons.get(i).getListe(2).length; j++) {
                     if (pontons.get(i).getListe(2)[j] != null) {
-                        if (pontons.get(i).getListe(2)[j].equals(mtse)) {
+                        if (toFind.equals(pontons.get(i).getListe(2)[j])) {
                             return "P" + i + "2*" + j;
                         }
                     }
@@ -1100,7 +1071,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
             for (int i = 0; i < quais.size(); i++) {
                 for (int j = 0; j < quais.get(i).getListeBateauxAmarres().length; j++) {
                     if (quais.get(i).getListeBateauxAmarres()[j] != null) {
-                        if (quais.get(i).getListeBateauxAmarres()[j].equals(mtse)) {
+                        if (toFind.equals(quais.get(i).getListeBateauxAmarres()[j])) {
                             return "Q" + "1*" + j;
                         }
                     }

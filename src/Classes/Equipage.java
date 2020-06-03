@@ -55,6 +55,19 @@ public class Equipage implements Serializable {
         this(capitaine, second, new LinkedList<Marin>());
     }
     
+    /**
+     * Consutructeur d'initialisation bis
+     *
+     * @param capitaine
+     * @param second
+     */
+    public Equipage(Equipage equipage) throws SailorIndicatedIsNotACaptainException, SailorIndicatedIsNotASecondException {
+        this(new Marin(equipage.getCapitaine()), new Marin(equipage.getSecond()), new LinkedList<Marin>());
+        for (Marin marin : equipage.getMarins()) {
+            this.marins.add(new Marin(marin));
+        }
+    }
+    
     public Equipage() {}
 
     /**

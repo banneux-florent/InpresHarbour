@@ -1,5 +1,7 @@
 package Classes;
 
+import Exceptions.SailorIndicatedIsNotACaptainException;
+import Exceptions.SailorIndicatedIsNotASecondException;
 import Exceptions.ShipWithoutIdentificationException;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -31,8 +33,9 @@ public class BateauPlaisance extends Bateau implements Serializable {
         this.typePermis = typePermis;
     }
 
-    public BateauPlaisance(BateauPlaisance bateauPlaisance) throws ShipWithoutIdentificationException {
+    public BateauPlaisance(BateauPlaisance bateauPlaisance) throws ShipWithoutIdentificationException, SailorIndicatedIsNotACaptainException, SailorIndicatedIsNotASecondException {
         super(bateauPlaisance.getNom(), bateauPlaisance.getPortAttache(), bateauPlaisance.getTonnage(), bateauPlaisance.getLongeur(), bateauPlaisance.getPavillon());
+        this.setEquipage(new Equipage(bateauPlaisance.getEquipage()));
         this.typePermis = bateauPlaisance.getTypePermis();
     }
 

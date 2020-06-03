@@ -10,6 +10,7 @@ import Classes.BateauPeche;
 import Classes.BateauPlaisance;
 import Classes.Equipage;
 import Classes.FichierLog;
+import Classes.Fonctions;
 import Classes.Marin;
 import Exceptions.SailorWithoutIdentificationException;
 import Exceptions.ShipWithoutIdentificationException;
@@ -17,6 +18,7 @@ import Phare.ArrivageBateau;
 import Phare.Phare;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Random;
 import java.util.logging.Level;
@@ -30,19 +32,17 @@ import javax.swing.DefaultListModel;
 public class NotifyBean implements BoatListener {
     
     private Phare phare;
+    private LinkedList<String[]> countries = Fonctions.getPays();
+    
+    public NotifyBean() {}
     
     @Override
     public void BoatDetected(BoatEvent boatEvent) {
-        // Affichage de la modal
         // Ajout du bateau dans la liste
-        String[] countryCodes = Locale.getISOCountries();
-        String pavillon = null;
-        Random rand = new Random();
-        int int_random = rand.nextInt(countryCodes.length);
-        Locale l = new Locale("", countryCodes[int_random]);
-        String country = l.getDisplayCountry();
-        Bateau b = null;
-        Equipage equipage = null;
+        int rand = (new Random()).nextInt(countries.size());
+        String[] country = countries.get(rand);
+        
+        Equipage equipage = new Equipage();
         try {
             Marin capitaine = new Marin("Mokh", "Wad", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Capitaine);
             Marin second = new Marin("Flo", "Bann", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Second);
@@ -52,35 +52,34 @@ public class NotifyBean implements BoatListener {
             equipage = new Equipage(capitaine, second);
             equipage.getMarins().add(bosco);
             equipage.getMarins().add(mecanicien);
-            
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
         
+        Bateau newBateau = new Bateau();
         if (boatEvent.getBoatType() == BoatEvent.BoatType.Peche) {
             try {
-                b = new BateauPeche(country, country, 0, 0, BateauPeche.TypeDePeche.Thonier, countryCodes[int_random]);
+                newBateau = new BateauPeche(country[1], country[1], 0, 0, BateauPeche.TypeDePeche.Thonier, country[0]);
             } catch (ShipWithoutIdentificationException ex) {
                 Logger.getLogger(NotifyBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             try {
-                b = new BateauPlaisance(country, country, 0, 0, BateauPlaisance.TypePermis.PlaisanceOptionCotiere, countryCodes[int_random]);
+                newBateau = new BateauPlaisance(country[1], country[1], 0, 0, BateauPlaisance.TypePermis.PlaisanceOptionCotiere, country[0]);
             } catch (ShipWithoutIdentificationException ex) {
                 Logger.getLogger(NotifyBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        b.setEquipage(equipage);
+        newBateau.setEquipage(equipage);
         
         FichierLog fl = new FichierLog();
-        fl.ecrireLigne("Un nouveau bateau a été généré: " + b.toString());
+        fl.ecrireLigne("[NotifyBean | Info] Un nouveau bateau a été généré: " + newBateau.toString());
         
-        ArrivageBateau arrivageBateau = new ArrivageBateau(b);
-        this.getPhare().AddBoatNoIdentified(b);
+        ArrivageBateau arrivageBateau = new ArrivageBateau(newBateau);
+        this.getPhare().AddBoatNoIdentified(newBateau);
+        
+        // Affichage de la fen?tre
         arrivageBateau.setVisible(true);
-    }
-    
-    public NotifyBean() {
     }
     
     public Phare getPhare() {

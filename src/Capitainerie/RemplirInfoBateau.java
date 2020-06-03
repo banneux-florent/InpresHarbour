@@ -5,6 +5,8 @@ import Classes.BateauPeche;
 import Classes.BateauPlaisance;
 import Classes.Marin;
 import Exceptions.CapitainerieException;
+import Exceptions.SailorIndicatedIsNotACaptainException;
+import Exceptions.SailorIndicatedIsNotASecondException;
 import Exceptions.SailorWithoutIdentificationException;
 import Exceptions.ShipWithoutIdentificationException;
 import java.time.DateTimeException;
@@ -26,13 +28,13 @@ public class RemplirInfoBateau extends javax.swing.JDialog {
     /**
      * Creates new form BateauEntrant
      */
-    public RemplirInfoBateau(Capitainerie parent, boolean modal, Bateau bateau, String emplacement) throws ShipWithoutIdentificationException {
+    public RemplirInfoBateau(Capitainerie parent, boolean modal, Bateau bateau, String emplacement) throws ShipWithoutIdentificationException, SailorIndicatedIsNotACaptainException, SailorIndicatedIsNotASecondException {
         super(parent, modal);
         initComponents();
         this.capitainerie = parent;
         this.bateauARetirer = bateau;
         if (bateau instanceof BateauPeche) {
-            this.bateauARemplir = new BateauPeche((BateauPeche) bateau);
+            this.bateauARemplir = new BateauPeche((BateauPeche)bateau);
         } else {
             this.bateauARemplir = new BateauPlaisance((BateauPlaisance)bateau);
         }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package beans;
 
 import java.beans.PropertyChangeEvent;
@@ -31,21 +26,16 @@ public class BoatBean implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-
-        String kindOfBoat = (evt.getNewValue().toString());
-        BoatEvent e = new BoatEvent(this); // génération de l'event
+        String kindOfBoat = evt.getNewValue().toString();
+        BoatEvent boatEvent = new BoatEvent(this);
         if (kindOfBoat == "Plaisance") {
-            e.setBoatType(BoatEvent.BoatType.Plaisance);
+            boatEvent.setBoatType(BoatEvent.BoatType.Plaisance);
         } else {
-            e.setBoatType(BoatEvent.BoatType.Peche);
+            boatEvent.setBoatType(BoatEvent.BoatType.Peche);
         }
-        int n = listeners.size();
-        for (int i = 0; i < n; i++) // activation de la méthode AlertDetected pour chaque objet ? l'écoute
-        {
-            BoatListener obj = (BoatListener) listeners.get(i);
-            obj.BoatDetected(e);
+        for (int i = 0; i < listeners.size(); i++) { // Déclenchement de AlertDetected pour chaque listeners
+            listeners.get(i).BoatDetected(boatEvent);
         }
-
     }
 
 }

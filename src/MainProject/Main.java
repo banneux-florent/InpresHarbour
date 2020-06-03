@@ -1,7 +1,7 @@
 package MainProject;
 
 import Phare.Phare;
-import Utilisateurs.Connexion;
+import utilisateurs.Connexion;
 
 /**
  *

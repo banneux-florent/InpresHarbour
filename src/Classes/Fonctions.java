@@ -91,8 +91,6 @@ public class Fonctions {
         String line = "";
         String cvsSplitBy = ";";
         
-        System.out.println(csvFile);
-        
         try {
             br = new BufferedReader(new FileReader(csvFile));
             while ((line = br.readLine()) != null) {

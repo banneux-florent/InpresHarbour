@@ -125,7 +125,7 @@
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="MIAffichageDateHeureCourante">
               <Properties>
                 <Property name="selected" type="boolean" value="true"/>
-                <Property name="text" type="java.lang.String" value="Affichage date heure courante"/>
+                <Property name="text" type="java.lang.String" value="Affichage date heure du d&#xe9;marrage"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MIAffichageDateHeureCouranteActionPerformed"/>
@@ -296,6 +296,9 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="LDateHeure">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="11" style="1"/>
+        </Property>
         <Property name="horizontalAlignment" type="int" value="4"/>
         <Property name="text" type="java.lang.String" value="..."/>
       </Properties>

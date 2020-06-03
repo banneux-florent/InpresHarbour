@@ -3,6 +3,7 @@ package Phare;
 import Classes.Bateau;
 import Classes.BateauPeche;
 import Classes.BateauPlaisance;
+import Classes.DialogErreur;
 import Classes.Equipage;
 import Classes.FichierLog;
 import Classes.Fonctions;
@@ -16,11 +17,19 @@ import beans.IUserNumber;
 import beans.KindOfBoatBean;
 import beans.NotifyBean;
 import java.beans.Beans;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.StringWriter;
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Date;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +45,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
 
     private NetworkBasicClient networkBC = null;
     private ThreadRandomGenerator threadRandomGenerator;
+    private String HOST;
     private int PORT;
     private int idKindOfBoatBean = 1;
 
@@ -47,7 +57,6 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
     private int upperBound;
     private int triggerMultiple;
     private int waitingTime;
-    private Properties properties;
 
     /**
      * Creates new form Phare
@@ -55,26 +64,27 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
     public Phare() {
         initComponents();
         
+        this.LDateHeure.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.FRANCE).format(new Date()));
+        
         FichierLog fl = new FichierLog();
         fl.ecrireLigne("Le Phare a été démarré.");
         
+        Properties properties = new Properties();
         try {
-            this.properties = Fonctions.chargerConfig();
+            properties = Fonctions.chargerConfig();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        this.PORT = Integer.parseInt(this.properties.getProperty("port.ecoute"));
-        this.lowerBound = Integer.parseInt(this.properties.getProperty("lowerBound"));
-        this.upperBound = Integer.parseInt(this.properties.getProperty("upperBound"));
-        this.triggerMultiple = Integer.parseInt(this.properties.getProperty("triggerMultiple"));
-        this.waitingTime = Integer.parseInt(this.properties.getProperty("waitingTime"));
-
-        this.threadRandomGenerator = new ThreadRandomGenerator(this, lowerBound, upperBound, triggerMultiple, waitingTime);
-        this.threadRandomGenerator.start();
+        this.HOST = properties.getProperty("network.host");
+        this.PORT = Integer.parseInt(properties.getProperty("network.port"));
+        this.lowerBound = Integer.parseInt(properties.getProperty("boatGenerator.lowerBound"));
+        this.upperBound = Integer.parseInt(properties.getProperty("boatGenerator.upperBound"));
+        this.triggerMultiple = Integer.parseInt(properties.getProperty("boatGenerator.triggerMultiple"));
+        this.waitingTime = Integer.parseInt(properties.getProperty("boatGenerator.waitingTime"));
 
         try {
-            this.networkBC = new NetworkBasicClient("localhost", PORT, this, this.LOnOff, this.BtnSeConnecterAuServeur);
+            this.networkBC = new NetworkBasicClient(this.HOST, this.PORT, this, this.LOnOff, this.BtnSeConnecterAuServeur);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -83,6 +93,11 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
         this.LBBateauxIdentifies.setModel(new DefaultListModel());
         this.LBReponsesCapitainerie.setModel(new DefaultListModel());
         this.LBConfirmationsCapitainerie.setModel(new DefaultListModel());
+        
+        loadSavedData();
+
+        this.threadRandomGenerator = new ThreadRandomGenerator(this, lowerBound, upperBound, triggerMultiple, waitingTime);
+        this.threadRandomGenerator.start();
         
         /*
         try {
@@ -113,6 +128,87 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
         
         */
 
+    }
+
+    private void loadSavedData() {
+        String sep = System.getProperty("file.separator");
+        String path = System.getProperty("user.dir") + sep + "Donnees" + sep + "phare" + sep;
+        File directory = new File(path);
+        
+        if (!directory.exists()) {
+            path = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep + "phare" + sep;
+            directory = new File(path);
+            if (!directory.exists()) {
+                return;
+            }
+        }
+
+        try {
+            File toCheck = new File(path + "bateauxNonIdentifies.dat");
+            if (toCheck.exists()) {
+                FileInputStream fileIn = new FileInputStream(path + "bateauxNonIdentifies.dat");
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+                this.bateauxNonIdentifies = (LinkedList<Bateau>) objectIn.readObject();
+
+                for (int i = 0; i < this.bateauxNonIdentifies.size(); i++) {
+                    ((DefaultListModel) this.LBBateauxNonIdentifies.getModel()).addElement(this.bateauxNonIdentifies.get(i));
+                }
+                objectIn.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        try {
+            File toCheck = new File(path + "bateauxIdentifies.dat");
+            if (toCheck.exists()) {
+                FileInputStream fileIn = new FileInputStream(path + "bateauxIdentifies.dat");
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+                this.bateauxIdentifies = (LinkedList<Bateau>) objectIn.readObject();
+                for (int i = 0; i < this.bateauxIdentifies.size(); i++) {
+                    ((DefaultListModel) this.LBBateauxIdentifies.getModel()).addElement(this.bateauxIdentifies.get(i));
+                }
+                objectIn.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        try {
+            File toCheck = new File(path + "reponsesCapitainerie.dat");
+            if (toCheck.exists()) {
+                FileInputStream fileIn = new FileInputStream(path + "reponsesCapitainerie.dat");
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+                this.reponsesCapitainerie = (LinkedList<Bateau>) objectIn.readObject();
+
+                for (int i = 0; i < this.reponsesCapitainerie.size(); i++) {
+                    ((DefaultListModel) this.LBReponsesCapitainerie.getModel()).addElement(this.reponsesCapitainerie.get(i));
+                }
+                objectIn.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        try {
+            File toCheck = new File(path + "confirmationsCapitainerie.dat");
+            if (toCheck.exists()) {
+                FileInputStream fileIn = new FileInputStream(path + "confirmationsCapitainerie.dat");
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+                this.confirmationsCapitainerie = (LinkedList<Bateau>) objectIn.readObject();
+
+                for (int i = 0; i < this.confirmationsCapitainerie.size(); i++) {
+                    ((DefaultListModel) this.LBConfirmationsCapitainerie.getModel()).addElement(this.confirmationsCapitainerie.get(i));
+                }
+                objectIn.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void AjouterBateauIdentifier(Bateau bateau) {
@@ -155,6 +251,8 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
         jScrollPane6 = new javax.swing.JScrollPane();
         LBConfirmationsCapitainerie = new javax.swing.JList<>();
         jSeparator1 = new javax.swing.JSeparator();
+        viderListeBateauxNonIdentifies = new javax.swing.JButton();
+        LDateHeure = new javax.swing.JLabel();
 
         jLabel10.setText("jLabel10");
 
@@ -244,6 +342,17 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
 
         jScrollPane6.setViewportView(LBConfirmationsCapitainerie);
 
+        viderListeBateauxNonIdentifies.setText("Vider la liste");
+        viderListeBateauxNonIdentifies.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viderListeBateauxNonIdentifiesActionPerformed(evt);
+            }
+        });
+
+        LDateHeure.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        LDateHeure.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        LDateHeure.setText("...");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -260,10 +369,15 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(LOnOff))
+                                .addComponent(LOnOff)
+                                .addGap(80, 80, 80)
+                                .addComponent(LDateHeure, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(BtnIdentifierLeBateau)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(viderListeBateauxNonIdentifies)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(BtnIdentifierLeBateau))
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)))
@@ -295,7 +409,8 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtnSeConnecterAuServeur)
                     .addComponent(jLabel2)
-                    .addComponent(LOnOff))
+                    .addComponent(LOnOff)
+                    .addComponent(LDateHeure))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel16)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -310,7 +425,9 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BtnIdentifierLeBateau)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(BtnIdentifierLeBateau)
+                        .addComponent(viderListeBateauxNonIdentifies))
                     .addComponent(BtnDemanderAutorisationEntrer))
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -355,49 +472,101 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
     }//GEN-LAST:event_BtnIdentifierLeBateauActionPerformed
 
     private void BtnDemanderAutorisationEntrerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDemanderAutorisationEntrerActionPerformed
-        int selectedIndex = this.LBBateauxIdentifies.getSelectedIndex();
-        if (selectedIndex != -1) {
-            Bateau bateau = this.bateauxIdentifies.get(selectedIndex);
+        if (this.networkBC.isConnected()) {
+            int selectedIndex = this.LBBateauxIdentifies.getSelectedIndex();
+            if (selectedIndex != -1) {
+                Bateau bateau = this.bateauxIdentifies.get(selectedIndex);
 
-            try {
-                String xmlBateau = XMLFormatter.toXML(bateau);
+                try {
+                    String xmlBateau = XMLFormatter.toXML(bateau);
 
-                // Envois bateau dans capitainerie
-                Frame.send(this.networkBC, new String[]{"capitainerie_ajouter_bateau_liste", "bateau_attente_entree", xmlBateau});
+                    // Envois bateau dans capitainerie
+                    Frame.send(this.networkBC, new String[]{"capitainerie_ajouter_bateau_liste", "bateau_attente_entree", xmlBateau});
 
-                // Retrait bateau phare
-                bateauxIdentifies.remove(bateau);
-                ((DefaultListModel) this.LBBateauxIdentifies.getModel()).removeElement(bateau);
-            } catch (Exception e) {
-                System.err.println("[Phare | Error] \"" + e.getMessage() + "\"");
+                    // Retrait bateau phare
+                    bateauxIdentifies.remove(bateau);
+                    ((DefaultListModel) this.LBBateauxIdentifies.getModel()).removeElement(bateau);
+                } catch (Exception e) {
+                    System.err.println("[Phare | Error] \"" + e.getMessage() + "\"");
+                }
             }
+        } else {
+            DialogErreur de = new DialogErreur("Erreur", "Le phare n'est pas connecté au serveur.");
+            de.setVisible(true);
         }
     }//GEN-LAST:event_BtnDemanderAutorisationEntrerActionPerformed
 
     private void BtnBateauEntrerDansLaRadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBateauEntrerDansLaRadeActionPerformed
-        int selectedIndex = this.LBReponsesCapitainerie.getSelectedIndex();
-        if (selectedIndex != -1) {
+        if (this.networkBC.isConnected()) {
+            int selectedIndex = this.LBReponsesCapitainerie.getSelectedIndex();
+            if (selectedIndex != -1) {
+                Bateau bateau = this.reponsesCapitainerie.get(selectedIndex);
+                try {
+                    String xmlBateau = XMLFormatter.toXML(bateau);
 
-            Bateau bateau = this.reponsesCapitainerie.get(selectedIndex);
-            try {
-                String xmlBateau = XMLFormatter.toXML(bateau);
+                    // Envois bateau dans capitainerie
+                    Frame.send(this.networkBC, new String[]{"capitainerie_ajouter_bateau_liste", "bateau_entre_rade", xmlBateau});
 
-                // Envois bateau dans capitainerie
-                Frame.send(this.networkBC, new String[]{"capitainerie_ajouter_bateau_liste", "bateau_entre_rade", xmlBateau});
-
-                // Retrait bateau phare
-                reponsesCapitainerie.remove(bateau);
-                ((DefaultListModel) this.LBReponsesCapitainerie.getModel()).removeElement(bateau);
-            } catch (Exception e) {
-                System.err.println("[Phare | Error] \"" + e.getMessage() + "\"");
+                    // Retrait bateau phare
+                    reponsesCapitainerie.remove(bateau);
+                    ((DefaultListModel) this.LBReponsesCapitainerie.getModel()).removeElement(bateau);
+                } catch (Exception e) {
+                    System.err.println("[Phare | Error] \"" + e.getMessage() + "\"");
+                }
             }
+        } else {
+            DialogErreur de = new DialogErreur("Erreur", "Le phare n'est pas connecté au serveur.");
+            de.setVisible(true);
         }
     }//GEN-LAST:event_BtnBateauEntrerDansLaRadeActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        String sep = System.getProperty("file.separator");
+        String path = System.getProperty("user.dir") + sep + "Donnees" + sep + "phare" + sep;
+        File directory = new File(path);
+        if (!directory.exists()) {
+            path = System.getProperty("user.dir") + sep + "src" + sep + "Donnees" + sep + "phare" + sep;
+            directory = new File(path);
+            if (!directory.exists()) {
+                return;
+            }
+        }
+        
+        try (FileOutputStream fos = new FileOutputStream(path + "bateauxNonIdentifies.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(this.bateauxNonIdentifies);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        try (FileOutputStream fos = new FileOutputStream(path + "bateauxIdentifies.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(this.bateauxIdentifies);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        try (FileOutputStream fos = new FileOutputStream(path + "reponsesCapitainerie.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(this.reponsesCapitainerie);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        try (FileOutputStream fos = new FileOutputStream(path + "confirmationsCapitainerie.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(this.confirmationsCapitainerie);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
         FichierLog fl = new FichierLog();
         fl.ecrireLigne("Le Phare a été fermé.");
     }//GEN-LAST:event_formWindowClosing
+
+    private void viderListeBateauxNonIdentifiesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viderListeBateauxNonIdentifiesActionPerformed
+        this.bateauxNonIdentifies.clear();
+        this.LBBateauxNonIdentifies.setModel(new DefaultListModel());
+    }//GEN-LAST:event_viderListeBateauxNonIdentifiesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -443,6 +612,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
     private javax.swing.JList<String> LBBateauxNonIdentifies;
     private javax.swing.JList<String> LBConfirmationsCapitainerie;
     private javax.swing.JList<String> LBReponsesCapitainerie;
+    private javax.swing.JLabel LDateHeure;
     private javax.swing.JLabel LOnOff;
     private javax.swing.JPanel PanelHeader;
     private javax.swing.JLabel jLabel10;
@@ -458,8 +628,14 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JButton viderListeBateauxNonIdentifies;
     // End of variables declaration//GEN-END:variables
 
+    public void AddBoatNoIdentified(Bateau b) {
+        bateauxNonIdentifies.add(b);
+        ((DefaultListModel) this.LBBateauxNonIdentifies.getModel()).addElement(b);
+    }
+    
     // IInOutEvent
     @Override
     public String getMessage() {
@@ -514,12 +690,12 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
 
     @Override
     public String getId() {
-        return this.getClass().getName() + " 1998";
+        return "Phare";
     }
 
     @Override
     public void processNumber(int n) {
-        String id =  "Kind of boat bean" + this.idKindOfBoatBean;
+        String id =  "Bean" + this.idKindOfBoatBean;
         KindOfBoatBean kindOfBoatBean = null;
         BoatBean boatBean = null;
         NotifyBean notifyBean = null;
@@ -527,26 +703,20 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
             kindOfBoatBean = (KindOfBoatBean) Beans.instantiate(null, "beans.KindOfBoatBean");
             boatBean = (BoatBean) Beans.instantiate(null, "beans.BoatBean");
             notifyBean = (NotifyBean) Beans.instantiate(null, "beans.NotifyBean");
+            
+            notifyBean.setPhare(this);
+            kindOfBoatBean.setIsRunning(true);
+            kindOfBoatBean.setId(id);
+            kindOfBoatBean.addPropertyChangeListener(boatBean);
+            boatBean.addListener(notifyBean);
+            kindOfBoatBean.start();
+
+            this.idKindOfBoatBean++;
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        notifyBean.setPhare(this);
-        kindOfBoatBean.setEnMarche(true);
-        kindOfBoatBean.setId(id);
-        kindOfBoatBean.addPropertyChangeListener(boatBean);
-        boatBean.addListener(notifyBean);
-        kindOfBoatBean.start();
-        
-
-        this.idKindOfBoatBean++;
-    }
-
-    public void AddBoatNoIdentified(Bateau b) {
-        bateauxNonIdentifies.add(b);
-
-        ((DefaultListModel) this.LBBateauxNonIdentifies.getModel()).addElement(b);
     }
 
 }

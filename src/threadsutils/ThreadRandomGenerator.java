@@ -31,13 +31,13 @@ public class ThreadRandomGenerator extends Thread {
         int generatedNumber;
         while (true) {
             generatedNumber = (int) (this.lowerBound + Math.random()*(this.upperBound - this.lowerBound));
-            System.out.println(this.userNumber.getId() +" generated " + generatedNumber + ".");
+            System.out.println("[ThreadRandomGenerator | Info] Bean " + this.userNumber.getId() + " generated " + generatedNumber);
             if (generatedNumber % this.triggerMultiple == 0) {
-                System.out.println(this.userNumber.getId() + " is interested by " + generatedNumber + ".");
+                System.out.println("[ThreadRandomGenerator | Info] Bean " + this.userNumber.getId() + " is interested by " + generatedNumber);
                 this.userNumber.processNumber(generatedNumber);
             }
             try {
-                Thread.sleep(this.waitingTime * 1000);
+                Thread.sleep(this.waitingTime);
             } catch (InterruptedException e) {
                 System.err.println("[ThreadRandomGenerator | Error] " + e.getMessage());
             }
