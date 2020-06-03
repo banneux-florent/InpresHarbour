@@ -13,7 +13,7 @@ import java.util.Date;
  */
 public class FichierLog {
     
-    private String nomFichier = "";
+    private String filename = "";
     private String path = "";
     
     public FichierLog() {
@@ -29,16 +29,16 @@ public class FichierLog {
             }
         }
         try {
-            this.nomFichier = Fonctions.chargerConfig().getProperty("logs_filename");
+            this.filename = Fonctions.chargerConfig().getProperty("logs.filename");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     
     public void ecrireLigne(String ligne) {
-        if (!path.equals("")) {
+        if (!path.equals("") && !filename.equals("")) {
             try {
-                FileWriter f = new FileWriter(path + nomFichier + ".txt", true);
+                FileWriter f = new FileWriter(path + filename, true);
                 BufferedWriter bf = new BufferedWriter(f);
                 bf.write("[" + new Date() + "] " + ligne);
                 bf.newLine();
