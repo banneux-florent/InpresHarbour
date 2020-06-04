@@ -32,9 +32,9 @@ public class APropos_Auteurs extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("À propos");
+        setTitle("Ã€ propos");
 
-        jLabel1.setText("Date de création :");
+        jLabel1.setText("Date de crÃ©ation :");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setText("9 avril 2020");
@@ -55,7 +55,7 @@ public class APropos_Auteurs extends javax.swing.JDialog {
 
         jLabel5.setBackground(new java.awt.Color(220, 220, 220));
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel5.setText("À propos");
+        jLabel5.setText("Ã€ propos");
         jLabel5.setAutoscrolls(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

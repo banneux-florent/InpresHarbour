@@ -296,3 +296,12 @@
 [Thu Jun 04 15:42:35 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Turkmenistan / TM
 [Thu Jun 04 15:43:33 CEST 2020] La Capintainerie a été fermée.
 [Thu Jun 04 15:43:33 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 16:48:25 CEST 2020] Le Phare a ï¿½tï¿½ dï¿½marrï¿½.
+[Thu Jun 04 16:48:31 CEST 2020] La Capintainerie a Ã©tÃ© dÃ©marrÃ©e.
+[Thu Jun 04 16:48:41 CEST 2020] [NotifyBean | Info] Un nouveau bateau a Ã©tÃ© gÃ©nÃ©rÃ©: BateauPeche / French Southern Territories / TF
+[Thu Jun 04 16:48:45 CEST 2020] Le Phare a ï¿½tï¿½ fermï¿½.
+[Thu Jun 04 16:48:46 CEST 2020] La Capintainerie a Ã©tÃ© fermÃ©e.
+[Thu Jun 04 16:53:01 CEST 2020] Le Phare a ï¿½tï¿½ dï¿½marrï¿½.
+[Thu Jun 04 16:53:02 CEST 2020] La Capintainerie a Ã©tÃ© dÃ©marrÃ©e.
+[Thu Jun 04 16:53:06 CEST 2020] La Capintainerie a Ã©tÃ© fermÃ©e.
+[Thu Jun 04 16:53:06 CEST 2020] Le Phare a ï¿½tï¿½ fermï¿½.

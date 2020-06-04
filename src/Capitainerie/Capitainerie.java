@@ -2,58 +2,45 @@ package Capitainerie;
 
 import Classes.*;
 import Exceptions.CapitainerieException;
+import Exceptions.SailorIndicatedIsNotACaptainException;
+import Exceptions.SailorIndicatedIsNotASecondException;
 import Exceptions.ShipWithoutIdentificationException;
 import Network.Frame;
 import Network.IInOutEvent;
 import Network.NetworkBasicServer;
 import Network.XMLFormatter;
 import utilisateurs.Connexion;
-import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.text.DateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.Year;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Florent & Wadi
  */
-public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Serializable {
+public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
 
     private boolean isLoggedIn = false;
 
     private NetworkBasicServer networkBS;
-    private String HOST;
     private int PORT;
 
-    public LinkedList<Bateau> bateauAttenteEntrer = new LinkedList<Bateau>();
-    public LinkedList<Bateau> bateauEntresDansLaRade = new LinkedList<Bateau>();
-    public LinkedList<Bateau> bateauEnCoursDAmarrage = new LinkedList<Bateau>();
-    public LinkedList<Bateau> bateauxAmarres = new LinkedList<Bateau>();
+    public LinkedList<Bateau> bateauAttenteEntrer = new LinkedList<>();
+    public LinkedList<Bateau> bateauEntresDansLaRade = new LinkedList<>();
+    public LinkedList<Bateau> bateauEnCoursDAmarrage = new LinkedList<>();
+    public LinkedList<Bateau> bateauxAmarres = new LinkedList<>();
 
-    public LinkedList<Ponton> pontons = new LinkedList<Ponton>();
-    public LinkedList<Quai> quais = new LinkedList<Quai>();
+    public LinkedList<Ponton> pontons = new LinkedList<>();
+    public LinkedList<Quai> quais = new LinkedList<>();
     public Properties properties;
 
     /**
@@ -72,11 +59,10 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
             e.printStackTrace();
         }
         
-        this.HOST = properties.getProperty("network.host");
         this.PORT = Integer.parseInt(properties.getProperty("network.port"));
 
         try {
-            this.networkBS = new NetworkBasicServer(PORT, this, this.LOnOff, this.BtnDemarrerServeur);
+            this.networkBS = new NetworkBasicServer(this.PORT, this, this.LOnOff, this.BtnDemarrerServeur);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -202,7 +188,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
                 }
                 objectIn.close();
             }
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
         try {
@@ -776,7 +762,6 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
             Bateau bateau = this.bateauEnCoursDAmarrage.get(selectedIndex);
             Bateau bateauQP = null;
             if (bateau instanceof BateauPeche) {
-
                 for (int i = 0; i < this.quais.size(); i++) {
                     for (int j = 0; j < this.quais.get(i).getListeBateauxAmarres().length; j++) {
                         if (bateau.equals(this.quais.get(i).getListeBateauxAmarres()[j])) {
@@ -786,7 +771,6 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
                         }
                     }
                 }
-
             } else {
                 for (int i = 0; i < this.pontons.size(); i++) {
                     for (int j = 0; j < this.pontons.get(i).getListe(1).length; j++) {
@@ -812,15 +796,15 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
                 RemplirInfoBateau remplirInfoBateau = new RemplirInfoBateau(this, true, bateau, bateauQP, emplacement);
                 remplirInfoBateau.setTitle("Ajout informations du bateau  " + bateau.getNom() + " ");
                 remplirInfoBateau.setVisible(true);
-            } catch (Exception e) {
+            } catch (SailorIndicatedIsNotACaptainException | SailorIndicatedIsNotASecondException | ShipWithoutIdentificationException e) {
                 e.printStackTrace();
             }
         }
     }//GEN-LAST:event_BtnRemplirInformationsBateauActionPerformed
     
     /**
-     * @param Bateau bateauAAjouter copie du bateauARetirer
-     * @param Bateau bateauARetirer la référence du bateau initialement envoyé dans RemplirInfoBateau
+     * @param bateauAAjouter copie du bateauARetirer
+     * @param bateauARetirer la référence du bateau initialement envoyé dans RemplirInfoBateau
      */
     public void ajouterBateauListeBateauAmmare(Bateau bateauAAjouter, Bateau bateauARetirer) {
         this.bateauEnCoursDAmarrage.remove(bateauARetirer);
@@ -1075,10 +1059,10 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
 
     @Override
     public void messageReceived() {
-        System.out.println("[Capitainerie | Info] [<<<] " + this.readMessage());
+        String message = this.getMessage();
+        System.out.println("[Capitainerie | Info] [<<<] " + message);
         try {
-            Frame frame = (Frame) XMLFormatter.fromXML(this.getMessage());
-
+            Frame frame = (Frame) XMLFormatter.fromXML(message);
             String action = frame.getAction();
             if (action.equals("capitainerie_ajouter_bateau_liste")) {
                 String list = frame.getArg(1);

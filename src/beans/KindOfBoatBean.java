@@ -16,13 +16,13 @@ import threadsutils.ThreadRandomGenerator;
 public class KindOfBoatBean implements IUserNumber {
 
     private String id = "";
+    private boolean showMessages = true;
+    private int waitingTime;
     private int lowerBound;
     private int upperBound;
     private int triggerMultiple;
-    private int waitingTime;
     private ThreadRandomGenerator trg;
     private boolean isRunning = false;
-    private Properties properties;
     private int numberRefPlaisance;
     private int numberRefPeche;
     private String kindOfBoat;
@@ -30,25 +30,29 @@ public class KindOfBoatBean implements IUserNumber {
     private PropertyChangeSupport eventChange = new PropertyChangeSupport(this);
 
     public KindOfBoatBean() {
-        System.err.println("[KoBB | Info] Kind of boat beans instanciated.");
+        if (this.showMessages)
+            System.err.println("[KoBB | Info] Kind of boat beans instanciated.");
+        
+        Properties properties = new Properties();
         try {
-            this.properties = Fonctions.chargerConfig();
+            properties = Fonctions.chargerConfig();
         } catch (Exception e) {
             e.printStackTrace();
         }
         
-        this.lowerBound = Integer.parseInt(this.properties.getProperty("boatGenerator.lowerBound"));
-        this.upperBound = Integer.parseInt(this.properties.getProperty("boatGenerator.upperBound"));
+        this.showMessages = Integer.parseInt(properties.getProperty("boatGenerator.showMessages")) == 1;
+        this.waitingTime = Integer.parseInt(properties.getProperty("boatGenerator.waitingTime"));
+        this.lowerBound = Integer.parseInt(properties.getProperty("boatGenerator.lowerBound"));
+        this.upperBound = Integer.parseInt(properties.getProperty("boatGenerator.upperBound"));
         this.triggerMultiple = 1;
-        this.numberRefPeche = Integer.parseInt(this.properties.getProperty("boatGenerator.numberRefPeche"));
-        this.numberRefPlaisance = Integer.parseInt(this.properties.getProperty("boatGenerator.numberRefPlaisance"));
-        this.waitingTime = Integer.parseInt(this.properties.getProperty("boatGenerator.waitingTime"));
+        this.numberRefPeche = Integer.parseInt(properties.getProperty("boatGenerator.numberRefPeche"));
+        this.numberRefPlaisance = Integer.parseInt(properties.getProperty("boatGenerator.numberRefPlaisance"));
     }
 
     public void start() {
         if (isRunning()) {
             try {
-                trg = new ThreadRandomGenerator(this, lowerBound, upperBound, triggerMultiple, waitingTime);
+                trg = new ThreadRandomGenerator(this, showMessages, lowerBound, upperBound, triggerMultiple, waitingTime);
                 trg.start();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -87,7 +91,9 @@ public class KindOfBoatBean implements IUserNumber {
 
     @Override
     public void processNumber(int n) {
-        System.out.println("[KoBB | Info] Bean " + this.getId() + " is treating number " + n);
+        if (this.showMessages)
+            System.out.println("[KoBB | Info] Bean " + this.getId() + " is treating number " + n);
+        
         if (n % numberRefPlaisance == 0) {
             // System.err.println("[KoBB | Info] (" + n + ") Bateau généré! (Bateau de plaisance)");
             notifyBoatDetected("Plaisance");
@@ -98,7 +104,6 @@ public class KindOfBoatBean implements IUserNumber {
     }
 
     protected void notifyBoatDetected(String newKindOfBoat) {
-
         String oldKindOfBoat = this.getKindOfBoat();
         this.setKindOfBoat(newKindOfBoat);
         eventChange.firePropertyChange("KindOfBoat", oldKindOfBoat, newKindOfBoat);

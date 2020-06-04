@@ -14,10 +14,9 @@ public interface NetworkThread {
     void start();
     void close();
     void sendMessage(String message);
-    boolean addMessage(String str);
+    boolean receiveMessage(String str);
     String getMessage();
     String readMessage();
-    String[] getAllMessages();
     boolean getInService();
     
 }

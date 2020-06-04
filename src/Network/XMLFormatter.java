@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Network;
 
 import Classes.Bateau;
@@ -19,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
@@ -57,7 +53,7 @@ public class XMLFormatter {
             xml = xml.substring(xml.indexOf(">") + 1);
 
             return xml;
-        } catch (Exception e) {
+        } catch (JAXBException e) {
             throw e;
         }
     }
@@ -65,10 +61,7 @@ public class XMLFormatter {
     public static Object fromXML(String xml) throws Exception {
         Object objectToReturn = null;
         try {
-            //Create JAXB Context
-            JAXBContext jaxbContext = null;
-
-            Class<?> objectClass = null;
+            Class<?> objectClass;
             String type = XMLFormatter.getType(xml);
             switch (type) {
                 case "bateauPlaisance":
@@ -91,8 +84,8 @@ public class XMLFormatter {
                     return objectToReturn;
             }
 
-            // Assign JAXB Context
-            jaxbContext = JAXBContext.newInstance(objectClass);
+            //Create JAXB Context
+            JAXBContext jaxbContext = JAXBContext.newInstance(objectClass);
 
             //Create Marshaller
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -100,7 +93,7 @@ public class XMLFormatter {
             StringReader sr = new StringReader(xml);
 
             objectToReturn = jaxbUnmarshaller.unmarshal(sr);
-        } catch (Exception e) {
+        } catch (JAXBException e) {
             throw e;
         }
         return objectToReturn;

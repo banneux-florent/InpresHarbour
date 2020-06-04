@@ -11,7 +11,7 @@ public class NetworkBasicClient extends Network implements IInOutEvent {
 
     // Properties
     
-    private String serverName;
+    private String host;
     public JLabel LOnOff = null;
     public JButton BtnSeConnecterAuServeur = null;
     
@@ -19,7 +19,7 @@ public class NetworkBasicClient extends Network implements IInOutEvent {
     
     public NetworkBasicClient(String serverName, int port, IInOutEvent inOutEvent, JLabel LOnOff, JButton BtnSeConnecterAuServeur) throws Exception {
         super(port, inOutEvent);
-        this.setServerName(serverName);
+        this.setHost(serverName);
         this.LOnOff = LOnOff;
         this.BtnSeConnecterAuServeur = BtnSeConnecterAuServeur;
     }
@@ -28,9 +28,10 @@ public class NetworkBasicClient extends Network implements IInOutEvent {
     
     @Override
     public void connect() {
-        if (this.isDisconnected())
+        if (this.isDisconnected()) {
             this.thread = new ThreadClient(this);
-        this.thread.start();
+            this.thread.start();   
+        }
     }
     
     @Override
@@ -57,14 +58,14 @@ public class NetworkBasicClient extends Network implements IInOutEvent {
     
     // Getters and setters
     
-    public String getServerName() {
-        return this.serverName;
+    public String getHost() {
+        return this.host;
     }
     
-    public final void setServerName(String serverName) throws Exception {
-        if (serverName.isEmpty())
-            throw new Exception("[NetworkBasicClient | Error] Server name can't be empty.");
-        this.serverName = serverName;
+    public final void setHost(String host) throws Exception {
+        if (host.isEmpty())
+            throw new Exception("[NetworkBasicClient | Error] Host can't be empty.");
+        this.host = host;
     }
     
     public NetworkThread getThread() {

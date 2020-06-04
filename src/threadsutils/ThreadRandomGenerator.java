@@ -14,13 +14,15 @@ import beans.IUserNumber;
 public class ThreadRandomGenerator extends Thread {
     
     private IUserNumber userNumber;
+    private boolean showMessages = true;
     private int lowerBound;
     private int upperBound;
     private int triggerMultiple;
     private int waitingTime;
     
-    public ThreadRandomGenerator(IUserNumber userNumber, int lowerBound, int upperBound, int triggerMultiple, int waitingTime) {
+    public ThreadRandomGenerator(IUserNumber userNumber, boolean showMessages, int lowerBound, int upperBound, int triggerMultiple, int waitingTime) {
         this.userNumber = userNumber; 
+        this.showMessages = showMessages;
         this.lowerBound = lowerBound; 
         this.upperBound = upperBound;
         this.triggerMultiple = triggerMultiple;
@@ -31,9 +33,11 @@ public class ThreadRandomGenerator extends Thread {
         int generatedNumber;
         while (true) {
             generatedNumber = (int) (this.lowerBound + Math.random()*(this.upperBound - this.lowerBound));
-            System.out.println("[ThreadRandomGenerator | Info] Bean " + this.userNumber.getId() + " generated " + generatedNumber);
+            if (this.showMessages)
+                System.out.println("[ThreadRandomGenerator | Info] Bean " + this.userNumber.getId() + " generated " + generatedNumber);
             if (generatedNumber % this.triggerMultiple == 0) {
-                System.out.println("[ThreadRandomGenerator | Info] Bean " + this.userNumber.getId() + " is interested by " + generatedNumber);
+                if (this.showMessages)
+                    System.out.println("[ThreadRandomGenerator | Info] Bean " + this.userNumber.getId() + " is interested by " + generatedNumber);
                 this.userNumber.processNumber(generatedNumber);
             }
             try {

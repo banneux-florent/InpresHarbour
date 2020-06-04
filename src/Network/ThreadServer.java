@@ -8,13 +8,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-// To get trace of exception error
-// Logger.getLogger(ThreadServeur.class.getName()).log(Level.SEVERE, (String)null, exception);
 
 /**
  *
@@ -30,7 +26,7 @@ public class ThreadServer extends Thread implements NetworkThread {
     private ServerSocket serverSocket;
     private BufferedReader bufferRead = null;
     private BufferedWriter bufferWrite = null;
-    private LinkedList<String> messagesList = new LinkedList<String>();
+    private final LinkedList<String> messagesList = new LinkedList<>();
     private boolean inService = false;
 
     // Constructors
@@ -41,6 +37,7 @@ public class ThreadServer extends Thread implements NetworkThread {
     
     // Methods
 
+    @Override
     public void run() {
         System.out.println("[ThreadServer | Info] Connecting server...");
         this.inService = true;
@@ -48,7 +45,7 @@ public class ThreadServer extends Thread implements NetworkThread {
         // Server's socket creation
         try {
             this.serverSocket = new ServerSocket(this.server.getPort());
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("[ThreadServer | Error] Cloudn't create server socket. \"" + e + "\"");
             if (this.inService) this.close();
             return;
@@ -64,22 +61,15 @@ public class ThreadServer extends Thread implements NetworkThread {
             this.server.BtnDemarrerServeur.setText("Arrêter le serveur");
         }
         
+        // Server running loop
         while (this.inService) {
             System.out.println("[ThreadServer | Info] Server waiting for client on port " + this.server.getPort());
             
-            // Waiting for client to connect
+            // Waiting for a single client to connect
             try {
                 this.clientSocket = this.serverSocket.accept();
-            } catch (SocketException e) {
-                System.err.println("[ThreadServer | Error] Client socket acceptation interrupted.");
-                if (this.inService) this.close();
-                return;
             } catch (IOException e) {
-                System.err.println("[ThreadServer | Error] Client socket couln't be accepted.");
-                if (this.inService) this.close();
-                return;
-            } catch (Exception e) {
-                System.err.println("[ThreadServer | Error] Error during client socket acceptation. \"" + e + "\"");
+                System.err.println("[ThreadServer | Error] Client socket couln't be accepted. \"" + e + "\"");
                 if (this.inService) this.close();
                 return;
             }
@@ -91,7 +81,7 @@ public class ThreadServer extends Thread implements NetworkThread {
                 System.out.println("[ThreadServer | Info] The server accepted a connection.");
             }
 
-            // Creating read/write buffers
+            // Getting client's socket's read/write buffers
             try {
                 this.bufferRead = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
                 this.bufferWrite = new BufferedWriter(new OutputStreamWriter(this.clientSocket.getOutputStream()));
@@ -105,16 +95,16 @@ public class ThreadServer extends Thread implements NetworkThread {
                 if (this.inService) this.close();
                 return;
             } else {
-                System.out.println("[ThreadServer | Info] Stream created.");
+                System.out.println("[ThreadServer | Info] Client socket stream retrived.");
             }
 
-            // Server running loop
-            String message = null;
-            while (this.inService) {
+            // Listening client connected loop
+            String message;
+            while (true) {
                 try {
                     System.out.println("[ThreadServer | Info] Waiting for an input...");
                     message = this.bufferRead.readLine();
-                    System.out.println("[ThreadServer | Info] [<<<] " + message);    
+                    System.out.println("[ThreadServer | Info] [<<<] " + message);
                     if (message.equals("client_stop_confirmation")) { // Client want to stop
                         System.out.println("[ThreadServer | Info] Client want to stop. Sending confirmation.");
                         this.sendMessage("client_stop_ok"); // Sending confirmation to client for stopping
@@ -123,11 +113,11 @@ public class ThreadServer extends Thread implements NetworkThread {
                         System.out.println("[ThreadServer | Info] Client is going to stop without confirmation.");
                         break;
                     } else {
-                        if (!addMessage(message)) {
+                        if (!receiveMessage(message)) {
                             System.err.println("[ThreadServer | Error] Couldn't save the input.");
                         }
                     }
-                } catch (Exception e) {
+                } catch (IOException e) {
                     System.err.println("[ThreadClient | Error] \"" + e + "\".");
                 }
             }
@@ -153,7 +143,7 @@ public class ThreadServer extends Thread implements NetworkThread {
                 this.clientSocket.close();
             if (this.serverSocket != null)
                 this.serverSocket.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("[ThreadServer | Error] " + e);
         }
         System.out.println("[ThreadServer | Info] Stopping server...");
@@ -174,8 +164,7 @@ public class ThreadServer extends Thread implements NetworkThread {
     }
 
     @Override
-    public synchronized boolean addMessage(String str) {
-        System.out.println(str);
+    public synchronized boolean receiveMessage(String str) {
         if (this.messagesList.add(str)) {
             this.server.messageReceived();
             return true;
@@ -196,11 +185,6 @@ public class ThreadServer extends Thread implements NetworkThread {
     @Override
     public synchronized String readMessage() {
         return (!this.messagesList.isEmpty()) ? (String) this.messagesList.getFirst() : "";
-    }
-
-    @Override
-    public synchronized String[] getAllMessages() {
-        return (String[])this.messagesList.toArray();
     }
     
     @Override

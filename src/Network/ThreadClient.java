@@ -12,9 +12,6 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// To get trace of exception error
-// Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, (String)null, exception);
-
 /**
  *
  * @author Florent
@@ -23,12 +20,12 @@ public class ThreadClient extends Thread implements NetworkThread {
     
     // Properties
 
-    private NetworkBasicClient client;
+    private final NetworkBasicClient client;
     
     private Socket clientSocket = null;
     private BufferedReader bufferRead = null;
     private BufferedWriter bufferWrite = null;
-    private LinkedList<String> messagesList = new LinkedList<String>();
+    private final LinkedList<String> messagesList = new LinkedList<>();
     private boolean inService = false;
     
     private boolean closeConfirmation = true;
@@ -41,13 +38,14 @@ public class ThreadClient extends Thread implements NetworkThread {
     
     // Methods
     
+    @Override
     public void run() {
         System.out.println("[ThreadClient | Info] Connecting client...");
         this.inService = true;
         
         // Client's socket creation
         try {
-            this.clientSocket = new Socket(this.client.getServerName(), this.client.getPort());
+            this.clientSocket = new Socket(this.client.getHost(), this.client.getPort());
         } catch (UnknownHostException e) {
             System.err.println("[ThreadClient | Error] Host unknown.");
             if (this.inService) this.close();
@@ -68,7 +66,7 @@ public class ThreadClient extends Thread implements NetworkThread {
             this.client.BtnSeConnecterAuServeur.setText("Se déconnecter du serveur");
         }
         
-        // Creating read/write buffers
+        // Getting socket's read/write buffers
         try {
             this.bufferRead = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
             this.bufferWrite = new BufferedWriter(new OutputStreamWriter(this.clientSocket.getOutputStream()));
@@ -82,29 +80,31 @@ public class ThreadClient extends Thread implements NetworkThread {
             if (this.inService) this.close();
             return;
         } else {
-            System.out.println("[ThreadClient | Info] Stream created.");
+            System.out.println("[ThreadClient | Info] Stream retrived.");
         }
         
         // Client running loop
-        String message = null;
-        do {
+        String message;
+        while (this.inService) {
             try {
                 System.out.println("[ThreadClient | Info] Waiting for an input...");
                 message = this.bufferRead.readLine();
                 System.out.println("[ThreadClient | Info] [<<<] " + message);
                 if (message.equals("server_stopping")) { // Server is closing, client needs to stop
                     this.closeConfirmation = false;
+                    System.out.println("[ThreadClient | Info] Server is stopping, client needs to stop too.");
+                    this.close();
                 } else if (message.equals("client_stop_ok")) { // Server confirmation for stopping client
                     System.out.println("[ThreadClient | Info] Server sended confirmation to stop.");
                 } else {
-                    if (!addMessage(message)) {
+                    if (!receiveMessage(message)) {
                         System.err.println("[ThreadClient | Error] Couldn't save the input.");
                     }
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
                 System.err.println("[ThreadClient | Error] \"" + e + "\".");
             }
-        } while (this.inService);
+        }
         System.out.println("[ThreadClient | Info] Client stopped.");
     }
     
@@ -125,7 +125,7 @@ public class ThreadClient extends Thread implements NetworkThread {
                 this.bufferWrite.close();
             if (this.clientSocket != null)
                 this.clientSocket.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("[ThreadClient | Error] " + e);
         }
         System.out.println("[ThreadClient | Info] Stopping client...");
@@ -146,7 +146,7 @@ public class ThreadClient extends Thread implements NetworkThread {
     }
 
     @Override
-    public synchronized boolean addMessage(String str) {
+    public synchronized boolean receiveMessage(String str) {
         if (this.messagesList.add(str)) {
             this.client.messageReceived();
             return true;
@@ -167,11 +167,6 @@ public class ThreadClient extends Thread implements NetworkThread {
     @Override
     public synchronized String readMessage() {
         return (!this.messagesList.isEmpty()) ? (String) this.messagesList.getFirst() : "";
-    }
-
-    @Override
-    public synchronized String[] getAllMessages() {
-        return (String[])this.messagesList.toArray();
     }
     
     @Override

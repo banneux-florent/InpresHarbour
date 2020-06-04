@@ -10,8 +10,7 @@ import java.util.LinkedList;
  */
 public class BoatBean implements PropertyChangeListener {
 
-    private final LinkedList<BoatListener> listeners = new LinkedList<BoatListener>();
-    private BoatEvent boatEvent = null;
+    private final LinkedList<BoatListener> listeners = new LinkedList<>();
 
     public BoatBean() {
     }
@@ -33,7 +32,7 @@ public class BoatBean implements PropertyChangeListener {
         } else {
             boatEvent.setBoatType(BoatEvent.BoatType.Peche);
         }
-        for (int i = 0; i < listeners.size(); i++) { // Déclenchement de AlertDetected pour chaque listeners
+        for (int i = 0; i < listeners.size(); i++) { // Dï¿½clenchement de AlertDetected pour chaque listeners
             listeners.get(i).BoatDetected(boatEvent);
         }
     }

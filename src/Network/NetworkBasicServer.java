@@ -27,8 +27,8 @@ public class NetworkBasicServer extends Network implements IInOutEvent {
     public void connect() {
         if (this.isDisconnected()) {
             this.thread = new ThreadServer(this);
+            this.thread.start();
         }
-        this.thread.start();
     }
     
     public boolean isConnected() {
