@@ -67,7 +67,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
         this.LDateHeure.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.FRANCE).format(new Date()));
         
         FichierLog fl = new FichierLog();
-        fl.ecrireLigne("Le Phare a été démarré.");
+        fl.ecrireLigne("Le Phare a ï¿½tï¿½ dï¿½marrï¿½.");
         
         Properties properties = new Properties();
         try {
@@ -296,13 +296,13 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
             }
         });
 
-        jLabel2.setText("État de la connexion:");
+        jLabel2.setText("Ã‰tat de la connexion:");
 
         LOnOff.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         LOnOff.setForeground(new java.awt.Color(255, 0, 0));
         LOnOff.setText("OFF");
 
-        jLabel7.setText("Bateau(x) non-identifié(s) :");
+        jLabel7.setText("Bateau(x) non-identifiÃ©(s) :");
 
         jScrollPane3.setViewportView(LBBateauxNonIdentifies);
 
@@ -315,7 +315,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
 
         jScrollPane4.setViewportView(LBBateauxIdentifies);
 
-        jLabel15.setText("Bateau(x) identifié(s) :");
+        jLabel15.setText("Bateau(x) identifiÃ©(s) :");
 
         jLabel16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel16.setText("Bateau(x) en attente de rentrer dans la rade");
@@ -327,11 +327,11 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
             }
         });
 
-        jLabel17.setText("Réponse(s) de la capitainerie :");
+        jLabel17.setText("RÃ©ponse(s) de la capitainerie :");
 
         jScrollPane5.setViewportView(LBReponsesCapitainerie);
 
-        BtnBateauEntrerDansLaRade.setText("Bateau entré dans la rade");
+        BtnBateauEntrerDansLaRade.setText("Bateau entrÃ© dans la rade");
         BtnBateauEntrerDansLaRade.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnBateauEntrerDansLaRadeActionPerformed(evt);
@@ -491,7 +491,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
                 }
             }
         } else {
-            DialogErreur de = new DialogErreur("Erreur", "Le phare n'est pas connecté au serveur.");
+            DialogErreur de = new DialogErreur("Erreur", "Le phare n'est pas connectï¿½ au serveur.");
             de.setVisible(true);
         }
     }//GEN-LAST:event_BtnDemanderAutorisationEntrerActionPerformed
@@ -515,7 +515,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
                 }
             }
         } else {
-            DialogErreur de = new DialogErreur("Erreur", "Le phare n'est pas connecté au serveur.");
+            DialogErreur de = new DialogErreur("Erreur", "Le phare n'est pas connectï¿½ au serveur.");
             de.setVisible(true);
         }
     }//GEN-LAST:event_BtnBateauEntrerDansLaRadeActionPerformed
@@ -560,7 +560,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
         }
         
         FichierLog fl = new FichierLog();
-        fl.ecrireLigne("Le Phare a été fermé.");
+        fl.ecrireLigne("Le Phare a ï¿½tï¿½ fermï¿½.");
     }//GEN-LAST:event_formWindowClosing
 
     private void viderListeBateauxNonIdentifiesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viderListeBateauxNonIdentifiesActionPerformed

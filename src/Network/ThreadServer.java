@@ -61,7 +61,7 @@ public class ThreadServer extends Thread implements NetworkThread {
             System.out.println("[ThreadServer | Info] Server launched on port " + this.server.getPort());
             this.server.LOnOff.setText("ON");
             this.server.LOnOff.setForeground(Color.GREEN);
-            this.server.BtnDemarrerServeur.setText("Arr?ter le serveur");
+            this.server.BtnDemarrerServeur.setText("Arrêter le serveur");
         }
         
         while (this.inService) {
@@ -142,7 +142,7 @@ public class ThreadServer extends Thread implements NetworkThread {
         this.inService = false;
         this.server.LOnOff.setText("OFF");
         this.server.LOnOff.setForeground(Color.RED);
-        this.server.BtnDemarrerServeur.setText("D�marrer le serveur");
+        this.server.BtnDemarrerServeur.setText("Démarrer le serveur");
         this.sendMessage("server_stopping");
         try {
             if (this.bufferRead != null)

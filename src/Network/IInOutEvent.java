@@ -7,7 +7,7 @@ package Network;
 
 /**
  *
- * @author flore
+ * @author Florent
  */
 public interface IInOutEvent {
     

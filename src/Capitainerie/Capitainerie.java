@@ -443,7 +443,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         });
         jMenu2.add(MIPlaisance);
 
-        MIPeche.setText("P?che");
+        MIPeche.setText("Pêche");
         MIPeche.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MIPecheActionPerformed(evt);
@@ -455,7 +455,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
 
         jMenu3.setText("Bateaux");
 
-        MIListeComplete.setText("Liste compl?te");
+        MIListeComplete.setText("Liste complète");
         MIListeComplete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MIListeCompleteActionPerformed(evt);
@@ -493,7 +493,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
 
         MenuPrincipal.add(jMenu4);
 
-        jMenu6.setText("Param?tres");
+        jMenu6.setText("Paramètres");
 
         MIFormatDate.setText("Format date");
         MIFormatDate.addActionListener(new java.awt.event.ActionListener() {
@@ -504,6 +504,11 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         jMenu6.add(MIFormatDate);
 
         MIFichierLog.setText("Fichier log");
+        MIFichierLog.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MIFichierLogActionPerformed(evt);
+            }
+        });
         jMenu6.add(MIFichierLog);
 
         MIAffichageDateHeureCourante.setSelected(true);
@@ -517,7 +522,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
 
         MenuPrincipal.add(jMenu6);
 
-        jMenu5.setText("? propos");
+        jMenu5.setText("À propos");
 
         MIAuteurs.setText("Auteurs");
         MIAuteurs.addActionListener(new java.awt.event.ActionListener() {
@@ -944,6 +949,12 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         FichierLog fl = new FichierLog();
         fl.ecrireLigne("La Capintainerie a été fermée.");
     }//GEN-LAST:event_formWindowClosing
+
+    private void MIFichierLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MIFichierLogActionPerformed
+        Parametres_FichierLog fl = new Parametres_FichierLog();
+        fl.setTitle("Tous les logs");
+        fl.setVisible(true);
+    }//GEN-LAST:event_MIFichierLogActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnChoisirEmplacement;

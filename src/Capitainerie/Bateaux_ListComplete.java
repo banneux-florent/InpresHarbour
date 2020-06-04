@@ -129,7 +129,7 @@ public class Bateaux_ListComplete extends javax.swing.JFrame {
 
         LListeDesBateaux.setBackground(new java.awt.Color(220, 220, 220));
         LListeDesBateaux.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        LListeDesBateaux.setText("Liste complète des bateaux");
+        LListeDesBateaux.setText("Liste complÃ¨te des bateaux");
         LListeDesBateaux.setAutoscrolls(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -180,7 +180,7 @@ public class Bateaux_ListComplete extends javax.swing.JFrame {
         jScrollPane2.setViewportView(TableBateauxPeche);
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel1.setText("Bateau(x) de pêche :");
+        jLabel1.setText("Bateau(x) de pÃªche :");
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel2.setText("Bateau(x) de plaisance :");

@@ -56,14 +56,14 @@ public class Amarrages_Peche extends javax.swing.JDialog {
         BtnFermer = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Liste des amarrages de pêche (quais)");
+        setTitle("Liste des amarrages de pÃªche (quais)");
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(220, 220, 220));
 
         jLabel12.setBackground(new java.awt.Color(220, 220, 220));
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel12.setText("Liste des amarrages de pêche (quais)");
+        jLabel12.setText("Liste des amarrages de pÃªche (quais)");
         jLabel12.setAutoscrolls(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

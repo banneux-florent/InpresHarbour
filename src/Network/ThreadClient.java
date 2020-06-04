@@ -11,8 +11,6 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 
 // To get trace of exception error
 // Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, (String)null, exception);
@@ -67,7 +65,7 @@ public class ThreadClient extends Thread implements NetworkThread {
             System.out.println("[ThreadClient | Info] Client connected: " + this.clientSocket.getInetAddress().toString());
             this.client.LOnOff.setText("ON");
             this.client.LOnOff.setForeground(Color.GREEN);
-            this.client.BtnSeConnecterAuServeur.setText("Se déconnecter du serveur");
+            this.client.BtnSeConnecterAuServeur.setText("Se dÃ©connecter du serveur");
         }
         
         // Creating read/write buffers
@@ -180,18 +178,6 @@ public class ThreadClient extends Thread implements NetworkThread {
     public boolean getInService() {
         return this.inService;
     }
-    
-    /*
-    public String receiveString() {
-        String response = null;
-        try {
-            response = this.bufferRead.readLine();
-        } catch (IOException ex) {
-            Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, (String)null, ex);
-        }
-        return response;
-    }
-    */
     
     // Getters and setters
 

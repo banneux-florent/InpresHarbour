@@ -7,7 +7,7 @@ package Network;
 
 /**
  *
- * @author flore
+ * @author Florent
  */
 public abstract class Network implements IInOutEvent {
     

@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author flore
+ * @author Florent
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)

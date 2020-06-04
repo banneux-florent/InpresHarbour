@@ -10,7 +10,6 @@ import Classes.BateauPeche;
 import Classes.BateauPlaisance;
 import Classes.CapitainerieSavable;
 import Classes.Fonctions;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -25,7 +24,7 @@ import javax.xml.bind.Unmarshaller;
 
 /**
  *
- * @author flore
+ * @author Florent
  */
 public class XMLFormatter {
 
@@ -54,7 +53,7 @@ public class XMLFormatter {
             // Remove new lines
             xml = xml.replace("\n", "").replace("\r", "");
 
-            // Remove XML header (? retirer si �a bug)
+            // Remove XML header (À retirer si ça bug)
             xml = xml.substring(xml.indexOf(">") + 1);
 
             return xml;

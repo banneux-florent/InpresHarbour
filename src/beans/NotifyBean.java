@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package beans;
 
 import Classes.Bateau;
@@ -12,18 +7,15 @@ import Classes.Equipage;
 import Classes.FichierLog;
 import Classes.Fonctions;
 import Classes.Marin;
-import Exceptions.SailorWithoutIdentificationException;
 import Exceptions.ShipWithoutIdentificationException;
 import Phare.ArrivageBateau;
 import Phare.Phare;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
 
 /**
  *
@@ -73,7 +65,7 @@ public class NotifyBean implements BoatListener {
         newBateau.setEquipage(equipage);
         
         FichierLog fl = new FichierLog();
-        fl.ecrireLigne("[NotifyBean | Info] Un nouveau bateau a été généré: " + newBateau.toString());
+        fl.ecrireLigne("[NotifyBean | Info] Un nouveau bateau a Ã©tÃ© gÃ©nÃ©rÃ©: " + newBateau.toString());
         
         ArrivageBateau arrivageBateau = new ArrivageBateau(newBateau);
         this.getPhare().AddBoatNoIdentified(newBateau);

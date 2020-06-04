@@ -43,7 +43,7 @@ public class Fonctions {
         if (!Fonctions.fileExists(csvFile)) {
             csvFile = System.getProperty("user.dir") + sep + "Donnees" + sep + filename + ".csv";
             if (!Fonctions.fileExists(csvFile)) {
-                System.out.println("Le fichier ? " + filename + " ? n'existe pas ");
+                System.out.println("Le fichier « " + filename + " » n'existe pas ");
             }
         }
 
@@ -74,7 +74,7 @@ public class Fonctions {
         if (!Fonctions.fileExists(filePath)) {
             filePath = System.getProperty("user.dir") + sep + "Donnees" + sep + filename;
             if (!Fonctions.fileExists(filePath)) {
-                System.out.println("Le fichier ? " + filename + " ? n'existe pas.");
+                System.out.println("Le fichier « " + filename + " » n'existe pas.");
                 return "";
             }
         }
@@ -120,7 +120,7 @@ public class Fonctions {
         if (!Fonctions.fileExists(file)) {
             file = System.getProperty("user.dir") + sep + "Donnees" + sep + "config.properties";
             if (!Fonctions.fileExists(file)) {
-                System.out.println("Le fichier ? config.properties ? n'existe pas.");
+                System.out.println("Le fichier « config.properties « n'existe pas.");
                 return null;
             }
         }

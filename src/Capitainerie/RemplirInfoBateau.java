@@ -309,7 +309,7 @@ public class RemplirInfoBateau extends javax.swing.JDialog {
                 this.bateauQP.setPortAttache(portAttache);
             } else {
                 valide = false;
-                new CapitainerieException("Erreur", "Le nom du port d'attache doit �tre inf�rieur � 255 caract�res.");
+                new CapitainerieException("Erreur", "Le nom du port d'attache doit être inférieur à 255 caractères.");
             }
         } else {
             valide = false;
@@ -319,7 +319,7 @@ public class RemplirInfoBateau extends javax.swing.JDialog {
             this.bateauQP.setTonnage(tonnage);
         } else {
             valide = false;
-            new CapitainerieException("Erreur", "Le tonnage du bateau doit �tre strictement positif.");
+            new CapitainerieException("Erreur", "Le tonnage du bateau doit être strictement positif.");
         }
         if (valide) {
             this.capitainerie.ajouterBateauListeBateauAmmare(bateauQP, bateauARetirer);
@@ -345,7 +345,7 @@ public class RemplirInfoBateau extends javax.swing.JDialog {
         String prenom = this.TFPrenom.getText();
 
         if (nom.isEmpty() || prenom.isEmpty()) {
-            new CapitainerieException("Erreur", "Veillez compl�ter le nom et le pr�nom.");
+            new CapitainerieException("Erreur", "Veillez compléter le nom et le prénom.");
         } else {
             int ddn_jour = this.CBJour.getSelectedIndex() + 1;
             int ddn_mois = this.CBMois.getSelectedIndex() + 1;

@@ -1,11 +1,14 @@
 package Classes;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedList;
 
 /**
  *
@@ -49,6 +52,26 @@ public class FichierLog {
         } else {
             System.err.println("[FichierLog | Error] Couldn't find data directory.");
         }
+    }
+    
+    public LinkedList<String> lireLogs() {
+        LinkedList<String> logs = new LinkedList<String>();
+        if (!path.equals("") && !filename.equals("")) {
+            try {
+                FileReader f = new FileReader(path + filename);
+                BufferedReader bf = new BufferedReader(f);
+                String line;
+                while ((line = bf.readLine()) != null) {
+                    logs.add(line);
+                }
+                bf.close();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            System.err.println("[FichierLog | Error] Couldn't find data directory.");
+        }
+        return logs;
     }
     
 }

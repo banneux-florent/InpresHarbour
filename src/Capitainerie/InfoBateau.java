@@ -80,13 +80,13 @@ public class InfoBateau extends javax.swing.JDialog {
         jLabel3.setText("Pavillon :");
 
         LEmplacement.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        LEmplacement.setText("P12*1");
+        LEmplacement.setText("...");
 
         LNomDuBateau.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        LNomDuBateau.setText("Black Berry");
+        LNomDuBateau.setText("...");
 
         LPavillon.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        LPavillon.setText("UK");
+        LPavillon.setText("...");
 
         jLabel7.setText("Port d'attache :");
 
@@ -119,16 +119,16 @@ public class InfoBateau extends javax.swing.JDialog {
         jScrollPane1.setViewportView(LBEquipage);
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel10.setText("Équipage :");
+        jLabel10.setText("Ã‰quipage :");
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel11.setText("Bateau :");
 
         LPortAttache.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        LPortAttache.setText("UK");
+        LPortAttache.setText("...");
 
         LTonnage.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        LTonnage.setText("UK");
+        LTonnage.setText("...");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

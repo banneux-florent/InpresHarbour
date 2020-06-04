@@ -89,10 +89,10 @@ public class KindOfBoatBean implements IUserNumber {
     public void processNumber(int n) {
         System.out.println("[KoBB | Info] Bean " + this.getId() + " is treating number " + n);
         if (n % numberRefPlaisance == 0) {
-            // System.err.println("[KoBB | Info] (" + n + ") Bateau généré! (Bateau de plaisance)");
+            // System.err.println("[KoBB | Info] (" + n + ") Bateau gÃ©nÃ©rÃ©! (Bateau de plaisance)");
             notifyBoatDetected("Plaisance");
         } else if (n % numberRefPeche == 0) {
-            // System.err.println("[KoBB | Info] (" + n + ") Bateau généré! (Bateau de p?che)");
+            // System.err.println("[KoBB | Info] (" + n + ") Bateau gÃ©nÃ©rÃ©! (Bateau de pÃªche)");
             notifyBoatDetected("Peche");
         }
     }
