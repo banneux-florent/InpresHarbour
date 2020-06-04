@@ -10,6 +10,7 @@ import Classes.Marin;
 import Exceptions.ShipWithoutIdentificationException;
 import Phare.ArrivageBateau;
 import Phare.Phare;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.LinkedList;
@@ -66,6 +67,13 @@ public class NotifyBean implements BoatListener {
         
         FichierLog fl = new FichierLog();
         fl.ecrireLigne("[NotifyBean | Info] Un nouveau bateau a été généré: " + newBateau.toString());
+        try {
+            if (Integer.parseInt(Fonctions.chargerConfig().getProperty("boatGenerator.showMessages")) == 1) {
+                System.err.println("[NotifyBean | Info] Un nouveau bateau a été généré: " + newBateau.toString());
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         
         ArrivageBateau arrivageBateau = new ArrivageBateau(newBateau);
         this.getPhare().AddBoatNoIdentified(newBateau);

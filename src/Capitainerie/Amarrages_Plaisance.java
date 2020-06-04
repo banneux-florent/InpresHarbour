@@ -15,7 +15,7 @@ public class Amarrages_Plaisance extends javax.swing.JDialog {
         initComponents();
         
         DefaultTableModel tableModel = new DefaultTableModel();
-        String[] columnNames = {"Ponton", "Côté", "Emplacement", "Bateau", "Port d'attache"};
+        String[] columnNames = {"Ponton", "CÃ´tÃ©", "Emplacement", "Bateau", "Port d'attache"};
 
         for(String columnName : columnNames){
            tableModel.addColumn(columnName);
@@ -44,7 +44,7 @@ public class Amarrages_Plaisance extends javax.swing.JDialog {
         jTable1.setModel(tableModel);
     
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(10); // Identifiant
-        jTable1.getColumnModel().getColumn(1).setPreferredWidth(10); // Côté
+        jTable1.getColumnModel().getColumn(1).setPreferredWidth(10); // CÃ´tÃ©
         jTable1.getColumnModel().getColumn(2).setPreferredWidth(45); // Emplacement
     }
 

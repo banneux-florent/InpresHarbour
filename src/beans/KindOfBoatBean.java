@@ -5,6 +5,7 @@ import beans.BoatEvent.BoatType;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Properties;
 import threadsutils.ThreadRandomGenerator;
@@ -20,7 +21,6 @@ public class KindOfBoatBean implements IUserNumber {
     private int waitingTime;
     private int lowerBound;
     private int upperBound;
-    private int triggerMultiple;
     private ThreadRandomGenerator trg;
     private boolean isRunning = false;
     private int numberRefPlaisance;
@@ -36,7 +36,7 @@ public class KindOfBoatBean implements IUserNumber {
         Properties properties = new Properties();
         try {
             properties = Fonctions.chargerConfig();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         
@@ -44,7 +44,6 @@ public class KindOfBoatBean implements IUserNumber {
         this.waitingTime = Integer.parseInt(properties.getProperty("boatGenerator.waitingTime"));
         this.lowerBound = Integer.parseInt(properties.getProperty("boatGenerator.lowerBound"));
         this.upperBound = Integer.parseInt(properties.getProperty("boatGenerator.upperBound"));
-        this.triggerMultiple = 1;
         this.numberRefPeche = Integer.parseInt(properties.getProperty("boatGenerator.numberRefPeche"));
         this.numberRefPlaisance = Integer.parseInt(properties.getProperty("boatGenerator.numberRefPlaisance"));
     }
@@ -52,7 +51,7 @@ public class KindOfBoatBean implements IUserNumber {
     public void start() {
         if (isRunning()) {
             try {
-                trg = new ThreadRandomGenerator(this, showMessages, lowerBound, upperBound, triggerMultiple, waitingTime);
+                trg = new ThreadRandomGenerator(this, showMessages, lowerBound, upperBound, waitingTime);
                 trg.start();
             } catch (Exception e) {
                 e.printStackTrace();

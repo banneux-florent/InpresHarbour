@@ -3,20 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Network/ThreadClient.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Network/ThreadServer.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Network/XMLFormatter.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/beans/KindOfBoatBean.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Capitainerie/Personnel_EquipageDUnBateau_Liste.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Network/NetworkThread.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Network/NetworkBasicServer.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Capitainerie/RemplirInfoBateau.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/beans/NotifyBean.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Network/Frame.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Network/IInOutEvent.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Network/NetworkBasicClient.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Network/Network.java</file>
-            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Classes/Fonctions.java</file>
+            <file>file:/C:/Compilations/Java/Partie2/InpresHarbour/src/Capitainerie/Capitainerie.java</file>
         </group>
     </open-files>
 </project-private>

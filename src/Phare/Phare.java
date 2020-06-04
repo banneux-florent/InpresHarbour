@@ -63,7 +63,7 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
         Properties properties = new Properties();
         try {
             properties = Fonctions.chargerConfig();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -88,38 +88,8 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
         
         loadSavedData();
 
-        this.threadRandomGenerator = new ThreadRandomGenerator(this, showMessages, lowerBound, upperBound, triggerMultiple, waitingTime);
+        this.threadRandomGenerator = new ThreadRandomGenerator(this, showMessages, lowerBound, upperBound, waitingTime);
         this.threadRandomGenerator.start();
-        
-        /*
-        try {
-            Marin capitaine = new Marin("Mokh", "Wad", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Capitaine);
-            Marin second = new Marin("Flo", "Bann", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Second);
-            Marin bosco = new Marin("Air", "29", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Bosco);
-            Marin mecanicien = new Marin("Oussama", "Achour", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.MaitreMecanicien);
-
-            Equipage equipage = new Equipage(capitaine, second);
-            equipage.getMarins().add(bosco);
-            equipage.getMarins().add(mecanicien);
-
-            BateauPlaisance tempBateauPlaisance = new BateauPlaisance("Bateau", "Exeter", 200, 5, BateauPlaisance.TypePermis.PlaisanceExtentionHauturiere, "BE");
-            BateauPeche tempBateauPeche = new BateauPeche("BateauPeche", "Liege", 100, 10, BateauPeche.TypeDePeche.Thonier, "FR");
-
-            tempBateauPlaisance.setEquipage(equipage);
-            tempBateauPeche.setEquipage(equipage);
-
-            bateauxNonIdentifies.add(tempBateauPlaisance);
-            bateauxNonIdentifies.add(tempBateauPeche);
-
-            ((DefaultListModel) this.LBBateauxNonIdentifies.getModel()).addElement(tempBateauPlaisance);
-            ((DefaultListModel) this.LBBateauxNonIdentifies.getModel()).addElement(tempBateauPeche);
-
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
-        
-        */
-
     }
 
     private void loadSavedData() {
@@ -656,7 +626,6 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
                 String objectXml = XMLFormatter.decode(frame.getArg(2));
                 Object object = XMLFormatter.fromXML(objectXml);
                 if (list.equals("reponse_capitainerie")) {
-
                     if (object instanceof Bateau) {
                         ((DefaultListModel) this.LBReponsesCapitainerie.getModel()).addElement((Bateau) object);
                         this.reponsesCapitainerie.add((Bateau) object);
@@ -669,7 +638,6 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
                     ((DefaultListModel) this.LBReponsesCapitainerie.getModel()).removeElement(bateau);
                     this.confirmationsCapitainerie.add(bateau);
                     ((DefaultListModel) this.LBConfirmationsCapitainerie.getModel()).addElement(bateau);
-
                 }
             } else if (action.equals("capitainerie_supprimer_bateau_liste")) {
 
@@ -688,25 +656,23 @@ public class Phare extends javax.swing.JFrame implements IInOutEvent, IUserNumbe
 
     @Override
     public void processNumber(int n) {
-        String id =  "Bean" + this.idKindOfBoatBean;
-        KindOfBoatBean kindOfBoatBean = null;
-        BoatBean boatBean = null;
-        NotifyBean notifyBean = null;
-        try {
-            kindOfBoatBean = (KindOfBoatBean) Beans.instantiate(null, "beans.KindOfBoatBean");
-            boatBean = (BoatBean) Beans.instantiate(null, "beans.BoatBean");
-            notifyBean = (NotifyBean) Beans.instantiate(null, "beans.NotifyBean");
-            
-            notifyBean.setPhare(this);
-            kindOfBoatBean.setIsRunning(true);
-            kindOfBoatBean.setId(id);
-            kindOfBoatBean.addPropertyChangeListener(boatBean);
-            boatBean.addListener(notifyBean);
-            kindOfBoatBean.start();
+        if (n % this.triggerMultiple == 0) {
+            try {
+                KindOfBoatBean kindOfBoatBean = (KindOfBoatBean) Beans.instantiate(null, "beans.KindOfBoatBean");
+                BoatBean boatBean = (BoatBean) Beans.instantiate(null, "beans.BoatBean");
+                NotifyBean notifyBean = (NotifyBean) Beans.instantiate(null, "beans.NotifyBean");
 
-            this.idKindOfBoatBean++;
-        } catch (ClassNotFoundException | IOException ex) {
-            ex.printStackTrace();
+                notifyBean.setPhare(this);
+                kindOfBoatBean.setIsRunning(true);
+                kindOfBoatBean.setId("Bean" + this.idKindOfBoatBean);
+                kindOfBoatBean.addPropertyChangeListener(boatBean);
+                boatBean.addListener(notifyBean);
+                kindOfBoatBean.start();
+
+                this.idKindOfBoatBean++;
+            } catch (ClassNotFoundException | IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

@@ -55,7 +55,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         Properties properties = new Properties();
         try {
             properties = Fonctions.chargerConfig();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         
@@ -75,44 +75,6 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
         this.LBBateauxAmarres.setModel(new DefaultListModel());
         
         this.loadSavedData();
-        
-        this.pontons.add(new Ponton("1", 12, 15.0));
-        this.pontons.add(new Ponton("2", 12, 15.0));
-        
-        this.quais.add(new Quai("1", 6, 15.0));
-        this.quais.add(new Quai("2", 6, 15.0));
-        
-        /*
-        
-        this.LBBateauAttenteEntrer.setModel(new DefaultListModel());
-        this.LBBateauEnCoursDAmarrage.setModel(new DefaultListModel());
-        this.LBBateauEntresDansLaRade.setModel(new DefaultListModel());
-        this.LBBateauxAmarres.setModel(new DefaultListModel());
-
-        BateauPlaisance tempBateauPlaisance = null;
-        BateauPeche tempBateauPeche = null;
-        try {
-            tempBateauPlaisance = new BateauPlaisance("Bateau", "Exeter", 200, 5, BateauPlaisance.TypePermis.PlaisanceExtentionHauturiere, "BE");
-            tempBateauPeche = new BateauPeche("BateauPeche", "Liege", 100, 10, BateauPeche.TypeDePeche.Thonier, "FR");
-
-            Marin capitaine = new Marin("Mokh", "Wad", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Capitaine);
-            Marin second = new Marin("Flo", "Bann", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Second);
-            Marin bosco = new Marin("Air", "29", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.Bosco);
-            Marin mecanicien = new Marin("Oussama", "Achour", LocalDate.of(2014, Month.JANUARY, 1), Marin.Fonction.MaitreMecanicien);
-            Equipage equipage = new Equipage(capitaine, second);
-            equipage.getMarins().add(bosco);
-            equipage.getMarins().add(mecanicien);
-            tempBateauPlaisance.setEquipage(equipage);
-            tempBateauPeche.setEquipage(equipage);
-        } catch (Exception ex) {
-            Logger.getLogger(Capitainerie.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        bateauAttenteEntrer.add(tempBateauPlaisance);
-        bateauAttenteEntrer.add(tempBateauPeche);
-        ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).addElement(tempBateauPlaisance);
-        ((DefaultListModel) this.LBBateauAttenteEntrer.getModel()).addElement(tempBateauPeche);
-         */
     }
 
     private void loadSavedData() {
@@ -141,7 +103,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
                 }
                 objectIn.close();
             }
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
         try {
@@ -156,7 +118,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
                 }
                 objectIn.close();
             }
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
         try {
@@ -172,7 +134,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
                 }
                 objectIn.close();
             }
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
         try {
@@ -202,7 +164,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
                 this.pontons.add(new Ponton("1", 12, 15.0));
                 this.pontons.add(new Ponton("2", 12, 15.0));
             }
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
         try {
@@ -216,7 +178,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
                 this.quais.add(new Quai("1", 6, 15.0));
                 this.quais.add(new Quai("2", 6, 15.0));
             }
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
 
@@ -658,7 +620,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
                 }
             }
         } else {
-            DialogErreur de = new DialogErreur("Erreur", "Le serveur n'est pas allumé. Attention ? ce que le phare le soit aussi!");
+            DialogErreur de = new DialogErreur("Erreur", "Le serveur n'est pas allumé. Attention à ce que le phare le soit aussi!");
             de.setVisible(true);
         }
     }//GEN-LAST:event_BtnEnvoyerConfirmationActionPerformed
@@ -709,7 +671,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
                 de.setVisible(true);
             }
         } else {
-            DialogErreur de = new DialogErreur("Erreur", "Le serveur n'est pas allumé. Attention ? ce que le phare le soit aussi!");
+            DialogErreur de = new DialogErreur("Erreur", "Le serveur n'est pas allumé. Attention à ce que le phare le soit aussi!");
             de.setVisible(true);
         }
     }//GEN-LAST:event_BtnEnvoyerEmplacementActionPerformed
@@ -889,42 +851,36 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent {
             }
         }
         
-        try (FileOutputStream fos = new FileOutputStream(path + "quais.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+        try (FileOutputStream fos = new FileOutputStream(path + "quais.dat"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.quais);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         
-        try (FileOutputStream fos = new FileOutputStream(path + "pontons.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+        try (FileOutputStream fos = new FileOutputStream(path + "pontons.dat"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.pontons);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         
-        try (FileOutputStream fos = new FileOutputStream(path + "bateauAttenteEntrer.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+        try (FileOutputStream fos = new FileOutputStream(path + "bateauAttenteEntrer.dat"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.bateauAttenteEntrer);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        try (FileOutputStream fos = new FileOutputStream(path + "bateauEnCoursDAmarrage.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+        try (FileOutputStream fos = new FileOutputStream(path + "bateauEnCoursDAmarrage.dat"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.bateauEnCoursDAmarrage);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         
-        try (FileOutputStream fos = new FileOutputStream(path + "bateauEntresDansLaRade.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+        try (FileOutputStream fos = new FileOutputStream(path + "bateauEntresDansLaRade.dat"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.bateauEntresDansLaRade);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         
-        try (FileOutputStream fos = new FileOutputStream(path + "bateauAmarre.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+        try (FileOutputStream fos = new FileOutputStream(path + "bateauAmarre.dat"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this.bateauxAmarres);
         } catch (IOException ex) {
             ex.printStackTrace();

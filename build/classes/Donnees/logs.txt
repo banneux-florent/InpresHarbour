@@ -59,3 +59,146 @@
 [Thu Jun 04 19:08:23 CEST 2020] La Capintainerie a été démarrée.
 [Thu Jun 04 19:08:31 CEST 2020] La Capintainerie a été fermée.
 [Thu Jun 04 19:08:31 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:03:13 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:03:14 CEST 2020] La Capintainerie a été démarrée.
+[Thu Jun 04 21:03:23 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:03:34 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:03:36 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Western Sahara / EH
+[Thu Jun 04 21:03:37 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Jersey / JE
+[Thu Jun 04 21:03:40 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Azerbaijan / AZ
+[Thu Jun 04 21:03:40 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Estonia / EE
+[Thu Jun 04 21:03:41 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Serbia / RS
+[Thu Jun 04 21:03:42 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Korea, Republic of / KR
+[Thu Jun 04 21:03:44 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:04:07 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:04:14 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Anguilla / AI
+[Thu Jun 04 21:04:14 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Latvia / LV
+[Thu Jun 04 21:04:16 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Azerbaijan / AZ
+[Thu Jun 04 21:04:18 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Latvia / LV
+[Thu Jun 04 21:04:20 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Martinique / MQ
+[Thu Jun 04 21:04:21 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:07:00 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:07:07 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Japan / JP
+[Thu Jun 04 21:07:09 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Cote d'Ivoire / CI
+[Thu Jun 04 21:07:09 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Armenia / AM
+[Thu Jun 04 21:07:11 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Bulgaria / BG
+[Thu Jun 04 21:07:13 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Burkina Faso / BF
+[Thu Jun 04 21:07:13 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:10:14 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:10:19 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Mayotte / YT
+[Thu Jun 04 21:10:23 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Liechtenstein / LI
+[Thu Jun 04 21:10:26 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Egypt / EG
+[Thu Jun 04 21:10:29 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Angola / AO
+[Thu Jun 04 21:10:32 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Lao People's Democratic Republic / LA
+[Thu Jun 04 21:10:32 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Puerto Rico / PR
+[Thu Jun 04 21:10:32 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Holy See (Vatican City State) / VA
+[Thu Jun 04 21:10:38 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Argentina / AR
+[Thu Jun 04 21:10:43 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Mozambique / MZ
+[Thu Jun 04 21:10:44 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Syrian Arab Republic / SY
+[Thu Jun 04 21:10:45 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Ethiopia / ET
+[Thu Jun 04 21:10:45 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Anguilla / AI
+[Thu Jun 04 21:10:50 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Egypt / EG
+[Thu Jun 04 21:10:53 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Finland / FI
+[Thu Jun 04 21:10:58 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Bonaire / BQ
+[Thu Jun 04 21:10:58 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Thailand / TH
+[Thu Jun 04 21:10:59 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Sao Tome and Principe / ST
+[Thu Jun 04 21:11:02 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Western Sahara / EH
+[Thu Jun 04 21:11:04 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Canada / CA
+[Thu Jun 04 21:11:07 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Cayman Islands / KY
+[Thu Jun 04 21:11:15 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Equatorial Guinea / GQ
+[Thu Jun 04 21:11:23 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Mozambique / MZ
+[Thu Jun 04 21:11:24 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Lesotho / LS
+[Thu Jun 04 21:11:26 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Sweden / SE
+[Thu Jun 04 21:11:27 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Sint Maarten (Dutch part) / SX
+[Thu Jun 04 21:11:32 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:26:52 CEST 2020] La Capintainerie a été fermée.
+[Thu Jun 04 21:36:10 CEST 2020] La Capintainerie a été démarrée.
+[Thu Jun 04 21:36:10 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:36:15 CEST 2020] La Capintainerie a été fermée.
+[Thu Jun 04 21:36:16 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:36:23 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:36:23 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Russian Federation / RU
+[Thu Jun 04 21:36:23 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Iceland / IS
+[Thu Jun 04 21:36:23 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Angola / AO
+[Thu Jun 04 21:36:23 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / China / CN
+[Thu Jun 04 21:36:23 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Myanmar / MM
+[Thu Jun 04 21:36:23 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Bosnia and Herzegovina / BA
+[Thu Jun 04 21:36:24 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Guernsey / GG
+[Thu Jun 04 21:36:24 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Peru / PE
+[Thu Jun 04 21:36:24 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / United States / US
+[Thu Jun 04 21:36:24 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Oman / OM
+[Thu Jun 04 21:36:24 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Uruguay / UY
+[Thu Jun 04 21:36:24 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Syrian Arab Republic / SY
+[Thu Jun 04 21:36:24 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Finland / FI
+[Thu Jun 04 21:36:24 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Cuba / CU
+[Thu Jun 04 21:36:24 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Palestine, State of / PS
+[Thu Jun 04 21:36:24 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / United Kingdom / GB
+[Thu Jun 04 21:36:25 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Tonga / TO
+[Thu Jun 04 21:36:25 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Russian Federation / RU
+[Thu Jun 04 21:36:25 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Armenia / AM
+[Thu Jun 04 21:36:25 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Belarus / BY
+[Thu Jun 04 21:36:25 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Japan / JP
+[Thu Jun 04 21:36:25 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Barbados / BB
+[Thu Jun 04 21:36:26 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Kuwait / KW
+[Thu Jun 04 21:36:26 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Pitcairn / PN
+[Thu Jun 04 21:36:26 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:36:26 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Korea, Democratic People's Republic of / KP
+[Thu Jun 04 21:36:41 CEST 2020] La Capintainerie a été démarrée.
+[Thu Jun 04 21:36:41 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:36:53 CEST 2020] La Capintainerie a été fermée.
+[Thu Jun 04 21:36:54 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:48:01 CEST 2020] La Capintainerie a été démarrée.
+[Thu Jun 04 21:48:02 CEST 2020] La Capintainerie a été fermée.
+[Thu Jun 04 21:49:21 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:49:26 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:49:55 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:49:56 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / New Zealand / NZ
+[Thu Jun 04 21:49:57 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Tokelau / TK
+[Thu Jun 04 21:49:57 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Peru / PE
+[Thu Jun 04 21:49:57 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Malta / MT
+[Thu Jun 04 21:49:58 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Brunei Darussalam / BN
+[Thu Jun 04 21:49:58 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / New Caledonia / NC
+[Thu Jun 04 21:49:58 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Kazakhstan / KZ
+[Thu Jun 04 21:49:59 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Mauritania / MR
+[Thu Jun 04 21:49:59 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Greenland / GL
+[Thu Jun 04 21:50:00 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Jersey / JE
+[Thu Jun 04 21:50:00 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Papua New Guinea / PG
+[Thu Jun 04 21:50:01 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Seychelles / SC
+[Thu Jun 04 21:50:01 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Lao People's Democratic Republic / LA
+[Thu Jun 04 21:50:01 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Palau / PW
+[Thu Jun 04 21:50:02 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Latvia / LV
+[Thu Jun 04 21:50:03 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:50:44 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:50:45 CEST 2020] La Capintainerie a été démarrée.
+[Thu Jun 04 21:51:16 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Kenya / KE
+[Thu Jun 04 21:51:21 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Mongolia / MN
+[Thu Jun 04 21:51:26 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Burundi / BI
+[Thu Jun 04 21:51:34 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Djibouti / DJ
+[Thu Jun 04 21:51:42 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Turkmenistan / TM
+[Thu Jun 04 21:51:49 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Macao / MO
+[Thu Jun 04 21:52:02 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Belarus / BY
+[Thu Jun 04 21:52:07 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Croatia / HR
+[Thu Jun 04 21:52:22 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Sudan / SD
+[Thu Jun 04 21:52:27 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Iran, Islamic Republic of / IR
+[Thu Jun 04 21:52:32 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Egypt / EG
+[Thu Jun 04 21:52:34 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Kuwait / KW
+[Thu Jun 04 21:52:42 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Argentina / AR
+[Thu Jun 04 21:52:49 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Saint Vincent and the Grenadines / VC
+[Thu Jun 04 21:52:57 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Algeria / DZ
+[Thu Jun 04 21:53:19 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPeche / Andorra / AD
+[Thu Jun 04 21:53:49 CEST 2020] [NotifyBean | Info] Un nouveau bateau a été généré: BateauPlaisance / Saudi Arabia / SA
+[Thu Jun 04 21:53:51 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:53:52 CEST 2020] La Capintainerie a été fermée.
+[Thu Jun 04 21:53:56 CEST 2020] Le Phare a été démarré.
+[Thu Jun 04 21:53:56 CEST 2020] La Capintainerie a été démarrée.
+[Thu Jun 04 21:54:02 CEST 2020] Le Phare a été fermé.
+[Thu Jun 04 21:54:19 CEST 2020] La Capintainerie a été fermée.
+[Thu Jun 04 21:54:36 CEST 2020] La Capintainerie a été démarrée.
+[Thu Jun 04 21:55:24 CEST 2020] La Capintainerie a été fermée.
+[Thu Jun 04 22:00:43 CEST 2020] La Capintainerie a été démarrée.
+[Thu Jun 04 22:03:58 CEST 2020] La Capintainerie a été démarrée.
+[Thu Jun 04 22:03:59 CEST 2020] La Capintainerie a été fermée.
+[Thu Jun 04 22:04:46 CEST 2020] La Capintainerie a été démarrée.
+[Thu Jun 04 22:04:59 CEST 2020] La Capintainerie a été fermée.
+[Thu Jun 04 22:08:34 CEST 2020] La Capintainerie a été démarrée.
+[Thu Jun 04 22:08:41 CEST 2020] La Capintainerie a été fermée.
