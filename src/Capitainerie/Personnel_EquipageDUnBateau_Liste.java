@@ -16,8 +16,10 @@ public class Personnel_EquipageDUnBateau_Liste extends javax.swing.JDialog {
     public Personnel_EquipageDUnBateau_Liste(Bateau bateau) {
         initComponents();
         
+        this.LNomBateau.setText(bateau.getNom());
+        
         DefaultTableModel tableModelEquipage = new DefaultTableModel();
-        String[] columnNames = {"Nom", "Prénom", "Fonction", "Date de naissance"};
+        String[] columnNames = {"Nom", "Prï¿½nom", "Fonction", "Date de naissance"};
 
         for (String columnName : columnNames) {
             tableModelEquipage.addColumn(columnName);
@@ -46,7 +48,7 @@ public class Personnel_EquipageDUnBateau_Liste extends javax.swing.JDialog {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        LNomBateau = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         TableEquipage = new javax.swing.JTable();
         BtnFermer = new javax.swing.JButton();
@@ -58,7 +60,7 @@ public class Personnel_EquipageDUnBateau_Liste extends javax.swing.JDialog {
 
         jLabel9.setBackground(new java.awt.Color(220, 220, 220));
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel9.setText("Équipage d'un bateau");
+        jLabel9.setText("Ã‰quipage d'un bateau");
         jLabel9.setAutoscrolls(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -78,8 +80,8 @@ public class Personnel_EquipageDUnBateau_Liste extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel5.setText("Black Berry");
+        LNomBateau.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        LNomBateau.setText("...");
 
         TableEquipage.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -110,7 +112,7 @@ public class Personnel_EquipageDUnBateau_Liste extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
+                        .addComponent(LNomBateau)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -123,7 +125,7 @@ public class Personnel_EquipageDUnBateau_Liste extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel5)
+                .addComponent(LNomBateau)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -147,8 +149,8 @@ public class Personnel_EquipageDUnBateau_Liste extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnFermer;
+    private javax.swing.JLabel LNomBateau;
     private javax.swing.JTable TableEquipage;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;

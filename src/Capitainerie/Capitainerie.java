@@ -48,8 +48,8 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
     private int PORT;
 
     public LinkedList<Bateau> bateauAttenteEntrer = new LinkedList<Bateau>();
-    public LinkedList<Bateau> bateauEnCoursDAmarrage = new LinkedList<Bateau>();
     public LinkedList<Bateau> bateauEntresDansLaRade = new LinkedList<Bateau>();
+    public LinkedList<Bateau> bateauEnCoursDAmarrage = new LinkedList<Bateau>();
     public LinkedList<Bateau> bateauxAmarres = new LinkedList<Bateau>();
 
     public LinkedList<Ponton> pontons = new LinkedList<Ponton>();
@@ -63,7 +63,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         initComponents();
         
         FichierLog fl = new FichierLog();
-        fl.ecrireLigne("La Capintainerie a été démarrée.");
+        fl.ecrireLigne("La Capintainerie a Ã©tÃ© dÃ©marrÃ©e.");
         
         Properties properties = new Properties();
         try {
@@ -305,14 +305,14 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         LDateHeure.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         LDateHeure.setText("...");
 
-        BtnDemarrerServeur.setText("Démarrer le serveur");
+        BtnDemarrerServeur.setText("DÃ©marrer le serveur");
         BtnDemarrerServeur.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnDemarrerServeurActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("État du serveur:");
+        jLabel2.setText("Ã‰tat du serveur:");
 
         LOnOff.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         LOnOff.setForeground(new java.awt.Color(255, 0, 0));
@@ -343,7 +343,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
             }
         });
 
-        jLabel5.setText("Bateau(x) amarré(s) :");
+        jLabel5.setText("Bateau(x) amarrÃ©(s) :");
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -366,7 +366,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
 
         jScrollPane4.setViewportView(LBBateauEntresDansLaRade);
 
-        jLabel9.setText("Bateau(x) entré(s) dans la rade:");
+        jLabel9.setText("Bateau(x) entrÃ©(s) dans la rade:");
 
         BtnEnvoyerConfirmation.setText("Envoyez la confirmation");
         BtnEnvoyerConfirmation.addActionListener(new java.awt.event.ActionListener() {
@@ -475,7 +475,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
 
         jMenu4.setText("Personnel");
 
-        MIEquipageBateau.setText("Équipage d'un bateau");
+        MIEquipageBateau.setText("Ã‰quipage d'un bateau");
         MIEquipageBateau.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MIEquipageBateauActionPerformed(evt);
@@ -507,7 +507,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         jMenu6.add(MIFichierLog);
 
         MIAffichageDateHeureCourante.setSelected(true);
-        MIAffichageDateHeureCourante.setText("Affichage date heure du démarrage");
+        MIAffichageDateHeureCourante.setText("Affichage date heure du dÃ©marrage");
         MIAffichageDateHeureCourante.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MIAffichageDateHeureCouranteActionPerformed(evt);
@@ -667,7 +667,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
                 }
             }
         } else {
-            DialogErreur de = new DialogErreur("Erreur", "Le serveur n'est pas allumé. Attention ? ce que le phare le soit aussi!");
+            DialogErreur de = new DialogErreur("Erreur", "Le serveur n'est pas allumÃ©. Attention ? ce que le phare le soit aussi!");
             de.setVisible(true);
         }
     }//GEN-LAST:event_BtnEnvoyerConfirmationActionPerformed
@@ -710,15 +710,15 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
                         System.err.println("[Capitainerie | Error] \"" + e.getMessage() + "\"");
                     }
                 } else {
-                    DialogErreur de = new DialogErreur("Erreur", "Aucun emplacement n'a été choisis pour ce bateau");
+                    DialogErreur de = new DialogErreur("Erreur", "Aucun emplacement n'a Ã©tÃ© choisis pour ce bateau");
                     de.setVisible(true);
                 }
             } else {
-                DialogErreur de = new DialogErreur("Erreur", "Aucun bateau n'a été choisis");
+                DialogErreur de = new DialogErreur("Erreur", "Aucun bateau n'a Ã©tÃ© choisis");
                 de.setVisible(true);
             }
         } else {
-            DialogErreur de = new DialogErreur("Erreur", "Le serveur n'est pas allumé. Attention ? ce que le phare le soit aussi!");
+            DialogErreur de = new DialogErreur("Erreur", "Le serveur n'est pas allumÃ©. Attention ? ce que le phare le soit aussi!");
             de.setVisible(true);
         }
     }//GEN-LAST:event_BtnEnvoyerEmplacementActionPerformed
@@ -729,19 +729,19 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
             connexion.setVisible(true);
             dispose();
         } else {
-            new CapitainerieException("Erreur.", "Vous devez d'abord vous déconnecter de la capitainerie.");
+            new CapitainerieException("Erreur.", "Vous devez d'abord vous dÃ©connecter de la capitainerie.");
         }
     }//GEN-LAST:event_MILoginActionPerformed
 
     private void MILogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MILogoutActionPerformed
-        // Désactivation des boutons
+        // DÃ©sactivation des boutons
         BtnDemarrerServeur.setEnabled(false);
         BtnEnvoyerEmplacement.setEnabled(false);
         BtnChoisirEmplacement.setEnabled(false);
         BtnRemplirInformationsBateau.setEnabled(false);
         BtnEnvoyerConfirmation.setEnabled(false);
 
-        // Désactivation des listbox
+        // DÃ©sactivation des listbox
         LBBateauAttenteEntrer.setEnabled(false);
         LBBateauAttenteEntrer.setEnabled(false);
         LBBateauEnCoursDAmarrage.setEnabled(false);
@@ -769,13 +769,13 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         int selectedIndex = this.LBBateauEnCoursDAmarrage.getSelectedIndex();
         if (selectedIndex != -1) {
             Bateau bateau = this.bateauEnCoursDAmarrage.get(selectedIndex);
-            Bateau bateauAEnvoyer = null;
+            Bateau bateauQP = null;
             if (bateau instanceof BateauPeche) {
 
                 for (int i = 0; i < this.quais.size(); i++) {
                     for (int j = 0; j < this.quais.get(i).getListeBateauxAmarres().length; j++) {
                         if (bateau.equals(this.quais.get(i).getListeBateauxAmarres()[j])) {
-                            bateauAEnvoyer = (Bateau) this.quais.get(i).getListeBateauxAmarres()[j];
+                            bateauQP = (Bateau) this.quais.get(i).getListeBateauxAmarres()[j];
                             i = this.quais.size();
                             break;
                         }
@@ -786,15 +786,15 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
                 for (int i = 0; i < this.pontons.size(); i++) {
                     for (int j = 0; j < this.pontons.get(i).getListe(1).length; j++) {
                         if (bateau.equals(this.pontons.get(i).getListe(1)[j])) {
-                            bateauAEnvoyer = (Bateau) this.pontons.get(i).getListe(1)[j];
+                            bateauQP = (Bateau) this.pontons.get(i).getListe(1)[j];
                             i = this.pontons.size();
                             break;
                         }
                     }
-                    if (i < this.pontons.size()) { // Si le bateau n'a pas été trouvé du côté 1 (Droite)
+                    if (i < this.pontons.size()) { // Si le bateau n'a pas Ã©tÃ© trouvÃ© du cÃ´tÃ© 1 (Droite)
                         for (int j = 0; j < this.pontons.get(i).getListe(2).length; j++) {
                             if (bateau.equals(this.pontons.get(i).getListe(2)[j])) {
-                                bateauAEnvoyer = (Bateau) this.pontons.get(i).getListe(2)[j];
+                                bateauQP = (Bateau) this.pontons.get(i).getListe(2)[j];
                                 i = this.pontons.size();
                                 break;
                             }
@@ -804,7 +804,7 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
             }
             String emplacement = this.getEmplacementBateau(bateau);
             try {
-                RemplirInfoBateau remplirInfoBateau = new RemplirInfoBateau(this, true, bateauAEnvoyer, emplacement);
+                RemplirInfoBateau remplirInfoBateau = new RemplirInfoBateau(this, true, bateau, bateauQP, emplacement);
                 remplirInfoBateau.setTitle("Ajout informations du bateau  " + bateau.getNom() + " ");
                 remplirInfoBateau.setVisible(true);
             } catch (Exception e) {
@@ -812,7 +812,18 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
             }
         }
     }//GEN-LAST:event_BtnRemplirInformationsBateauActionPerformed
-
+    
+    /**
+     * @param Bateau bateauAAjouter copie du bateauARetirer
+     * @param Bateau bateauARetirer la rÃ©fÃ©rence du bateau initialement envoyÃ© dans RemplirInfoBateau
+     */
+    public void ajouterBateauListeBateauAmmare(Bateau bateauAAjouter, Bateau bateauARetirer) {
+        this.bateauEnCoursDAmarrage.remove(bateauARetirer);
+        ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).removeElement(bateauARetirer);
+        ((DefaultListModel) this.LBBateauxAmarres.getModel()).addElement(bateauAAjouter);
+        this.bateauxAmarres.add(bateauAAjouter);
+    }
+    
     private void MIAuteursActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MIAuteursActionPerformed
         APropos_Auteurs aProposAuteurs = new APropos_Auteurs(this, true);
         aProposAuteurs.setVisible(true);
@@ -931,54 +942,8 @@ public class Capitainerie extends javax.swing.JFrame implements IInOutEvent, Ser
         }
         
         FichierLog fl = new FichierLog();
-        fl.ecrireLigne("La Capintainerie a été fermée.");
+        fl.ecrireLigne("La Capintainerie a Ã©tÃ© fermÃ©e.");
     }//GEN-LAST:event_formWindowClosing
-
-    /**
-     * @param Bateau bateauAAjouter copie du bateauARetirer
-     * @param Bateau bateauARetirer la référence du bateau initialement envoyé dans RemplirInfoBateau
-     */
-    public void ajouterBateauListeBateauAmmare(Bateau bateauAAjouter, Bateau bateauARetirer) {
-        this.bateauEnCoursDAmarrage.remove(bateauARetirer);
-        ((DefaultListModel) this.LBBateauEnCoursDAmarrage.getModel()).removeElement(bateauARetirer);
-        ((DefaultListModel) this.LBBateauxAmarres.getModel()).addElement(bateauAAjouter);
-        this.bateauxAmarres.add(bateauAAjouter);
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Capitainerie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Capitainerie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Capitainerie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Capitainerie.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Capitainerie().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnChoisirEmplacement;

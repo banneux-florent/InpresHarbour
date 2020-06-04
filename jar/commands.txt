@@ -1,0 +1,19 @@
+# Compiler
+
+javac -d . ../src/beans/*.java ../src/Classes/*.java ../src/Exceptions/*.java ../src/MainProject/*.java ../src/Network/*.java ../src/threadsutils/*.java ../src/utilisateurs/*.java ../src/Capitainerie/*.java ../src/Phare/*.java
+
+
+# Jar
+
+# jar cmvf META-INF/MANIFEST.MF Port.jar beans/*.class Classes/*.class Exceptions/*.class MainProject/*.class Network/*.class threadsutils/*.class utilisateurs/*.class Capitainerie/*.class Phare/*.class
+# Sachant que le manifest ne marche pas, pas nécessaire dans la commande
+jar cvf Port.jar beans/*.class Classes/*.class Exceptions/*.class MainProject/*.class Network/*.class threadsutils/*.class utilisateurs/*.class Capitainerie/*.class Phare/*.class
+
+
+# Exécuter
+
+# Phare
+java -cp Port.jar Phare.Phare
+
+# Capitainerie
+java -cp Port.jar MainProject.Main
